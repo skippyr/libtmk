@@ -12,12 +12,14 @@
 #include <unistd.h>
 #endif
 
-enum {
+enum CLN
+{
 	CLN_SCR,
 	CLN_LN
 };
 
-enum {
+enum CLR
+{
 	CLR_DFT = -1,
 	CLR_BLK,
 	CLR_RED,
@@ -29,14 +31,8 @@ enum {
 	CLR_WHT
 };
 
-enum {
-	DRT_U = 'A',
-	DRT_D,
-	DRT_R,
-	DRT_L
-};
-
-enum {
+enum EFF
+{
 	EFF_ITL = 1 << 3,
 	EFF_UND = 1 << 4,
 	EFF_BLK = 1 << 5,
@@ -44,18 +40,21 @@ enum {
 	EFF_CON = 1 << 8
 };
 
-enum {
+enum LUM
+{
 	LUM_DFT = 22,
 	LUM_STR = 1,
 	LUM_WK
 };
 
-enum {
+enum LYR
+{
 	LYR_FG = 3,
 	LYR_BG
 };
 
-enum {
+enum SP
+{
 	SP_DFT,
 	SP_BBLK,
 	SP_BLK,
@@ -65,20 +64,25 @@ enum {
 	SP_BAR
 };
 
-int getcurpos(int *col, int *ln);
-int getsize(int *col, int *ln);
-int istty(FILE *fd);
+#ifdef __cplusplus
+extern "C" {
+#endif
+int get_cur_pos(int *col, int *ln);
+int get_size(int *col, int *ln);
+int is_tty(FILE *fd);
 void beep(void);
 void clear(int cln);
-void movecur(int drt, int stp);
-void set256clr(int lyr, int clr);
-void setaltscr(int isenb);
-void setcurpos(int col, int ln);
-void setcursp(int sp);
-void setcurvis(int isvis);
-void seteff(int eff, int isenb);
-void sethexclr(int lyr, int hex);
-void setlum(int lum);
-void setname(char *name);
-void setrgbclr(int lyr, int r, int g, int b);
+void set_256_clr(int lyr, int clr);
+void set_alt_scr(int is_alt);
+void set_cur_pos(int col, int ln);
+void set_cur_sp(int sp);
+void set_cur_vis(int is_vis);
+void set_eff(int eff, int is_enb);
+void set_head(const char *head);
+void set_hex_clr(int lyr, int hex);
+void set_lum(int lum);
+void set_rgb_clr(int lyr, int r, int g, int b);
+#ifdef __cplusplus
+}
+#endif
 #endif

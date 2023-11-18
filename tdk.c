@@ -6,13 +6,12 @@
 #define IN_PROC_ATTR (ICANON | ECHO)
 #endif
 
-static int countdgts(int n);
-static int setflags(FILE *fd, int flags, int isenb);
-static void writefansi(unsigned long len, char *fmt, ...);
-static void writeansi(char *msg);
+static int calc_dgts(int n);
+static int set_attr(FILE *fd, int attr, int is_enb);
+static void write_ansi(const char *msg);
+static void write_ansif(int len, const char *fmt, ...);
 
-static int
-countdgts(int n)
+static int calc_dgts(int n)
 {
 	int i = !n;
 	for (; n; n /= 10)
@@ -20,8 +19,7 @@ countdgts(int n)
 	return i;
 }
 
-static int
-setflags(FILE *fd, int flags, int isenb)
+static int set_attr(FILE *fd, int attr, int is_enb)
 {
 #ifdef _WIN32
 	HANDLE h = GetStdHandle(fd == stdin ? STD_INPUT_HANDLE :
@@ -29,67 +27,57 @@ setflags(FILE *fd, int flags, int isenb)
 					       STD_ERROR_HANDLE);
 	DWORD m;
 	return !(GetConsoleMode(h, &m) &&
-	         SetConsoleMode(h, isenb ? m | flags : m & ~flags));
+		 SetConsoleMode(h, is_enb ? m | attr : m & ~attr));
 #else
 	int n = fileno(fd);
 	struct termios a;
 	return !(!tcgetattr(n, &a) &&
-		 (isenb ? (a.c_lflag |= flags) : (a.c_lflag &= ~flags)) &&
+		 (is_enb ? (a.c_lflag |= attr) : (a.c_lflag &= ~attr)) &&
 		 !tcsetattr(n, TCSANOW, &a));
 #endif
 }
 
-static void
-writefansi(unsigned long len, char *fmt, ...)
+static void write_ansi(const char *msg)
+{
+#ifdef _WIN32
+	(!set_attr(stdout, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1) ||
+	 !set_attr(stderr, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1)) &&
+#endif
+	is_tty(stdout) && printf("%s", msg) ||
+	is_tty(stderr) && fprintf(stderr, "%s", msg);
+}
+
+static void write_ansif(int len, const char *fmt, ...)
 {
 	va_list a;
 	va_start(a, fmt);
 	char *s = malloc(len);
 	if (s) {
 		vsnprintf(s, len, fmt, a);
-		writeansi(s);
+		write_ansi(s);
 		free(s);
 	}
 	va_end(a);
 }
 
-static void
-writeansi(char *msg)
+int get_cur_pos(int *col, int *ln)
 {
-#ifdef _WIN32
-	(!setflags(stdout, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1) ||
-	 !setflags(stderr, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1)) &&
-#endif
-	istty(stdout) && printf("%s", msg) && !fflush(stdout) ||
-	istty(stderr) && fprintf(stderr, "%s", msg);
-}
-
-int
-istty(FILE *fd)
-{
-	return !!isatty(fileno(fd));
-}
-
-int
-getcurpos(int *col, int *ln)
-{
-	if (!istty(stdin) || !istty(stdout) && !istty(stderr))
+	if (!is_tty(stdin) || !is_tty(stdout) && !is_tty(stderr))
 		return 1;
-	writeansi("\33[6n");
-	setflags(stdin, IN_PROC_ATTR, 0);
+	write_ansi("\33[6n");
+	set_attr(stdin, IN_PROC_ATTR, 0);
 	int c, l;
 	while (scanf("\33[%d;%dR", &l, &c) != 2)
 		getchar();
-	setflags(stdin, IN_PROC_ATTR, 1);
 	if (col)
 		*col = c - 1;
 	if (ln)
 		*ln = l - 1;
+	set_attr(stdin, IN_PROC_ATTR, 1);
 	return 0;
 }
 
-int
-getsize(int *col, int *ln)
+int get_size(int *col, int *ln)
 {
 #ifdef _WIN32
 	CONSOLE_SCREEN_BUFFER_INFO i;
@@ -102,8 +90,7 @@ getsize(int *col, int *ln)
 		*ln = i.srWindow.Bottom - i.srWindow.Top + 1;
 #else
 	struct winsize s;
-	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &s) &&
-	    ioctl(STDERR_FILENO, TIOCGWINSZ, &s))
+	if (ioctl(1, TIOCGWINSZ, &s) && ioctl(2, TIOCGWINSZ, &s))
 		return 1;
 	if (col)
 		*col = s.ws_col;
@@ -113,83 +100,71 @@ getsize(int *col, int *ln)
 	return 0;
 }
 
-void
-beep(void)
+int is_tty(FILE *fd)
 {
-	writeansi("\7");
+	return !!isatty(fileno(fd));
 }
 
-void
-clear(int cln)
+void beep(void)
 {
-	writeansi(CLN_SCR == cln ? "\33[2J\33[1;1H" : "\33[2K\33[1G");
+	write_ansi("\7");
 }
 
-void
-movecur(int drt, int stp)
+void clear(int cln)
 {
-	writefansi(countdgts(stp) + 4, "\33[%d%c", stp, drt);
+	write_ansi(CLN_SCR == cln ? "\33[2J\33[1;1H" : "\33[2K\33[1G");
 }
 
-void
-set256clr(int lyr, int clr)
+void set_256_clr(int lyr, int clr)
 {
-	writefansi(12, CLR_DFT == clr ? "\33[%d9m" : "\33[%d8;5;%dm", lyr, clr);
+	write_ansif(12, CLR_DFT == clr ? "\33[%d9m" : "\33[%d8;5;%dm", lyr,
+		    clr);
 }
 
-void
-setaltscr(int isenb)
+void set_alt_scr(int is_alt)
 {
-	writeansi(isenb ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
+	write_ansi(is_alt ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
 }
 
-void
-setcurpos(int col, int ln)
+void set_cur_pos(int col, int ln)
 {
-	writefansi(countdgts(++col) + countdgts(++ln) + 5, "\33[%d;%dH", ln,
-	           col);
+	write_ansif(calc_dgts(++col) + calc_dgts(++ln) + 5, "\33[%d;%dH", ln,
+		    col);
 }
 
-void
-setcursp(int sp)
+void set_cur_sp(int sp)
 {
-	writefansi(6, "\33[%d q", sp);
+	write_ansif(6, "\33[%d q", sp);
 }
 
-void
-setcurvis(int isvis)
+void set_cur_vis(int is_vis)
 {
-	writeansi(isvis ? "\33[?25h" : "\33[?25l");
+	write_ansi(is_vis ? "\33[?25h" : "\33[?25l");
 }
 
-void
-seteff(int eff, int isenb)
+void set_eff(int eff, int is_enb)
 {
 	for (int i = 3; i < 9; i++)
 		if (1 << i & eff)
-			writefansi(6, "\33[%dm", isenb ? i : i + 20);
+			write_ansif(6, "\33[%dm", is_enb ? i : i + 20);
 }
 
-void
-sethexclr(int lyr, int hex)
+void set_head(const char *head)
 {
-	setrgbclr(lyr, hex >> 16 & 0xff, hex >> 8 & 0xff, hex & 0xff);
+	write_ansif(strlen(head) + 6, "\33]0;%s\7", head);
 }
 
-void
-setlum(int lum)
+void set_hex_clr(int lyr, int hex)
 {
-	writefansi(8, LUM_DFT == lum ? "\33[%dm" : "\33[22;%dm", lum);
+	set_rgb_clr(lyr, hex >> 16 & 0xff, hex >> 8 & 0xff, hex & 0xff);
 }
 
-void
-setname(char *name)
+void set_lum(int lum)
 {
-	writefansi(strlen(name) + 6, "\33]0;%s\7", name);
+	write_ansif(8, LUM_DFT == lum ? "\33[%dm" : "\33[22;%dm", lum);
 }
 
-void
-setrgbclr(int lyr, int r, int g, int b)
+void set_rgb_clr(int lyr, int r, int g, int b)
 {
-	writefansi(20, "\33[%d8;2;%d;%d;%dm", lyr, r, g, b);
+	write_ansif(20, "\33[%d8;2;%d;%d;%dm", lyr, r, g, b);
 }
