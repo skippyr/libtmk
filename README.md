@@ -2,12 +2,9 @@
 
 ## About
 
-TDK (aka. *Terminal Development Kit*) is a cross-platform terminal manipulation
-library for C that address the development of applications for Linux and
-Windows (10 or newer).
-
-It offers access to a variety of general use functions that allow developers to
-access and modify terminal properties and attributes.
+TDK (abbreviation for "Terminal Development Kit") is a cross-platform terminal
+manipulation library for C/C++ that address the development of applications for
+Linux and Windows (10 and newer).
 
 ## Wiki
 
