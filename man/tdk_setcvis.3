@@ -1,0 +1,26 @@
+.TH tdk_setcvis 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_setcvis - it sets the terminal cursor visibility
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+void tdk_setcvis(int isvis);
+
+.SH DESCRIPTION
+.PP
+It sets the terminal cursor visibility based on the boolean isvis.
+
+.SH EXAMPLES
+.PP
+tdk_setcvis(0);
+
+.SH SEE ALSO
+.BR tdk (3)

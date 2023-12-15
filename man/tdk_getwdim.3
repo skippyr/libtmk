@@ -1,0 +1,37 @@
+.TH tdk_getwdim 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_getwdim - it gets the terminal window dimensions
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+int tdk_getwdim(int *col, int *row);
+
+.SH DESCRIPTION
+.PP
+It gets the terminal window dimensions and puts its total of columns and rows in
+the addresses pointed by col and row. If a value is not desired, its address can
+be set to NULL.
+
+.SH RETURN VALUES
+.PP
+It returns 0 if the dimensions were retrieved and the values were set, and 1
+otherwise.  It fails if all standard streams are being redirected.
+
+.SH EXAMPLES
+.PP
+int wcol;
+.br
+int wrow;
+.br
+tdk_getwdim(&wcol, &wrow);
+
+.SH SEE ALSO
+.BR tdk (3)

@@ -1,0 +1,45 @@
+.TH tdk_getcpos 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_getcpos - it gets the terminal cursor position
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+int tdk_getcpos(int *col, int *row);
+
+.SH DESCRIPTION
+.PP
+It gets the terminal cursor position and puts its column and row positions in
+the addresses pointed by col and row. If a value is not desired, its address can
+be set to NULL.
+
+On success, it clears the input buffer.
+
+.SH RETURN VALUES
+.PP
+It returns 0 if the position was get and the values were set, and 1 otherwise.
+It fails if:
+
+.IP \\[bu]
+stdin is being redirected or is not wide-character oriented.
+
+.IP \\[bu]
+stdout and stderr are being redirected or are not byte oriented.
+
+.SH EXAMPLES
+.PP
+int ccol;
+.br
+int crow;
+.br
+tdk_getcpos(&ccol, &crow);
+
+.SH SEE ALSO
+.BR tdk (3)

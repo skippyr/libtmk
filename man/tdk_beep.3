@@ -1,0 +1,30 @@
+.TH tdk_beep 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_beep - it emits the terminal beep/bell sound
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+void tdk_beep(void);
+
+.SH DESCRIPTION
+.PP
+It emits the terminal beep/bell sound. The sound, its volume and output device
+are affected by the terminal/operating system settings and hardware in use.
+
+.SH EXAMPLES
+.PP
+tdk_beep();
+
+.SH NOTES
+Some terminals may have this sound feature disabled by default.
+
+.SH SEE ALSO
+.BR tdk (3)

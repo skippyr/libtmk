@@ -1,23 +1,48 @@
-# TDK
+# libtdk
+A stupidly simple terminal manipulation library for Linux that handles
+properties, styles and blocking key press with UTF-8 support.
 
-## About
+## Requirements
+In order to build it, you will only need a C99 compiler, like `gcc`, and `make`.
 
-TDK (abbreviation for "Terminal Development Kit") is a cross-platform terminal
-manipulation library for C/C++ that address the development of applications for
-Linux and Windows (10 and newer).
+## Install
+Edit the file `config.mk` to match your needs. Then, run the following command
+to install it (use `sudo` if necessary):
 
-## Wiki
+```sh
+make install
+```
 
-You can learn how to install and use it by reading the [wiki page](https://github.com/skippyr/tdk/wiki).
+By default, this library gets installed under `/usr/local` directories. Some
+compilers and operating systems may have settings that causes linkers to fail
+locating the installed files.
 
-## Issues & Contributions
+If that is your case, you can add the following environment variables to your
+shell sessions:
 
-You can report issues in the [issues page](https://github.com/skippyr/tdk/issues).
-You can also send pull requests to be reviewed.
+```sh
+export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+```
 
-All code contributions will remain under the same license.
+Some compilers may also get in conflict with each other, so it is a good idea
+to use the same compiler that you used to install this library on your source
+files either.
+
+## Uninstall
+If you want to uninstall it, run the following command (use `sudo` if
+necessary):
+
+```sh
+make uninstall
+```
+
+## Documentation
+Once installed, you can refer to its man pages:
+
+```sh
+man tdk.3
+```
 
 ## Copyright
-
-This library is released under the BSD-3-Clause license. A copy of the LICENSE
-is bundled in the repository root.
+See `LICENSE` for copyright and license details.

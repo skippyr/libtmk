@@ -1,170 +1,203 @@
+/* See LICENSE for copyright and license details. */
 #include "tdk.h"
 
-#ifdef _WIN32
-#define IN_PROC_ATTR (ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT)
-#else
-#define IN_PROC_ATTR (ICANON | ECHO)
-#endif
-
-static int calc_dgts(int n);
-static int set_attr(FILE *fd, int attr, int is_enb);
-static void write_ansi(const char *msg);
-static void write_ansif(int len, const char *fmt, ...);
-
-static int calc_dgts(int n)
-{
-	int i = !n;
-	for (; n; n /= 10)
-		i++;
-	return i;
-}
-
-static int set_attr(FILE *fd, int attr, int is_enb)
-{
-#ifdef _WIN32
-	HANDLE h = GetStdHandle(fd == stdin ? STD_INPUT_HANDLE :
-				fd == stdout ? STD_OUTPUT_HANDLE :
-					       STD_ERROR_HANDLE);
-	DWORD m;
-	return !(GetConsoleMode(h, &m) &&
-		 SetConsoleMode(h, is_enb ? m | attr : m & ~attr));
-#else
-	int n = fileno(fd);
-	struct termios a;
-	return !(!tcgetattr(n, &a) &&
-		 (is_enb ? (a.c_lflag |= attr) : (a.c_lflag &= ~attr)) &&
-		 !tcsetattr(n, TCSANOW, &a));
-#endif
-}
-
-static void write_ansi(const char *msg)
-{
-#ifdef _WIN32
-	(!set_attr(stdout, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1) ||
-	 !set_attr(stderr, ENABLE_VIRTUAL_TERMINAL_PROCESSING, 1)) &&
-#endif
-	is_tty(stdout) && printf("%s", msg) ||
-	is_tty(stderr) && fprintf(stderr, "%s", msg);
-}
-
-static void write_ansif(int len, const char *fmt, ...)
-{
-	va_list a;
-	va_start(a, fmt);
-	char *s = malloc(len);
-	if (s) {
-		vsnprintf(s, len, fmt, a);
-		write_ansi(s);
-		free(s);
+#define LEN(arr) (sizeof(arr) / sizeof(arr[0]))
+#define KEY(keyval, char0, char1, char2, char3)\
+	if (trail[0] == char0 && trail[1] == char1 && trail[2] == char2 &&\
+	    trail[3] == char3) {\
+		key = keyval;\
+		goto out;\
 	}
-	va_end(a);
+
+static int ansi(char *msg);
+static int wipein(void);
+static int setraw(int isenb);
+static int ansif(size_t len, char *fmt, ...);
+static void setnblk(int isenb);
+
+static int
+ansi(char *msg)
+{
+	return !((isatty(1) && printf("%s", msg) >= 0 && !fflush(stdout)) ||
+		 (isatty(2) && fprintf(stderr, "%s", msg) >= 0));
 }
 
-int get_cur_pos(int *col, int *ln)
+static int
+wipein(void)
 {
-	if (!is_tty(stdin) || !is_tty(stdout) && !is_tty(stderr))
+	if (fwide(stdin, 0) < 0 || !setlocale(LC_ALL, "C.UTF-8") || setraw(1))
 		return 1;
-	write_ansi("\33[6n");
-	set_attr(stdin, IN_PROC_ATTR, 0);
-	int c, l;
-	while (scanf("\33[%d;%dR", &l, &c) != 2)
-		getchar();
-	if (col)
-		*col = c - 1;
-	if (ln)
-		*ln = l - 1;
-	set_attr(stdin, IN_PROC_ATTR, 1);
+	setnblk(1);
+	while (getwchar() != WEOF);
+	setraw(0);
+	setnblk(0);
 	return 0;
 }
 
-int get_size(int *col, int *ln)
+static int
+setraw(int isenb)
 {
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO i;
-	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &i) &&
-	    !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &i))
+	struct termios t;
+	if (tcgetattr(0, &t))
 		return 1;
-	if (col)
-		*col = i.srWindow.Right - i.srWindow.Left + 1;
-	if (ln)
-		*ln = i.srWindow.Bottom - i.srWindow.Top + 1;
-#else
-	struct winsize s;
-	if (ioctl(1, TIOCGWINSZ, &s) && ioctl(2, TIOCGWINSZ, &s))
-		return 1;
-	if (col)
-		*col = s.ws_col;
-	if (ln)
-		*ln = s.ws_row;
-#endif
+	isenb ? (t.c_lflag &= ~(ICANON | ECHO)) : (t.c_lflag |= ICANON | ECHO);
+	tcsetattr(0, TCSANOW, &t);
 	return 0;
 }
 
-int is_tty(FILE *fd)
+static int
+ansif(size_t len, char *fmt, ...)
 {
-	return !!isatty(fileno(fd));
+	char *msg;
+	int ret;
+	va_list args;
+	if (!(msg = malloc(len)))
+		return 1;
+	va_start(args, fmt);
+	vsnprintf(msg, len, fmt, args);
+	ret = ansi(msg);
+	va_end(args);
+	free(msg);
+	return ret;
 }
 
-void beep(void)
+static void
+setnblk(int isenb)
 {
-	write_ansi("\7");
+	int fl = fcntl(0, F_GETFL);
+	fcntl(0, F_SETFL, isenb ? fl | O_NONBLOCK : fl & ~O_NONBLOCK);
 }
 
-void clear(int cln)
+int
+tdk_getcpos(int *col, int *row)
 {
-	write_ansi(CLN_SCR == cln ? "\33[2J\33[1;1H" : "\33[2K\33[1G");
+	int tmpcol;
+	int tmprow;
+	if (wipein() || setraw(1) || ansi("\33[6n"))
+		return 1;
+	wscanf(L"\33[%d;%dR", &tmprow, &tmpcol);
+	if (col)
+		*col = --tmpcol;
+	if (row)
+		*row = --tmprow;
+	setraw(0);
+	return 0;
 }
 
-void set_256_clr(int lyr, int clr)
+int
+tdk_getkey(void)
 {
-	write_ansif(12, CLR_DFT == clr ? "\33[%d9m" : "\33[%d8;5;%dm", lyr,
-		    clr);
+	int i;
+	int key;
+	int trail[4];
+	if ((!isatty(1) && !isatty(2)) || wipein())
+		return WEOF;
+	setraw(1);
+	key = getwchar();
+	setnblk(1);
+	for (i = 0; i < LEN(trail); i++)
+		trail[i] = getwchar();
+	if (key == 27 && trail[0] != WEOF) {
+		for (i = 65; i < 69; i++)
+			KEY(i - 65 + tdk_KeyUpArr, 91, i, WEOF, WEOF);
+		for (i = 80; i < 84; i++)
+			KEY(i - 80 + tdk_KeyF1, 79, i, WEOF, WEOF);
+		for (i = 65; i < 69; i++)
+			KEY(i - 65 + tdk_KeyF1, 91, 91, i, WEOF);
+		KEY(tdk_KeyF5, 91, 49, 53, 126);
+		KEY(tdk_KeyF5, 91, 91, 69, WEOF);
+		for (i = 55; i < 58; i++)
+			KEY(i - 55 + tdk_KeyF6, 91, 49, i, 126);
+		for (i = 48; i < 50; i++)
+			KEY(i - 48 + tdk_KeyF9, 91, 50, i, 126);
+		for (i = 51; i < 53; i++)
+			KEY(i - 51 + tdk_KeyF11, 91, 50, i, 126);
+		KEY(tdk_KeyIns, 91, 52, 104, WEOF);
+		KEY(tdk_KeyIns, 91, 50, 126, WEOF);
+		KEY(tdk_KeyDel, 91, 80, WEOF, WEOF);
+		KEY(tdk_KeyDel, 91, 51, 126, WEOF);
+		KEY(tdk_KeyEnd, 91, 52, 126, WEOF);
+		KEY(tdk_KeyEnd, 91, 70, WEOF, WEOF);
+		KEY(tdk_KeyHome, 91, 72, WEOF, WEOF);
+		KEY(tdk_KeyHome, 91, 49, 126, WEOF);
+		for (i = 53; i < 55; i++)
+			KEY(i - 53 + tdk_KeyPgUp, 91, i, 126, WEOF);
+	}
+out:
+	wipein();
+	return key < 0 || key == 9 || key == 10 || key > 26 ? key : 0;
 }
 
-void set_alt_scr(int is_alt)
+int
+tdk_getwdim(int *col, int *row)
 {
-	write_ansi(is_alt ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
+	struct winsize w;
+	if (ioctl(0, TIOCGWINSZ, &w) && ioctl(1, TIOCGWINSZ, &w) &&
+	    ioctl(2, TIOCGWINSZ, &w))
+		return 1;
+	if (col)
+		*col = w.ws_col;
+	if (row)
+		*row = w.ws_row;
+	return 0;
 }
 
-void set_cur_pos(int col, int ln)
+int
+tdk_setcpos(int col, int row)
 {
-	write_ansif(calc_dgts(++col) + calc_dgts(++ln) + 5, "\33[%d;%dH", ln,
-		    col);
+	int wcol;
+	int wrow;
+	return tdk_getwdim(&wcol, &wrow) || ++col < 1 || col > wcol ||
+	       ++row < 1 || row > wrow || ansif(13, "\33[%d;%dH", row, col);
 }
 
-void set_cur_sp(int sp)
+void
+tdk_beep(void)
 {
-	write_ansif(6, "\33[%d q", sp);
+	ansi("\7");
 }
 
-void set_cur_vis(int is_vis)
+void
+tdk_rwipe(void)
 {
-	write_ansi(is_vis ? "\33[?25h" : "\33[?25l");
+	ansi("\33[2K\33[1G");
 }
 
-void set_eff(int eff, int is_enb)
+void
+tdk_setclr(int lyr, int clr)
 {
-	for (int i = 3; i < 9; i++)
+	ansif(6, "\33[%d%dm", lyr, clr);
+}
+
+void
+tdk_setcshp(int shp)
+{
+	ansif(6, "\33[%d q", shp);
+}
+
+void
+tdk_setcvis(int isvis)
+{
+	ansi(isvis ? "\33[?25h" : "\33[?25l");
+}
+
+void
+tdk_seteff(int eff, int isenb)
+{
+	int i;
+	for (i = 3; i < 10; i++)
 		if (1 << i & eff)
-			write_ansif(6, "\33[%dm", is_enb ? i : i + 20);
+			ansif(6, "\33[%dm", isenb ? i : i + 20);
 }
 
-void set_head(const char *head)
+void
+tdk_setlum(int lum)
 {
-	write_ansif(strlen(head) + 6, "\33]0;%s\7", head);
+	ansif(8, !lum ? "\33[22m" : "\33[22;%dm", lum);
 }
 
-void set_hex_clr(int lyr, int hex)
+void
+tdk_setwalt(int isenb)
 {
-	set_rgb_clr(lyr, hex >> 16 & 0xff, hex >> 8 & 0xff, hex & 0xff);
-}
-
-void set_lum(int lum)
-{
-	write_ansif(8, LUM_DFT == lum ? "\33[%dm" : "\33[22;%dm", lum);
-}
-
-void set_rgb_clr(int lyr, int r, int g, int b)
-{
-	write_ansif(20, "\33[%d8;2;%d;%d;%dm", lyr, r, g, b);
+	ansi(isenb ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
 }

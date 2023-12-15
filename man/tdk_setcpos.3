@@ -1,0 +1,38 @@
+.TH tdk_setcpos 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_setcpos - it sets the terminal cursor position
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+int tdk_setcpos(int col, int row);
+
+.SH DESCRIPTION
+.PP
+It sets the terminal cursor column and row positions to be col and row.
+
+.SH RETURN VALUES
+.PP
+It returns 0 if the position was set, and 1 otherwise.
+It fails if:
+
+.IP \\[bu]
+the stdout and stderr streams are being redirected
+
+
+.IP \\[bu]
+the position given is outside of the window boundaries.
+
+.SH EXAMPLES
+.PP
+tdk_setcpos(0, 0);
+
+.SH SEE ALSO
+.BR tdk (3)

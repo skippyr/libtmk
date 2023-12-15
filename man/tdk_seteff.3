@@ -1,0 +1,66 @@
+.TH tdk_seteff 3 MANDATE tdk
+.SH NAME
+.PP
+tdk_seteff - it enables/disables terminal effect(s)
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+void tdk_seteff(int eff, int isenb);
+
+.SH DESCRIPTION
+.PP
+It enables/disables the effect(s) given in the bit-mask eff based on the value
+of the boolean isenb.
+
+.SH EFFECTS
+These flags can be used to compose the bit-mask eff:
+
+.TP
+.B
+tdk_EffItl
+The italic effect: it makes the text curly.
+
+.TP
+.B
+tdk_EffUnd
+The underline effect: it draws a horizontal line below the text.
+
+.TP
+.B
+tdk_EffBlk
+The blinking effect: it makes the text blink indefinitely.
+
+.TP
+.B
+tdk_EffRev
+The reverse video effect: it swaps the foreground and background colors.
+
+.TP
+.B
+tdk_EffCon
+The conceal effect: it makes the text hard to see or invisible.
+
+.TP
+.B
+tdk_EffStr
+The strike-through effect: it draws a horizontal line in the middle of the text.
+
+.SH EXAMPLES
+.PP
+tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
+.br
+tdk_seteff(tdk_EffItl, 0);
+
+.SH NOTES
+.PP
+Terminals may render effects differently or not support them.
+
+.SH SEE ALSO
+.BR tdk (3)

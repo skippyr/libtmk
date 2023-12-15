@@ -1,0 +1,110 @@
+.TH tdk 3 MANDATE tdk
+.SH NAME
+.PP
+tdk - terminal development kit
+
+.SH LIBRARY
+.PP
+tdk (libtdk, -ltdk)
+
+.SH SYNOPSIS
+.PP
+#include <tdk.h>
+
+.PP
+int tdk_getcpos(int *col, int *row);
+.br
+int tdk_getkey(void);
+.br
+int tdk_getwdim(int *col, int *row);
+.br
+int tdk_setcpos(int col, int row);
+.br
+void tdk_beep(void);
+.br
+void tdk_rwipe(void);
+.br
+void tdk_setclr(int lyr, int clr);
+.br
+void tdk_setcshp(int shp);
+.br
+void tdk_setcvis(int isvis);
+.br
+void tdk_seteff(int eff, int isenb);
+.br
+void tdk_setlum(int lum);
+.br
+void tdk_setwalt(int isenb);
+
+.SH STANDARDS
+.PP
+C99, POSIX.9-2008
+
+.SH DESCRIPTION
+.PP
+A stupidly simple terminal manipulation library that handles properties, styles
+and blocking key press with UTF-8 support.
+
+.PP
+In order to be kept small, it trusts in its user to follow these rules:
+
+.IP \[bu]
+The terminal properties must not be manipulated manually to avoid conflicts:
+that includes the use of manipulation functions and output of ANSI escape
+sequences.
+
+.IP \[bu]
+For UTF-8 support, the stdin stream must be kept wide-character oriented, and
+the stdout/stderr streams, byte oriented.
+
+.IP \[bu]
+Their functions must be used as specified in their man pages to avoid undefined
+behavior.
+
+.PP
+By nature, I/O operations are not thread-safe, thus this library neither.
+
+.PP
+For further details, see its function man pages.
+
+.SH RESERVED NAMES
+.PP
+This library reserves names starting with "tdk_" and "TDK_", possibly prefixed
+by an underline.
+
+.SH INCLUDED HEADERS
+.PP
+By including its header, the following dependency headers will be automatically
+included:
+
+.PP
+#include <fcntl.h>
+.br
+#include <locale.h>
+.br
+#include <stdarg.h>
+.br
+#include <stdio.h>
+.br
+#include <stdlib.h>
+.br
+#include <sys/ioctl.h>
+.br
+#include <termios.h>
+.br
+#include <unistd.h>
+.br
+#include <wchar.h>
+.br
+
+.SH SOURCE CODE
+.PP
+Its source code is available at <https://github.com/skippyr/libtdk>.
+
+.SH BUGS
+.PP
+Report bugs at <https://github.com/skippyr/libtdk/issues>.
+
+.SH COPYRIGHT
+.PP
+See LICENSE for copyright and license details.
