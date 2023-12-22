@@ -44,5 +44,13 @@ Once installed, you can refer to its man pages:
 man tdk.3
 ```
 
+## Bugs
+Report bugs at its [issues page](https://github.com/skippyr/libtdk/issues).
+
+## Patches
+Send patches to be reviewed through its [pull requests page](https://github.com/skippyr/libtdk/pulls).
+
+All contributions must remain under its same license.
+
 ## Copyright
 See `LICENSE` for copyright and license details.
