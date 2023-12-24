@@ -1,5 +1,5 @@
 # libtdk
-A stupidly simple terminal manipulation library for Linux that handles
+A stupidly simple C99 terminal manipulation library for Linux that handles
 properties, styles and blocking key press with UTF-8 support.
 
 ## Requirements
