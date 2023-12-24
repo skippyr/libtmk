@@ -12,7 +12,7 @@ tdk (libtdk, -ltdk)
 #include <tdk.h>
 
 .PP
-int tdk_getwdim(int *col, int *row);
+int tdk_getwdim(unsigned short int *col, unsigned short int *row);
 
 .SH DESCRIPTION
 .PP
@@ -27,9 +27,9 @@ otherwise.  It fails if all standard streams are being redirected.
 
 .SH EXAMPLES
 .PP
-int wcol;
+unsigned short int wcol;
 .br
-int wrow;
+unsigned short int wrow;
 .br
 tdk_getwdim(&wcol, &wrow);
 

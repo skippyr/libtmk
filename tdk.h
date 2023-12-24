@@ -29,18 +29,18 @@ enum { tdk_ShpDft, tdk_ShpBBlk, tdk_ShpBlk, tdk_ShpBUnd, tdk_ShpUnd,
 #ifdef __cplusplus
 extern "C" {
 #endif
-int tdk_getcpos(int *col, int *row);
+int tdk_getcpos(unsigned short int *col, unsigned short int *row);
 int tdk_getkey(void);
-int tdk_getwdim(int *col, int *row);
-int tdk_setcpos(int col, int row);
+int tdk_getwdim(unsigned short int *col, unsigned short int *row);
+int tdk_setcpos(unsigned short int col, unsigned short int row);
 void tdk_beep(void);
 void tdk_rwipe(void);
 void tdk_setclr(int lyr, int clr);
 void tdk_setcshp(int shp);
-void tdk_setcvis(int isvis);
-void tdk_seteff(int eff, int isenb);
+void tdk_setcvis(unsigned char isvis);
+void tdk_seteff(int eff, unsigned char isenb);
 void tdk_setlum(int lum);
-void tdk_setwalt(int isenb);
+void tdk_setwalt(unsigned char isenb);
 #ifdef __cplusplus
 }
 #endif

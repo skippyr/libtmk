@@ -1,7 +1,6 @@
 /* See LICENSE for copyright and license details. */
 #include "tdk.h"
 
-#define LEN(arr) (sizeof(arr) / sizeof(arr[0]))
 #define KEY(keyval, char0, char1, char2, char3)\
 	if (trail[0] == char0 && trail[1] == char1 && trail[2] == char2 &&\
 	    trail[3] == char3) {\
@@ -11,9 +10,9 @@
 
 static int ansi(char *msg);
 static int wipein(void);
-static int setraw(int isenb);
+static int setraw(unsigned char isenb);
 static int ansif(size_t len, char *fmt, ...);
-static void setnblk(int isenb);
+static void setnblk(unsigned char isenb);
 
 static int
 ansi(char *msg)
@@ -35,7 +34,7 @@ wipein(void)
 }
 
 static int
-setraw(int isenb)
+setraw(unsigned char isenb)
 {
 	struct termios t;
 	if (tcgetattr(0, &t))
@@ -62,20 +61,20 @@ ansif(size_t len, char *fmt, ...)
 }
 
 static void
-setnblk(int isenb)
+setnblk(unsigned char isenb)
 {
 	int fl = fcntl(0, F_GETFL);
 	fcntl(0, F_SETFL, isenb ? fl | O_NONBLOCK : fl & ~O_NONBLOCK);
 }
 
 int
-tdk_getcpos(int *col, int *row)
+tdk_getcpos(unsigned short int *col, unsigned short int *row)
 {
-	int tmpcol;
-	int tmprow;
+	unsigned short int tmpcol;
+	unsigned short int tmprow;
 	if (wipein() || setraw(1) || ansi("\33[6n"))
 		return 1;
-	wscanf(L"\33[%d;%dR", &tmprow, &tmpcol);
+	wscanf(L"\33[%hu;%huR", &tmprow, &tmpcol);
 	if (col)
 		*col = --tmpcol;
 	if (row)
@@ -87,15 +86,15 @@ tdk_getcpos(int *col, int *row)
 int
 tdk_getkey(void)
 {
-	int i;
 	int key;
 	int trail[4];
+	unsigned char i;
 	if ((!isatty(1) && !isatty(2)) || wipein())
 		return WEOF;
 	setraw(1);
 	key = getwchar();
 	setnblk(1);
-	for (i = 0; i < LEN(trail); i++)
+	for (i = 0; i < 4; i++)
 		trail[i] = getwchar();
 	if (key == 27 && trail[0] != WEOF) {
 		for (i = 65; i < 69; i++)
@@ -122,6 +121,7 @@ tdk_getkey(void)
 		KEY(tdk_KeyHome, 91, 49, 126, WEOF);
 		for (i = 53; i < 55; i++)
 			KEY(i - 53 + tdk_KeyPgUp, 91, i, 126, WEOF);
+		key = 0;
 	}
 out:
 	wipein();
@@ -129,7 +129,7 @@ out:
 }
 
 int
-tdk_getwdim(int *col, int *row)
+tdk_getwdim(unsigned short int *col, unsigned short int *row)
 {
 	struct winsize w;
 	if (ioctl(0, TIOCGWINSZ, &w) && ioctl(1, TIOCGWINSZ, &w) &&
@@ -143,12 +143,12 @@ tdk_getwdim(int *col, int *row)
 }
 
 int
-tdk_setcpos(int col, int row)
+tdk_setcpos(unsigned short int col, unsigned short int row)
 {
-	int wcol;
-	int wrow;
-	return tdk_getwdim(&wcol, &wrow) || ++col < 1 || col > wcol ||
-	       ++row < 1 || row > wrow || ansif(13, "\33[%d;%dH", row, col);
+	unsigned short int wcol;
+	unsigned short int wrow;
+	return tdk_getwdim(&wcol, &wrow) || ++col > wcol || ++row > wrow ||
+	       ansif(13, "\33[%d;%dH", row, col);
 }
 
 void
@@ -176,15 +176,15 @@ tdk_setcshp(int shp)
 }
 
 void
-tdk_setcvis(int isvis)
+tdk_setcvis(unsigned char isvis)
 {
 	ansi(isvis ? "\33[?25h" : "\33[?25l");
 }
 
 void
-tdk_seteff(int eff, int isenb)
+tdk_seteff(int eff, unsigned char isenb)
 {
-	int i;
+	unsigned char i;
 	for (i = 3; i < 10; i++)
 		if (1 << i & eff)
 			ansif(6, "\33[%dm", isenb ? i : i + 20);
@@ -197,7 +197,7 @@ tdk_setlum(int lum)
 }
 
 void
-tdk_setwalt(int isenb)
+tdk_setwalt(unsigned char isenb)
 {
 	ansi(isenb ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
 }

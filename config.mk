@@ -1,4 +1,4 @@
-VERSION:=v3.0.0
+VERSION:=v4.0.0
 CC:=cc
 CFLAGS:=-std=c99 -pedantic -Os -Wall
 SHELL:=/bin/sh

@@ -12,13 +12,13 @@ tdk (libtdk, -ltdk)
 #include <tdk.h>
 
 .PP
-int tdk_getcpos(int *col, int *row);
+int tdk_getcpos(unsigned short int *col, unsigned short int *row);
 .br
 int tdk_getkey(void);
 .br
-int tdk_getwdim(int *col, int *row);
+int tdk_getwdim(unsigned short int *col, unsigned short int *row);
 .br
-int tdk_setcpos(int col, int row);
+int tdk_setcpos(unsigned short int col, unsigned short int row);
 .br
 void tdk_beep(void);
 .br
@@ -28,17 +28,17 @@ void tdk_setclr(int lyr, int clr);
 .br
 void tdk_setcshp(int shp);
 .br
-void tdk_setcvis(int isvis);
+void tdk_setcvis(unsigned char isvis);
 .br
-void tdk_seteff(int eff, int isenb);
+void tdk_seteff(int eff, unsigned char isenb);
 .br
 void tdk_setlum(int lum);
 .br
-void tdk_setwalt(int isenb);
+void tdk_setwalt(unsigned char isenb);
 
 .SH STANDARDS
 .PP
-C99, POSIX.9-2008
+C99, POSIX.1-2008
 
 .SH DESCRIPTION
 .PP
