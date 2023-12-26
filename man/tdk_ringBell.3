@@ -1,0 +1,48 @@
+.TH tdk_ringBell 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_ringBell - it rings the terminal bell.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBvoid\fR tdk_ringBell(\fBvoid\fR);
+
+.SH DESCRIPTION
+
+.PP
+It rings the terminal bell, possibly emiting a system notification sound or a
+beep from the motherboard speaker. It will not ring it if the stdout and stderr
+streams are being redirected or are not oriented to single-byte characters.
+
+.PP
+The sound, its volume and output device is affected by the terminal/operating
+system settings and hardware in use.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It rings the terminal bell. */
+  tdk_ringBell();
+  return 0;
+}
+.fi
+
+.SH NOTES
+
+.PP
+Some terminals have the bell feature disabled by default.
+
+.SH SEE ALSO
+
+.BR tdk (3)

@@ -1,0 +1,81 @@
+.TH tdk_setColor 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_setColor - it sets a terminal color.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+\fBvoid\fR tdk_setColor(\fBint\fR \fIlayer\fR, \fBint\fR \fIcolor\fR);
+
+.SH DESCRIPTION
+
+.PP
+It sets the \fIcolor\fR in the specified \fIlayer\fR. It will not apply it if
+the stdout and stderr streams are being redirected or are not oriented to
+single-byte characters.
+
+.SH COLORS
+
+.PP
+The \fIcolor\fR can be these values:
+
+.TP
+.B
+tdk_Color_Black, tdk_Color_Red, tdk_Color_Green, tdk_Color_Yellow,             \
+tdk_Color_Blue, tdk_Color_Magenta, tdk_Color_Cyan, tdk_Color_White,            \
+tdk_Color_Default
+
+.SH LAYERS
+
+.PP
+The \fIlayer\fR can be these values:
+
+.TP
+.B
+tdk_Layer_Foreground, tdk_Layer_Background
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It allocates a cool message. */
+  char message[] = "Here Are Dragons!";
+  /* It sets red as the foreground color and prints the message. */
+  tdk_setColor(tdk_Layer_Foreground, tdk_Color_Red);
+  printf("%s\\n", message);
+  /* It sets yellow as the foreground color and prints the message. */
+  tdk_setColor(tdk_Layer_Foreground, tdk_Color_Yellow);
+  printf("%s\\n", message);
+  /* It resets the foreground color and prints the message. */
+  tdk_setColor(tdk_Layer_Foreground, tdk_Color_Default);
+  printf("%s\\n", message);
+  return 0;
+}
+.fi
+
+.SH NOTES
+
+.IP \\[bu]
+Terminal themes may change how these colors look, possibly making them
+unreadable or different from what they are supposed to be.
+
+.IP \\[bu]
+Some terminal light themes may not correctly set the black and white colors to
+be the background and foreground colors respectively. Thus, swapping them using
+this function will make text unreadable.
+
+If that is your case, set the reverse video effect instead (see
+\fBtdk_setEffect\fR(3)).
+
+.SH SEE ALSO
+
+.BR tdk (3)

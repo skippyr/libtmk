@@ -1,0 +1,55 @@
+.TH tdk_setCursorShape 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_setCursorShape - it sets the terminal cursor shape.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBvoid\fR tdk_setCursorShape(\fBint\fR \fIshape\fR);
+
+.SH DESCRIPTION
+
+It sets \fIshape\fR as the terminal cursor shape. It will not apply it if the
+stdout and stderr streams are being redirected or are not oriented to
+single-byte characters.
+
+.SH SHAPES
+
+The \fIshape\fR can be these values:
+
+.TP
+.B
+tdk_Shape_Default, tdk_Shape_BlinkingBlock, tdk_Shape_Block,                   \
+tdk_Shape_BlinkingUnderline, tdk_Shape_Underline, tdk_Shape_BlinkingBar,       \
+tdk_Shape_Bar
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It sets the underline cursor shape. */
+  tdk_setCursorShape(tdk_Shape_Underline);
+  /* It waits for a key. */
+  tdk_readKey();
+  /* It resets the cursor shape. */
+  tdk_setCursorShape(tdk_Shape_Default);
+  return 0;
+}
+.fi
+
+.SH NOTES
+Some terminals do not render the blinking effect in their cursors by default.
+
+.SH SEE ALSO
+
+.BR tdk (3)

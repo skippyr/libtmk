@@ -1,0 +1,88 @@
+.TH tdk_setTextEffect 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_setTextEffect - it enables/disables terminal effects.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBvoid\fR tdk_setTextEffect(\fBint\fR \fIeffect\fR, \fBint\fR \fIisToEnable\fR);
+
+.SH DESCRIPTION
+
+.PP
+It enables/disables the effects present in the bit-mask \fIeffect\fR based on
+the boolean \fIisToEnable\fR. It will not apply any effect if the stdout and
+stderr streams are being redirected or are not oriented to single-byte
+characters.
+
+.SH EFFECTS
+The \fIeffect\fR bit-mask may be composed by these flags:
+
+.TP
+.B
+tdk_Effect_Italic
+The italic effect: it makes the text curly. It may require the use of a font
+with italic style.
+
+.TP
+.B
+tdk_Effect_Underline
+The underline effect: it draws a horizontal line under the text.
+
+.TP
+.B
+tdk_Effect_Blinking
+The blinking effect: it makes the text blink indefinetely.
+
+.TP
+.B
+tdk_Effect_ReverseVideo
+The reverse-video effect: it swaps the foreground and background colors.
+
+.TP
+.B
+tdk_Effect_Conceal
+The conceal effect: it makes the text hard to read or invisible.
+
+.TP
+.B
+tdk_Effect_Strikethrough
+The strike-through effect: it draws a horizontal line across the middle of the
+text.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It allocates a cool message. */
+  char message[] = "Here Are Dragons!";
+  /* It enables italic and underline effects and prints the message. */
+  tdk_setTextEffect(tdk_Effect_Italic | tdk_Effect_Underline, 1);
+  printf("%s\\n", message);
+  /* It disables the italic effect and prints the message. */
+  tdk_setTextEffect(tdk_Effect_Italic, 0);
+  printf("%s\\n", message);
+  /* It disables the underline effect and prints the message. */
+  tdk_setTextEffect(tdk_Effect_Underline, 0);
+  printf("%s\\n", message);
+  return 0;
+}
+.fi
+
+.SH NOTES
+The behavior of each effect is inconsistent among terminals: they may implement
+them differently or not at all.
+
+.SH SEE ALSO
+
+.BR tdk (3)

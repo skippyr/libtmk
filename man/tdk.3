@@ -1,117 +1,124 @@
-.TH tdk 3 MANDATE tdk
+.TH tdk 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
 .SH NAME
+
 .PP
-tdk - terminal development kit
+tdk - Terminal Development Kit
 
 .SH LIBRARY
+
 .PP
-tdk (libtdk, -ltdk)
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 
 .SH SYNOPSIS
-.PP
-#include <tdk.h>
 
-.PP
-int tdk_getcpos(unsigned short int *col, unsigned short int *row);
-.br
-int tdk_getkey(void);
-.br
-int tdk_getwdim(unsigned short int *col, unsigned short int *row);
-.br
-int tdk_setcpos(unsigned short int col, unsigned short int row);
-.br
-void tdk_beep(void);
-.br
-void tdk_rwipe(void);
-.br
-void tdk_setclr(int lyr, int clr);
-.br
-void tdk_setcshp(int shp);
-.br
-void tdk_setcvis(unsigned char isvis);
-.br
-void tdk_seteff(int eff, unsigned char isenb);
-.br
-void tdk_setlum(int lum);
-.br
-void tdk_setwalt(unsigned char isenb);
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_clearCursorLine(\fBvoid\fR);
+\fBint\fR tdk_getCursorPosition(\fBint\fR \fI*column\fR, int \fI*line\fR);
+\fBint\fR tdk_getScreenSize(\fBint\fR \fI*columns\fR, int \fI*lines\fR);
+\fBint\fR tdk_readKey(\fBvoid\fR);
+\fBvoid\fR tdk_ringBell(\fBvoid\fR);
+\fBvoid\fR tdk_setAlternateScreen(\fBint\fR \fIisToOpen\fR);
+\fBvoid\fR tdk_setColor(\fBint\fR \fIlayer\fR, \fBint\fR \fIcolor\fR);
+\fBvoid\fR tdk_setColorBrightness(\fBint\fR \fIbrightness\fR);
+\fBint\fR tdk_setCursorPosition(\fBint\fR \fIcolumn\fR, \fBint\fR \fIline\fR);
+\fBvoid\fR tdk_setCursorShape(\fBint\fR \fIshape\fR);
+\fBvoid\fR tdk_setCursorVisibility(\fBint\fR \fIisToMakeVisible\fR);
+\fBvoid\fR tdk_setTextEffect(\fBint\fR \fIeffect\fR, \fBint\fR \fIisToEnable\fR);
+.fi
 
 .SH STANDARDS
+
 .PP
 C99, POSIX.1-2008
 
 .SH DESCRIPTION
-.PP
-A stupidly simple terminal manipulation library that handles properties, styles
-and blocking key press with UTF-8 support.
 
 .PP
-In order to be kept small, it trusts in its user to follow these rules:
-
-.IP \[bu]
-The terminal properties must not be manipulated manually to avoid conflicts:
-that includes the use of manipulation functions and output of ANSI escape
-sequences.
-
-.IP \[bu]
-For UTF-8 support, the stdin stream must be kept wide-character oriented, and
-the stdout/stderr streams, byte oriented.
-
-.IP \[bu]
-Their functions must be used as specified in their man pages to avoid undefined
-behavior.
+A simple C/C++ terminal manipulation library for Linux development. Designed to
+be an alternative for curses-like libraries, it is capable of handling some
+terminal properties, styles and trivial key press events with support for UTF-8
+encoding.
 
 .PP
-By nature, I/O operations are not thread-safe, thus this library neither.
+It is easy to learn, to debug and to be less likely to give you memory leak
+issues. However, it lacks features: what opens room for interested people to
+create forks and use its functions as building blocks for more extensive
+libraries.
 
 .PP
-For further details, see its function man pages.
+In order to be kept small, it lacks proper validations and resets. Thus, to
+function correctly, it trust in its user to follow these rules:
+
+.IP \\[bu]
+The terminal properties must not be handled manually: that includes the use of
+manipulation functions and output of ANSI escape sequences.
+
+.IP \\[bu]
+The stdin stream must be kept oriented to wide characters, and the stdout and
+stderr streams, to single-byte characters.
+
+.IP \\[bu]
+Its functions must be used as stated in their respective man pages.
+
+.PP
+For further details, read the man pages of its functions.
+
+.SH THREAD-SAFETY
+
+.PP
+By nature, I/O operations are not thread-safe, neither any function in this
+library.
 
 .SH RESERVED NAMES
+
 .PP
 This library reserves names starting with "tdk_" and "TDK_", possibly prefixed
-by an underline.
+by an underline to indicate implementation restrictions.
 
 .SH INCLUDED HEADERS
-.PP
-By including its header, the following dependency headers will be automatically
-included:
 
 .PP
-#include <fcntl.h>
-.br
-#include <locale.h>
-.br
-#include <stdarg.h>
-.br
-#include <stdio.h>
-.br
-#include <stdlib.h>
-.br
-#include <sys/ioctl.h>
-.br
-#include <termios.h>
-.br
-#include <unistd.h>
-.br
-#include <wchar.h>
-.br
+When included, it will automatically include its dependency headers:
+
+.nf
+\fB#include\fR <fcntl.h>
+\fB#include\fR <locale.h>
+\fB#include\fR <stdarg.h>
+\fB#include\fR <stdio.h>
+\fB#include\fR <stdlib.h>
+\fB#include\fR <sys/ioctl.h>
+\fB#include\fR <termios.h>
+\fB#include\fR <unistd.h>
+\fB#include\fR <wchar.h>
+.fi
 
 .SH SOURCE CODE
+
 .PP
 Its source code is available at <https://github.com/skippyr/libtdk>.
 
-.SH BUGS
-.PP
-Report bugs at <https://github.com/skippyr/libtdk/issues>.
+.SH HELP
 
-.SH PATCHES
-.PP
-Send patches to be reviewed through <https://github.com/skippyr/libtdk/pulls>.
+You can ask for help related to this project through its issues page
+(<https://github.com/skippyr/libtdk/issues>).
 
-.PP
-All contributions must remain under its same license.
+.SH CONTRIBUTING
+
+This project is open to receive contributions from people of any skill level.
+You can send code contributions to be reviewed through its pull requests page
+(<https://github.com/skippyr/libtdk/pulls>).
+
+By contributing to this project, you agree to use the same copyright used by it.
 
 .SH COPYRIGHT
+
 .PP
-See LICENSE for copyright and license details.
+BSD-3-Clause License
+.br
+Copyright (c) 2023, Sherman Rofeman <skippyr.developer@gmail.com>
+
+.PP
+See the LICENSE file that comes in its source code for more details.

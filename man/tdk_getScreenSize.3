@@ -1,0 +1,56 @@
+.TH tdk_getScreenSize 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_getScreenSize - it gets the terminal screen size.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBint\fR tdk_getScreenSize(\fBint\fR *\fIcolumns\fR, \fBint\fR *\fIlines\fR);
+
+.SH DESCRIPTION
+
+.PP
+It gets the total of columns and lines in the terminal screen and puts those
+values inside of the addresses pointed by the parameters \fIcolumns\fR and
+\fIlines\fR respectively.
+
+.PP
+If a value is not required, its address can be set to NULL.
+
+.SH RETURN VALUES
+
+.PP
+It returns 0 if the size was got and the values were set, and 1 otherwise. It
+fails if all the standard streams are being redirected.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It allocates the necessary memory. */
+  \fBint\fR columns;
+  \fBint\fR lines;
+  /* It gets the screen size. */
+  tdk_getScreenSize(&columns, &lines);
+  /* It writes the screen size got. */
+  printf("----- Screen Size -----\\n");
+  printf(":: Total of columns : %d.\\n", columns);
+  printf(":: Total of lines   : %d.\\n", lines);
+  printf("-----------------------\\n");
+  return 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

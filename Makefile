@@ -1,26 +1,32 @@
 include config.mk
 
-all: libtdk.so
+.PHONY: all clean install uninstall
+
+all: build/libtdk.so
 
 clean:
-	rm -f tdk.o libtdk.so
+	rm -rf build;
 
 install: all
-	mkdir -p ${LIBPATH} ${MAN3PATH}
-	for m in $(wildcard man/*); do\
-		sed 's/MANDATE/${VERSION}/' $${m} > ${MAN3PATH}/$${m##*/};\
+	mkdir -p ${INSTALLATION_MAN3_PATH} ${INSTALLATION_INCLUDE_PATH}        \
+	         ${INSTALLATION_LIBRARY_PATH};
+	for manual in $(wildcard man/*);                                       \
+	do                                                                     \
+		sed "s/\$${LIBRARY_VERSION}/${LIBRARY_VERSION}/;               \
+		     s/\$${LIBRARY_PACKAGE}/${LIBRARY_PACKAGE}/" $${manual} >  \
+		     ${INSTALLATION_MAN3_PATH}/$${manual##*/};                 \
 	done
-	cp tdk.h ${INCPATH}
-	mv libtdk.so ${LIBPATH}
-
-libtdk.so: tdk.o
-	${CC} -shared -o${@} ${^}
-
-tdk.o: tdk.c
-	${CC} ${CFLAGS} -c -fPIC -o${@} ${^}
+	cp src/tdk.h ${INSTALLATION_INCLUDE_PATH};
+	cp build/libtdk.so ${INSTALLATION_LIBRARY_PATH};
 
 uninstall:
-	rm -f ${MAN3PATH}/{tdk.3,tdk_*.3} ${INCPATH}/tdk.h ${LIBPATH}/libtdk.so
+	rm -f ${INSTALLATION_MAN3_PATH}/{tdk.3,tdk_*.3}                        \
+	      ${INSTALLATION_INCLUDE_PATH}/tdk.h                               \
+	      ${INSTALLATION_LIBRARY_PATH}/libtdk.so;
 
+build/libtdk.so: build/tdk.o
+	${COMPILER} -shared -o${@} ${^};
 
-.PHONY: all clean install uninstall
+build/tdk.o: src/tdk.c src/tdk.h
+	mkdir -p build;
+	${COMPILER} ${COMPILER_OPTIONS} -c -fPIC -o${@} ${<};

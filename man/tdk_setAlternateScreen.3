@@ -1,0 +1,58 @@
+.TH tdk_setAlternateScreen 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_setAlternateScreen - it opens/closes the alternate screen.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBvoid\fR tdk_setAlternateScreen(\fBint\fR \fIisToOpen\fR);
+
+.SH DESCRIPTION
+
+.PP
+It opens/closes the alternate screen based on the boolean \fIisToOpen\fR. Its
+state will not be changed if the stdout and stderr streams are being redirected
+or are not oriented to single-byte characters.
+
+.PP
+The alternate screen is a secondary screen buffer that can be used to avoid
+making changes to the primary one, allowing you also to reset back to it later,
+as if your program executed separately.
+
+.PP
+Once opened, the screen gets cleared and the cursor is put at its top left
+corner. Enabling the alternate screen while it is already enabled, resets it.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It opens the alternate screen. */
+  tdk_setAlternateScreen(1);
+  /* It writes a cool message and waits for a key. */
+  printf("Here Are Dragons!\\n");
+  tdk_readKey();
+  /* It closes the alternate screen. */
+  tdk_setAlternateScreen(0);
+  return 0;
+}
+.fi
+
+.SH NOTES
+.PP
+Some terminals do not have the alternate screen feature. In that case, all
+changes will get applied to the primary screen buffer instead.
+
+.SH SEE ALSO
+
+.BR tdk (3)

@@ -1,0 +1,42 @@
+.TH tdk_clearCursorLine 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+
+.SH NAME
+
+.PP
+tdk_clearCursorLine - it clears the terminal cursor line.
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.PP
+\fBvoid\fR tdk_clearCursorLine(\fBvoid\fR);
+
+.SH DESCRIPTION
+
+.PP
+It clears all the characters present in the terminal cursor line and puts the
+cursor back at its beginning.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR) {
+  /* It writes a boring message without a new line. */
+  printf("Hello, World!");
+  /* It clears the previous message from the line. */
+  tdk_clearCursorLine();
+  /* It writes a cool message instead. */
+  printf("Here Are Dragons!\\n");
+  return 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)
