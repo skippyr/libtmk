@@ -65,6 +65,10 @@ tdk_Layer_Foreground, tdk_Layer_Background
 .SH NOTES
 
 .IP \\[bu]
+Terminal usually do not render background colors correctly when writting the
+newline character ('\\n'). In that case, always reset it before writting it.
+
+.IP \\[bu]
 Terminal themes may change how these colors look, possibly making them
 unreadable or different from what they are supposed to be.
 
