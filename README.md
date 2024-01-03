@@ -19,23 +19,13 @@ libraries.
 The following dependencies are required to install it:
 
 - The version control software `git` will be used to download this repository.
-- The GNU `coreutils` utilities and C build utilites, such as `gcc` and `make`
-  will be used to compile and install this library in your system.
+- The GNU core utilities and C build utilites, such as `gcc` and `make`, will be
+  used to compile and install this software in your system. They may also
+  include the standard C headers.
 
-Generally, you are able to install these dependencies through the use of your
-Linux distro package manager, such as `apt`, `dnf` or `pacman`. Here are some
-commands you can use for those:
-
-```sh
-# For apt (Debian based distros).
-sudo apt update -y && sudo apt install -y git build-essential
-
-# For dnf (Fedora based distros).
-sudo dnf update -y && sudo dnf -y install git gcc make
-
-# For pacman (Arch Linux based distros).
-sudo pacman --noconfirm --needed -Syu git base-devel
-```
+Generally, you are able to install most these dependencies through the use of
+your Linux distro package manager. Some dependencies may already be installed in
+your operating system
 
 ### Step-By-Step Procedures
 
@@ -87,7 +77,7 @@ To uninstall it, follow this step-by-step using a command-line utility:
 - Use `make` to uninstall it.
 
 ```sh
-sudo make uninstall
+sudo make uninstall clean
 ```
 
 ## Documentation
