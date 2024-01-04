@@ -1,32 +1,26 @@
-include config.mk
+CC:=cc
+INCPATH:=/usr/local/include
+LIBPATH:=/usr/local/lib
+MAN3PATH:=/usr/local/man/man3
 
-.PHONY: all clean install uninstall
+.PHONY: all install uninstall
 
-all: build/libtdk.so
-
-clean:
-	rm -rf build;
+all: libtdk.so
 
 install: all
-	mkdir -p ${INSTALLATION_MAN3_PATH} ${INSTALLATION_INCLUDE_PATH}        \
-	         ${INSTALLATION_LIBRARY_PATH};
-	for manual in $(wildcard man/*);                                       \
-	do                                                                     \
-		sed "s/\$${LIBRARY_VERSION}/${LIBRARY_VERSION}/;               \
-		     s/\$${LIBRARY_PACKAGE}/${LIBRARY_PACKAGE}/" $${manual} >  \
-		     ${INSTALLATION_MAN3_PATH}/$${manual##*/};                 \
+	mkdir -p ${LIBPATH} ${INCPATH} ${MAN3PATH}
+	mv libtdk.so ${LIBPATH}
+	cp tdk.h ${INCPATH}
+	for m in $(wildcard man/*);\
+	do\
+		sed "s/\$${VERSION}/v6.0.0/; s/\$${PACKAGE}/mistureba/" $${m} >\
+		     ${MAN3PATH}/$${m##*/};\
 	done
-	cp src/tdk.h ${INSTALLATION_INCLUDE_PATH};
-	cp build/libtdk.so ${INSTALLATION_LIBRARY_PATH};
 
 uninstall:
-	rm -f ${INSTALLATION_MAN3_PATH}/{tdk.3,tdk_*.3}                        \
-	      ${INSTALLATION_INCLUDE_PATH}/tdk.h                               \
-	      ${INSTALLATION_LIBRARY_PATH}/libtdk.so;
+	rm -f ${LIBPATH}/libtdk.so ${INCPATH}/tdk.h ${MAN3PATH}/{tdk.3,tdk_*.3}
 
-build/libtdk.so: build/tdk.o
-	${COMPILER} -shared -o${@} ${^};
-
-build/tdk.o: src/tdk.c src/tdk.h
-	mkdir -p build;
-	${COMPILER} ${COMPILER_OPTIONS} -c -fPIC -o${@} ${<};
+libtdk.so: tdk.c tdk.h
+	${CC} -std=c99 -pedantic -Os -Wall -otdk.o -c -fPIC ${<}
+	${CC} -o${@} -shared tdk.o
+	rm tdk.o

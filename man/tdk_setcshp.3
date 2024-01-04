@@ -1,0 +1,74 @@
+.TH tdk_setcshp 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_setcshp - it sets the terminal cursor shape
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_setcshp(\fBint\fR \fIshp\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It sets the terminal cursor shape \fIshp\fR.
+
+.SH SHAPES
+
+The \fIshp\fR parameter may be:
+
+.TP
+.B tdk_ShpDft
+The default shape.
+
+.TP
+.B tdk_ShpBBlk, tdk_ShpBlk
+The block shape.
+
+.TP
+.B tdk_ShpBUnd, tdk_ShpUnd
+The underline shape.
+
+.TP
+.B tdk_ShpBBar, tdk_ShpBar
+The bar shape.
+
+.PP
+Shapes prefixed with a "B" are blinking variants of that same shape.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	printf(":: Press any key to advance.\\n");
+	tdk_setcshp(tdk_ShpBlk);
+	printf("Block Shape ");
+	tdk_getkey();
+	tdk_setcshp(tdk_ShpUnd);
+	printf("\\nUnderline Shape ");
+	tdk_getkey();
+	tdk_setcshp(tdk_ShpBar);
+	printf("\\nBar Shape ");
+	tdk_getkey();
+	putchar('\n');
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

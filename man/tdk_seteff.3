@@ -1,0 +1,77 @@
+.TH tdk_seteff 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_seteff - it enables/disables terminal effects
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_seteff(\fBint\fR \fIeff\fR, \fBint\fR \fIisenb\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It enables/disables the effects present in the bitmask \fIeff\fR based on the
+boolean \fIisenb\fR.
+
+.SH EFFECTS
+
+.PP
+The bitmask \fIeff\fR may be composed by these flags:
+
+.TP
+.B tdk_EffItl
+The italic effect.
+
+.TP
+.B tdk_EffUnd
+The underline effect.
+
+.TP
+.B tdk_EffBlk
+The blinking effect.
+
+.TP
+.B tdk_EffRev
+The reverse-video effect.
+
+.TP
+.B tdk_EffCon
+The conceal effect.
+
+.TP
+.B tdk_EffStr
+The strike-through effect.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	\fBchar\fR msg[] = "Here Are Dragons!";
+	tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
+	printf("%s\\n", msg);
+	tdk_seteff(tdk_EffItl, 0);
+	printf("%s\\n", msg);
+	tdk_seteff(tdk_EffUnd, 0);
+	printf("%s\\n", msg);
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

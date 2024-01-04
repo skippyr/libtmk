@@ -1,0 +1,52 @@
+.TH tdk_setcpos 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_setcpos - it sets the terminal cursor position
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR tdk_setcpos(\fBint\fR \fIcol\fR, \fBint\fR \fIln\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It sets the terminal cursor column and line positions to be \fIcol\fR and
+\fIln\fR, respectively.
+
+.PP
+It considers an origin position at the top left corner of the terminal window.
+The column and line positions increase going right and down, respectively.
+
+.SH RETURN VALUES
+
+.PP
+It returns 0 on success, and 1 on failure.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	tdk_setcpos(0, 0);
+	printf("Here Are Dragons!\\n");
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

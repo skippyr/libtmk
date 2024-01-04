@@ -1,0 +1,64 @@
+.TH tdk_setlum 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_setlum - it sets the terminal luminosity
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_setlum(\fBint\fR \fIlum\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It sets the luminosity \fIlum\fR of the terminal foreground color.
+
+.SH LUMINOSITY
+
+.PP
+The \fIlum\fR parameter may be:
+
+.TP
+.B tdk_LumDft
+The default luminosity.
+
+.TP
+.B tdk_LumBld
+The bold luminosity.
+
+.TP
+.B tdk_LumDim
+The dim luminosity.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	\fBchar\fR msg[] = "Here Are Dragons!";
+	tdk_setlum(tdk_LumBld);
+	printf("%s\\n", msg);
+	tdk_setlum(tdk_LumDim);
+	printf("%s\\n", msg);
+	tdk_setlum(tdk_LumDft);
+	printf("%s\\n", msg);
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

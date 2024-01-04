@@ -1,0 +1,47 @@
+.TH tdk_setwalt 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_setwalt - it opens/closes the alternate screen
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_setwalt(\fBint\fR \fIisenb\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It opens/closes the alternate screen based on the boolean \fIisenb\fR.
+
+.PP
+Enabling the alternate screen while it is enabled, resets it.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	tdk_setwalt(1);
+	printf("Here Are Dragons! (Press any key to continue) ");
+	tdk_getkey();
+	tdk_setwalt(0);
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

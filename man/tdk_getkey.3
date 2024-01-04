@@ -1,0 +1,116 @@
+.TH tdk_getkey 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_getkey - it reads a key or an UTF-8 character
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR tdk_getkey(\fBvoid\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It reads from the stdin stream and returns a value that indicates its status, a
+key or an UTF-8 character identified.
+
+.PP
+Upon success, it clears the stdin buffer.
+
+.SH RETURN VALUES
+
+.IP \\[bu]
+It returns WEOF if the reading fails.
+
+.IP \\[bu]
+It returns 0 if the reading succeed but nothing could be identified.
+
+.IP \\[bu]
+Otherwise, it returns a number that represents a key or an UTF-8 character.
+
+.SH KEYS
+
+.PP
+These values can be used to identify keys:
+
+.TP 
+.B tdk_KeyUpArr, tdk_KeyDnArr, tdk_KeyRgArr, tdk_KeyLfArr
+The arrow keys.
+
+.TP
+.B tdk_KeyF1, tdk_KeyF2, tdk_KeyF3, tdk_KeyF4, tdk_KeyF5, tdk_KeyF6, tdk_KeyF7,\
+   tdk_KeyF8, tdk_KeyF9, tdk_KeyF10, tdk_KeyF11, tdk_KeyF12
+The function keys.
+
+.TP
+.B
+tdk_KeyIns, tdk_KeyDel, tdk_KeyTab, tdk_KeyEnter, tdk_KeySpace, tdk_KeyBSpace
+The insertion and deletion keys.
+
+.TP
+.B tdk_KeyPgUp, tdk_KeyPgDn, tdk_KeyEnd, tdk_KeyHome, tdk_KeyEsc
+The navigation keys.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fB#define\fR PARSEKEY(keyval)\\
+	\fBif\fR (key == keyval) {\\
+		printf("%s\\n", #keyval);\\
+		\fBcontinue\fR;\\
+	}
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	\fBint\fR key;
+	printf("Press any key to log it out:\\n");
+	printf(":: Use Enter to exit.\\n\\n");
+	\fBdo\fR {
+		PARSEKEY(tdk_KeyUpArr);
+		PARSEKEY(tdk_KeyDnArr);
+		PARSEKEY(tdk_KeyRgArr);
+		PARSEKEY(tdk_KeyLfArr);
+		PARSEKEY(tdk_KeyF1);
+		PARSEKEY(tdk_KeyF2);
+		PARSEKEY(tdk_KeyF3);
+		PARSEKEY(tdk_KeyF4);
+		PARSEKEY(tdk_KeyF5);
+		PARSEKEY(tdk_KeyF6);
+		PARSEKEY(tdk_KeyF7);
+		PARSEKEY(tdk_KeyF8);
+		PARSEKEY(tdk_KeyF9);
+		PARSEKEY(tdk_KeyF10);
+		PARSEKEY(tdk_KeyF11);
+		PARSEKEY(tdk_KeyF12);
+		PARSEKEY(tdk_KeyIns);
+		PARSEKEY(tdk_KeyDel);
+		PARSEKEY(tdk_KeyPgUp);
+		PARSEKEY(tdk_KeyPgDn);
+		PARSEKEY(tdk_KeyEnd);
+		PARSEKEY(tdk_KeyHome);
+		PARSEKEY(tdk_KeyTab);
+		PARSEKEY(tdk_KeyEsc);
+		PARSEKEY(tdk_KeySpace);
+		PARSEKEY(tdk_KeyBSpace);
+		printf(key ? "%lc\\n" : "Unknown\\n", key);
+	} \fBwhile\fR ((key = tdk_getkey()) != tdk_KeyEnter);
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)

@@ -1,4 +1,4 @@
-.TH tdk 3 "${LIBRARY_VERSION}" "${LIBRARY_PACKAGE}"
+.TH tdk 3 ${VERSION} ${PACKAGE}
 
 .SH NAME
 
@@ -15,18 +15,18 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .nf
 \fB#include\fR <tdk.h>
 
-\fBvoid\fR tdk_clearCursorLine(\fBvoid\fR);
-\fBint\fR tdk_getCursorPosition(\fBint\fR \fI*column\fR, int \fI*line\fR);
-\fBint\fR tdk_getScreenSize(\fBint\fR \fI*columns\fR, int \fI*lines\fR);
-\fBint\fR tdk_readKey(\fBvoid\fR);
-\fBvoid\fR tdk_ringBell(\fBvoid\fR);
-\fBvoid\fR tdk_setAlternateScreen(\fBint\fR \fIisToOpen\fR);
-\fBvoid\fR tdk_setColor(\fBint\fR \fIlayer\fR, \fBint\fR \fIcolor\fR);
-\fBvoid\fR tdk_setColorBrightness(\fBint\fR \fIbrightness\fR);
-\fBint\fR tdk_setCursorPosition(\fBint\fR \fIcolumn\fR, \fBint\fR \fIline\fR);
-\fBvoid\fR tdk_setCursorShape(\fBint\fR \fIshape\fR);
-\fBvoid\fR tdk_setCursorVisibility(\fBint\fR \fIisToMakeVisible\fR);
-\fBvoid\fR tdk_setTextEffect(\fBint\fR \fIeffect\fR, \fBint\fR \fIisToEnable\fR);
+\fBint\fR tdk_getcpos(\fBint\fR \fI*col\fR, \fBint\fR \fI*ln\fR);
+\fBint\fR tdk_getkey(\fBvoid\fR);
+\fBint\fR tdk_getwdim(\fBint\fR \fI*col\fR, \fBint\fR \fI*ln\fR);
+\fBint\fR tdk_setcpos(\fBint\fR \fIcol\fR, \fBint\fR \fIln\fR);
+\fBvoid\fR tdk_beep(\fBvoid\fR);
+\fBvoid\fR tdk_clearln(\fBvoid\fR);
+\fBvoid\fR tdk_setclr(\fBint\fR \fIclr\fR, \fBint\fR \fIlyr\fR);
+\fBvoid\fR tdk_setcshp(\fBint\fR \fIshp\fR);
+\fBvoid\fR tdk_setcvis(\fBint\fR \fIisvis\fR);
+\fBvoid\fR tdk_seteff(\fBint\fR \fIeff\fR, \fBint\fR \fIisenb\fR);
+\fBvoid\fR tdk_setlum(\fBint\fR \fIlum\fR);
+\fBvoid\fR tdk_setwalt(\fBint\fR \fIisenb\fR);
 .fi
 
 .SH STANDARDS
@@ -37,46 +37,38 @@ C99, POSIX.1-2008
 .SH DESCRIPTION
 
 .PP
-A simple C/C++ terminal manipulation library for Linux development. Designed to
-be an alternative for curses-like libraries, it is capable of handling some
-terminal properties, styles and trivial key press events with support for UTF-8
-encoding.
+A simple C99 terminal manipulation library for Linux that handles some terminal
+properties, styles and trivial key readings with UTF-8 support.
 
 .PP
-It is easy to learn, to debug and to be less likely to give you memory leak
-issues. However, it lacks features: what opens room for interested people to
-create forks and use its functions as building blocks for more extensive
-libraries.
+In order to be kept small, it lacks proper parameter validation and resets. It
+trust in its user to follow these rules:
+
+.IP \\[bu]
+The terminal properties can not be handled manually: including the use of
+other manipulation functions or output of ANSI escape sequences.
+
+.IP \\[bu]
+The stdin stream must be kept oriented to wide-characters, while the stdout
+and stderr streams, to single-characters.
+
+.IP \\[bu]
+All of its functions must be used as stated in their man pages.
 
 .PP
-In order to be kept small, it lacks proper validations and resets. Thus, to
-function correctly, it trust in its user to follow these rules:
-
-.IP \\[bu]
-The terminal properties must not be handled manually: that includes the use of
-manipulation functions and output of ANSI escape sequences.
-
-.IP \\[bu]
-The stdin stream must be kept oriented to wide characters, and the stdout and
-stderr streams, to single-byte characters.
-
-.IP \\[bu]
-Its functions must be used as stated in their respective man pages.
-
-.PP
-For further details, read the man pages of its functions.
+For further details about its functions, check out their respective man pages.
 
 .SH THREAD-SAFETY
 
 .PP
-By nature, I/O operations are not thread-safe, neither any function in this
-library.
+Operations involving I/O are, by nature, non thread-safe, thus this library
+neither.
 
 .SH RESERVED NAMES
 
 .PP
-This library reserves names starting with "tdk_" and "TDK_", possibly prefixed
-by an underline to indicate implementation restrictions.
+This library reserves names starting with "tdk_" and "TDK_" prefixed or not by
+an underline to indicate implementation restrictions.
 
 .SH INCLUDED HEADERS
 
@@ -102,15 +94,17 @@ Its source code is available at <https://github.com/skippyr/libtdk>.
 
 .SH HELP
 
+.PP
 You can ask for help related to this project through its issues page
 (<https://github.com/skippyr/libtdk/issues>).
 
 .SH CONTRIBUTING
 
-This project is open to receive contributions from people of any skill level.
-You can send code contributions to be reviewed through its pull requests page
-(<https://github.com/skippyr/libtdk/pulls>).
+.PP
+This project is open to receive contributions.  You can send code contributions
+to be reviewed through its pull requests page (<https://github.com/skippyr/libtdk/pulls>).
 
+.PP
 By contributing to this project, you agree to use the same copyright used by it.
 
 .SH COPYRIGHT

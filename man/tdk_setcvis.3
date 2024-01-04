@@ -1,0 +1,48 @@
+.TH tdk_setcvis 3 ${VERSION} ${PACKAGE}
+
+.SH NAME
+
+.PP
+tdk_setcvis - it sets the terminal cursor visibility
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_setcvis(\fBint\fR \fIisvis\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It sets the terminal cursor visibility based on the boolean \fIisvis\fR.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBint\fR
+main(\fBvoid\fR)
+{
+	printf(":: Press any key to advance.\\n");
+	tdk_setcvis(0);
+	printf("Invisible Cursor ");
+	tdk_getkey();
+	tdk_setcvis(1);
+	printf("\\nVisible Cursor ");
+	tdk_getkey();
+	putchar('\\n');
+	\fBreturn\fR 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR tdk (3)
