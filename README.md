@@ -17,7 +17,7 @@ properties, styles and trivial key readings with UTF-8 support.
 - Use `make` to install it.
 
 ```sh
-sudo make install;
+sudo make install clean;
 ```
 
 - Add the following environment variables to your shell startup file.
