@@ -17,14 +17,14 @@ properties, styles and trivial key readings with UTF-8 support.
 - Use `make` to install it.
 
 ```sh
-sudo make install
+sudo make install;
 ```
 
 - Add the following environment variables to your shell startup file.
 
 ```sh
-export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
+export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib;
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 ```
 
 - Reopen your shell.
@@ -34,7 +34,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 - Use `make` to uninstall it.
 
 ```sh
-sudo make uninstall
+sudo make uninstall;
 ```
 
 ## Documentation
@@ -42,7 +42,7 @@ sudo make uninstall
 Once installed, you can refer to its man pages:
 
 ```sh
-man tdk.3
+man tdk.3;
 ```
 
 ## Help

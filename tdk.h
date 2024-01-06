@@ -1,10 +1,3 @@
-/* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
- * BSD-3-Clause License
- * Copyright (c) 2023, Sherman Rofeman <skippyr.developer@gmail.com>
- *
- * See the LICENSE file that comes in its source code for more details.
- * //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\// */
-
 #ifndef _TDK_H
 #define _TDK_H
 #include <fcntl.h>
