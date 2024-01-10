@@ -1,64 +1,92 @@
-# libtdk
+<h1 align="center">libtdk</h1>
+<p align="center">Terminal Development Kit</p>
 
 ## About
 
-A simple C99 terminal manipulation library for Linux that handles some terminal
-properties, styles and trivial key readings with UTF-8 support.
+It is a simple C/C++ terminal manipulation library for UNIX-like operating
+systems that is capable of handling some terminal properties, styles, effects
+and trivial key readings with UTF-8 encoding.
+
+Designed to be an alternative to curses-like libraries, it offers a solid base
+for creating general purpose terminal based softwares, while leaving room to
+full-feature libraries to be built upon for more specific use cases.
 
 ## Install
 
 ### Dependencies
 
-- `gcc`
-- `make`
+The following dependencies are required to install this library in your system:
 
-### Step-By-Step
+1. **git**: it will be used to clone this repository.
+2. **gcc**, **make**: they will be used to compile and install it.
 
-- Use `make` to install it.
+### Procedures
+
+Using a terminal, follow these steps:
+
+1. Clone this repository using git:
 
 ```sh
-sudo make install clean;
+git clone --depth 1 https://github.com/skippyr/libtdk
 ```
 
-- Add the following environment variables to your shell startup file.
+2. Access the repository directory using cd:
+
+```sh
+cd libtdk
+```
+
+3. Use make to compile and install this library:
+
+```sh
+sudo make install clean
+```
+
+3. Export the following environment variables in your shell startup file:
 
 ```sh
 export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib;
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 ```
 
-- Reopen your shell.
+4. Reopen your shell.
 
-## Uninstall
+### Uninstall
 
-- Use `make` to uninstall it.
+Using a terminal, follow these steps:
 
-```sh
-sudo make uninstall;
-```
-
-## Documentation
-
-Once installed, you can refer to its man pages:
+1. Go back to the repository directory.
+2. Use make to uninstall this library:
 
 ```sh
-man tdk.3;
+sudo make uninstall
 ```
 
-## Help
+### Documentation
 
-You can ask for help related to this project through its [issues page](https://github.com/skippyr/libtdk/issues).
+After installed, you can refer to its manual pages by using man:
 
-## Contributing
+```sh
+man tdk.3
+```
 
-This project is open to receive contributions. You can send code contributions
-to be reviewed through its [pull requests page](https://github.com/skippyr/libtdk/pulls).
+### Help
 
-By contributing to this project, you agree to use the same copyright used by it.
+If you need help about this project, open a new issue in its
+[issues page](https://github.com/skippyr/libtdk/issues) or send me an
+[e-mail](mailto:skippyr.developer@gmail.com) describing what is going on.
 
-## Copyright
+### Contributing
 
-BSD-3-Clause License\
-Copyright (c) 2023, Sherman Rofeman \<skippyr.developer@gmail.com\>
+This project is open to review and possibly accept contributions, specially
+fixes and suggestions. If you are interested, send your contribution to its
+[pull requests page](https://github.com/skippyr/libtdk/pulls) or to my
+[e-mail](mailto:skippyr.developer@gmail.com).
 
-See the `LICENSE` file that comes in its source code for more details.
+By contributing to this project, you must agree to license your work under the
+same license that the project uses.
+
+### License
+
+This project is licensed under the BSD-3-Clause License. Refer to the LICENSE
+file that comes in its source code for license and copyright details.
