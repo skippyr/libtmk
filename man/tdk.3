@@ -37,8 +37,14 @@ C99, POSIX.1-2008
 .SH DESCRIPTION
 
 .PP
-A simple C99 terminal manipulation library for Linux that handles some terminal
-properties, styles and trivial key readings with UTF-8 support.
+It is a simple C/C++ terminal manipulation library for UNIX-like operating
+systems that is capable of handling some terminal properties, styles, effects
+and trivial key readings with UTF-8 encoding.
+
+.PP
+Designed to be an alternative to curses-like libraries, it offers a solid base
+for creating general purpose terminal based softwares, while leaving room to
+full-feature libraries to be built upon for more specific use cases.
 
 .PP
 In order to be kept small, it lacks proper parameter validation and resets. It
@@ -50,7 +56,7 @@ other manipulation functions or output of ANSI escape sequences.
 
 .IP \\[bu]
 The stdin stream must be kept oriented to wide-characters, while the stdout
-and stderr streams, to single-characters.
+and stderr streams, to single-byte characters.
 
 .IP \\[bu]
 All of its functions must be used as stated in their man pages.
@@ -61,14 +67,14 @@ For further details about its functions, check out their respective man pages.
 .SH THREAD-SAFETY
 
 .PP
-Operations involving I/O are, by nature, non thread-safe, thus this library
-neither.
+Operations involving I/O are, by nature, non thread-safe, thus functions in this
+library neither.
 
 .SH RESERVED NAMES
 
 .PP
-This library reserves names starting with "tdk_" and "TDK_" prefixed or not by
-an underline to indicate implementation restrictions.
+This library reserves names starting with "tdk_" and "TDK_", possibly prefixed
+by an underline to indicate implementation restrictions.
 
 .SH INCLUDED HEADERS
 
@@ -95,24 +101,24 @@ Its source code is available at <https://github.com/skippyr/libtdk>.
 .SH HELP
 
 .PP
-You can ask for help related to this project through its issues page
-(<https://github.com/skippyr/libtdk/issues>).
+If you need help about this project, open a new issue in its issues page
+(<https://github.com/skippyr/libtdk/issues>) or send me an e-mail
+(<mailto:skippyr.developer@gmail.com>) describing what is going on.
 
 .SH CONTRIBUTING
 
 .PP
-This project is open to receive contributions.  You can send code contributions
-to be reviewed through its pull requests page (<https://github.com/skippyr/libtdk/pulls>).
+This project is open to review and possibly accept contributions, specially
+fixes and suggestions. If you are interested, send your contribution to its
+pull requests page (<https://github.com/skippyr/libtdk/pulls>) or to my
+e-mail (<mailto:skippyr.developer@gmail.com>).
 
 .PP
-By contributing to this project, you agree to use the same copyright used by it.
+By contributing to this project, you must agree to license your work under the
+same license that the project uses.
 
-.SH COPYRIGHT
-
-.PP
-BSD-3-Clause License
-.br
-Copyright (c) 2023, Sherman Rofeman <skippyr.developer@gmail.com>
+.SH LICENSE
 
 .PP
-See the LICENSE file that comes in its source code for more details.
+This project is licensed under the BSD-3-Clause License. Refer to the LICENSE
+file that comes in its source code for license and copyright details.

@@ -47,16 +47,21 @@ The dim luminosity.
 
 \fBint\fR main(\fBvoid\fR)
 {
-	\fBchar\fR msg[] = "Here Are Dragons!";
-	tdk_setlum(tdk_LumBld);
-	printf("%s\\n", msg);
-	tdk_setlum(tdk_LumDim);
-	printf("%s\\n", msg);
-	tdk_setlum(tdk_LumDft);
-	printf("%s\\n", msg);
-	\fBreturn\fR 0;
+        \fBchar\fR msg[] = "Here Are Dragons!";
+        tdk_setlum(tdk_LumBld);
+        printf("%s\\n", msg);
+        tdk_setlum(tdk_LumDim);
+        printf("%s\\n", msg);
+        tdk_setlum(tdk_LumDft);
+        printf("%s\\n", msg);
+        \fBreturn\fR 0;
 }
 .fi
+
+.SH NOTES
+
+.PP
+Terminals may implement luminosities differently or not at all.
 
 .SH SEE ALSO
 

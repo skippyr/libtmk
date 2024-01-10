@@ -1,10 +1,4 @@
-VERSION:=v6.0.0
-PKG:=mistureba
-CC:=cc
-CFLAGS:=-std=c99 -pedantic -Os -Wall
-INCPATH:=/usr/local/include
-LIBPATH:=/usr/local/lib
-MAN3PATH:=/usr/local/man/man3
+include config.mk
 
 .PHONY: all clean install uninstall
 

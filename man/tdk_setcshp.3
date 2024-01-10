@@ -53,20 +53,25 @@ Shapes prefixed with a "B" are blinking variants of that same shape.
 
 \fBint\fR main(\fBvoid\fR)
 {
-	printf(":: Press any key to advance.\\n");
-	tdk_setcshp(tdk_ShpBlk);
-	printf("Block Shape ");
-	tdk_getkey();
-	tdk_setcshp(tdk_ShpUnd);
-	printf("\\nUnderline Shape ");
-	tdk_getkey();
-	tdk_setcshp(tdk_ShpBar);
-	printf("\\nBar Shape ");
-	tdk_getkey();
-	putchar('\n');
-	\fBreturn\fR 0;
+        printf(":: Press any key to advance.\\n");
+        tdk_setcshp(tdk_ShpBlk);
+        printf("Block Shape ");
+        tdk_getkey();
+        tdk_setcshp(tdk_ShpUnd);
+        printf("\\nUnderline Shape ");
+        tdk_getkey();
+        tdk_setcshp(tdk_ShpBar);
+        printf("\\nBar Shape ");
+        tdk_getkey();
+        putchar('\\n');
+        \fBreturn\fR 0;
 }
 .fi
+
+.SH NOTES
+
+.PP
+Terminals may not render blinking cursors by default.
 
 .SH SEE ALSO
 

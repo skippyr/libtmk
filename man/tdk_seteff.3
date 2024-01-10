@@ -60,16 +60,21 @@ The strike-through effect.
 
 \fBint\fR main(\fBvoid\fR)
 {
-	\fBchar\fR msg[] = "Here Are Dragons!";
-	tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
-	printf("%s\\n", msg);
-	tdk_seteff(tdk_EffItl, 0);
-	printf("%s\\n", msg);
-	tdk_seteff(tdk_EffUnd, 0);
-	printf("%s\\n", msg);
-	\fBreturn\fR 0;
+        \fBchar\fR msg[] = "Here Are Dragons!";
+        tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
+        printf("%s\\n", msg);
+        tdk_seteff(tdk_EffItl, 0);
+        printf("%s\\n", msg);
+        tdk_seteff(tdk_EffUnd, 0);
+        printf("%s\\n", msg);
+        \fBreturn\fR 0;
 }
 .fi
+
+.SH NOTES
+
+.PP
+Terminals may implement effects differently or not at all.
 
 .SH SEE ALSO
 
