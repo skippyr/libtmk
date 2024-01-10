@@ -27,19 +27,19 @@ Using a terminal, follow these steps:
 1. Clone this repository using git:
 
 ```sh
-git clone --depth 1 https://github.com/skippyr/libtdk
+git clone --depth 1 https://github.com/skippyr/libtdk;
 ```
 
 2. Access the repository directory using cd:
 
 ```sh
-cd libtdk
+cd libtdk;
 ```
 
 3. Use make to compile and install this library:
 
 ```sh
-sudo make install clean
+sudo make install clean;
 ```
 
 3. Export the following environment variables in your shell startup file:
@@ -59,7 +59,7 @@ Using a terminal, follow these steps:
 2. Use make to uninstall this library:
 
 ```sh
-sudo make uninstall
+sudo make uninstall;
 ```
 
 ### Documentation
@@ -67,7 +67,7 @@ sudo make uninstall
 After installed, you can refer to its manual pages by using man:
 
 ```sh
-man tdk.3
+man tdk.3;
 ```
 
 ### Help
