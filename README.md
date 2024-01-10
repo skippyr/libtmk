@@ -42,14 +42,14 @@ cd libtdk;
 sudo make install clean;
 ```
 
-3. Export the following environment variables in your shell startup file:
+4. Export the following environment variables in your shell startup file:
 
 ```sh
 export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib;
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 ```
 
-4. Reopen your shell.
+5. Reopen your shell.
 
 ### Uninstall
 
