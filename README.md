@@ -51,7 +51,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 
 5. Reopen your shell.
 
-### Uninstall
+## Uninstall
 
 Using a terminal, follow these steps:
 
@@ -62,7 +62,7 @@ Using a terminal, follow these steps:
 sudo make uninstall;
 ```
 
-### Documentation
+## Documentation
 
 After installed, you can refer to its manual pages by using man:
 
@@ -70,13 +70,13 @@ After installed, you can refer to its manual pages by using man:
 man tdk.3;
 ```
 
-### Help
+## Help
 
 If you need help about this project, open a new issue in its
 [issues page](https://github.com/skippyr/libtdk/issues) or send me an
 [e-mail](mailto:skippyr.developer@gmail.com) describing what is going on.
 
-### Contributing
+## Contributing
 
 This project is open to review and possibly accept contributions, specially
 fixes and suggestions. If you are interested, send your contribution to its
@@ -86,7 +86,7 @@ fixes and suggestions. If you are interested, send your contribution to its
 By contributing to this project, you must agree to license your work under the
 same license that the project uses.
 
-### License
+## License
 
 This project is licensed under the BSD-3-Clause License. Refer to the LICENSE
 file that comes in its source code for license and copyright details.
