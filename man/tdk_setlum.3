@@ -45,16 +45,15 @@ The dim luminosity.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
-{
-        \fBchar\fR msg[] = "Here Are Dragons!";
-        tdk_setlum(tdk_LumBld);
-        printf("%s\\n", msg);
-        tdk_setlum(tdk_LumDim);
-        printf("%s\\n", msg);
-        tdk_setlum(tdk_LumDft);
-        printf("%s\\n", msg);
-        \fBreturn\fR 0;
+\fBint\fR main(\fBvoid\fR) {
+  \fBchar\fR msg[] = "Here Are Dragons!";
+  tdk_setlum(tdk_LumBld);
+  printf("%s\\n", msg);
+  tdk_setlum(tdk_LumDim);
+  printf("%s\\n", msg);
+  tdk_setlum(tdk_LumDft);
+  printf("%s\\n", msg);
+  \fBreturn\fR 0;
 }
 .fi
 
