@@ -15,7 +15,7 @@ full-feature libraries to be built upon for more specific use cases.
 
 ### Dependencies
 
-The following dependencies are required to install this library in your system:
+The following dependencies are required to install it:
 
 1. **git**: it will be used to clone this repository.
 2. **gcc**, **make**: they will be used to compile and install it.
@@ -36,7 +36,7 @@ git clone --depth 1 https://github.com/skippyr/libtdk;
 cd libtdk;
 ```
 
-3. Use make to compile and install this library:
+3. Use make to compile and install it:
 
 ```sh
 sudo make install clean;
@@ -56,7 +56,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 Using a terminal, follow these steps:
 
 1. Go back to the repository directory.
-2. Use make to uninstall this library:
+2. Use make to uninstall it:
 
 ```sh
 sudo make uninstall;
