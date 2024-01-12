@@ -13,8 +13,7 @@ install: all
 	cp tdk.h ${INCPATH};
 	for m in $(wildcard man/*);\
 	do\
-		sed "s/\$${VERSION}/${VERSION}/; s/\$${PKG}/${PKG}/" $${m} >\
-		     ${MAN3PATH}/$${m##*/};\
+		sed "s/\$${VERSION}/${VERSION}/" $${m} > ${MAN3PATH}/$${m##*/};\
 	done
 
 uninstall:
