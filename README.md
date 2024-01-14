@@ -3,7 +3,7 @@
 
 ## About
 
-It is a simple C/C++ terminal manipulation library for Linux that is capable of
+A simple C/C++ terminal manipulation library for Linux that is capable of
 handling some terminal properties, styles, effects and trivial key readings with
 UTF-8 encoding.
 
@@ -27,7 +27,7 @@ Using a terminal, follow these steps:
 1. Clone this repository using git:
 
 ```sh
-git clone --depth 1 https://github.com/skippyr/libtdk;
+git clone https://github.com/skippyr/libtdk;
 ```
 
 2. Access the repository directory using cd:
