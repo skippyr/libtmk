@@ -3,9 +3,9 @@
 
 ## About
 
-It is a simple C/C++ terminal manipulation library for UNIX-like operating
-systems that is capable of handling some terminal properties, styles, effects
-and trivial key readings with UTF-8 encoding.
+It is a simple C/C++ terminal manipulation library for Linux that is capable of
+handling some terminal properties, styles, effects and trivial key readings with
+UTF-8 encoding.
 
 Designed to be an alternative to curses-like libraries, it offers a solid base
 for creating general purpose terminal based softwares, while leaving room to
