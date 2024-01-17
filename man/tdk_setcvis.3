@@ -28,16 +28,17 @@ It sets the terminal cursor visibility based on the boolean \fIisvis\fR.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR) {
-  printf(":: Press any key to advance.\\n");
-  tdk_setcvis(0);
-  printf("Invisible Cursor ");
-  tdk_getkey();
-  tdk_setcvis(1);
-  printf("\\nVisible Cursor ");
-  tdk_getkey();
-  putchar('\\n');
-  \fBreturn\fR 0;
+\fBint\fR main(\fBvoid\fR)
+{
+	printf(":: Press any key to advance.\\n");
+	tdk_setcvis(0);
+	printf("Invisible Cursor ");
+	tdk_getkey();
+	tdk_setcvis(1);
+	printf("\\nVisible Cursor ");
+	tdk_getkey();
+	putchar('\\n');
+	\fBreturn\fR 0;
 }
 .fi
 

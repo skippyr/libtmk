@@ -67,45 +67,45 @@ The navigation keys.
 \fB#include\fR <tdk.h>
 
 \fB#define\fR PARSEKEY(keyval)\\
-  \fBif\fR (key == keyval) {\\
-    printf("%s\\n", #keyval);\\
-    \fBcontinue\fR;\\
-  }
+	\fBif\fR (key == keyval) {\\
+		printf("%s\\n", #keyval);\\
+		\fBcontinue\fR;\\
+	}
 
 \fBint\fR main(\fBvoid\fR) {
-  \fBint\fR key;
-  printf("Press any key to log it out:\\n");
-  printf(":: Use Enter to exit.\\n\\n");
-  \fBdo\fR {
-    PARSEKEY(tdk_KeyUpArr);
-    PARSEKEY(tdk_KeyDnArr);
-    PARSEKEY(tdk_KeyRgArr);
-    PARSEKEY(tdk_KeyLfArr);
-    PARSEKEY(tdk_KeyF1);
-    PARSEKEY(tdk_KeyF2);
-    PARSEKEY(tdk_KeyF3);
-    PARSEKEY(tdk_KeyF4);
-    PARSEKEY(tdk_KeyF5);
-    PARSEKEY(tdk_KeyF6);
-    PARSEKEY(tdk_KeyF7);
-    PARSEKEY(tdk_KeyF8);
-    PARSEKEY(tdk_KeyF9);
-    PARSEKEY(tdk_KeyF10);
-    PARSEKEY(tdk_KeyF11);
-    PARSEKEY(tdk_KeyF12);
-    PARSEKEY(tdk_KeyIns);
-    PARSEKEY(tdk_KeyDel);
-    PARSEKEY(tdk_KeyPgUp);
-    PARSEKEY(tdk_KeyPgDn);
-    PARSEKEY(tdk_KeyEnd);
-    PARSEKEY(tdk_KeyHome);
-    PARSEKEY(tdk_KeyTab);
-    PARSEKEY(tdk_KeyEsc);
-    PARSEKEY(tdk_KeySpace);
-    PARSEKEY(tdk_KeyBSpace);
-    printf(key ? "%lc\\n" : "Unknown\\n", key);
-  } \fBwhile\fR ((key = tdk_getkey()) != tdk_KeyEnter);
-  \fBreturn\fR 0;
+	\fBint\fR key;
+	printf("Press any key to log it out:\\n");
+	printf(":: Use Enter to exit.\\n\\n");
+	\fBdo\fR {
+		PARSEKEY(tdk_KeyUpArr);
+		PARSEKEY(tdk_KeyDnArr);
+		PARSEKEY(tdk_KeyRgArr);
+		PARSEKEY(tdk_KeyLfArr);
+		PARSEKEY(tdk_KeyF1);
+		PARSEKEY(tdk_KeyF2);
+		PARSEKEY(tdk_KeyF3);
+		PARSEKEY(tdk_KeyF4);
+		PARSEKEY(tdk_KeyF5);
+		PARSEKEY(tdk_KeyF6);
+		PARSEKEY(tdk_KeyF7);
+		PARSEKEY(tdk_KeyF8);
+		PARSEKEY(tdk_KeyF9);
+		PARSEKEY(tdk_KeyF10);
+		PARSEKEY(tdk_KeyF11);
+		PARSEKEY(tdk_KeyF12);
+		PARSEKEY(tdk_KeyIns);
+		PARSEKEY(tdk_KeyDel);
+		PARSEKEY(tdk_KeyPgUp);
+		PARSEKEY(tdk_KeyPgDn);
+		PARSEKEY(tdk_KeyEnd);
+		PARSEKEY(tdk_KeyHome);
+		PARSEKEY(tdk_KeyTab);
+		PARSEKEY(tdk_KeyEsc);
+		PARSEKEY(tdk_KeySpace);
+		PARSEKEY(tdk_KeyBSpace);
+		printf(key ? "%lc\\n" : "Unknown\\n", key);
+	} \fBwhile\fR ((key = tdk_getkey()) != tdk_KeyEnter);
+	\fBreturn\fR 0;
 }
 .fi
 

@@ -1,10 +1,10 @@
 <h1 align="center">⊼⊵⊼⊵&ensp;libtdk&ensp;⊼⊵⊼⊵</h1>
 <p align="center">Terminal Development Kit</p>
 <p align="center">
-  <img src="https://img.shields.io/github/license/skippyr/libtdk" alt="" />
-  <img src="https://img.shields.io/github/v/tag/skippyr/libtdk" alt="" />
-  <img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk" alt="" />
-  <img src="https://img.shields.io/github/stars/skippyr/libtdk" alt="" />
+	<img src="https://img.shields.io/github/license/skippyr/libtdk" alt="" />
+	<img src="https://img.shields.io/github/v/tag/skippyr/libtdk" alt="" />
+	<img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk" alt="" />
+	<img src="https://img.shields.io/github/stars/skippyr/libtdk" alt="" />
 </p>
 
 ## About
