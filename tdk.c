@@ -13,13 +13,15 @@ static int clearin(void);
 static int setraw(int isenb);
 static void setnblk(int isenb);
 
-static int ansi(char *msg)
+static int
+ansi(char *msg)
 {
 	return !((isatty(1) && printf("%s", msg) >= 0 && !fflush(stdout)) ||
 		 (isatty(2) && fprintf(stderr, "%s", msg) >= 0));
 }
 
-static int ansif(int len, char *fmt, ...)
+static int
+ansif(int len, char *fmt, ...)
 {
 	char *msg;
 	int res;
@@ -34,7 +36,8 @@ static int ansif(int len, char *fmt, ...)
 	return res;
 }
 
-static int clearin(void)
+static int
+clearin(void)
 {
 	if (fwide(stdin, 0) < 0 || !setlocale(LC_ALL, "C.UTF-8") || setraw(1))
 		return 1;
@@ -45,7 +48,8 @@ static int clearin(void)
 	return 0;
 }
 
-static int setraw(int isenb)
+static int
+setraw(int isenb)
 {
 	struct termios t;
 	if (tcgetattr(0, &t))
@@ -55,13 +59,15 @@ static int setraw(int isenb)
 	return 0;
 }
 
-static void setnblk(int isenb)
+static void
+setnblk(int isenb)
 {
 	int fl = fcntl(0, F_GETFL);
 	fcntl(0, F_SETFL, isenb ? fl | O_NONBLOCK : fl & ~O_NONBLOCK);
 }
 
-int tdk_getcpos(int *col, int *ln)
+int
+tdk_getcpos(int *col, int *ln)
 {
 	int tmpcol;
 	int tmpln;
@@ -76,7 +82,8 @@ int tdk_getcpos(int *col, int *ln)
 	return 0;
 }
 
-int tdk_getkey(void)
+int
+tdk_getkey(void)
 {
 	int head;
 	int i;
@@ -120,7 +127,8 @@ out:
 	return head < 0 || head == 9 || head == 10 || head > 26 ? head : 0;
 }
 
-int tdk_getwdim(int *col, int *ln)
+int
+tdk_getwdim(int *col, int *ln)
 {
 	struct winsize w;
 	if (ioctl(0, TIOCGWINSZ, &w) && ioctl(1, TIOCGWINSZ, &w) &&
@@ -133,7 +141,8 @@ int tdk_getwdim(int *col, int *ln)
 	return 0;
 }
 
-int tdk_setcpos(int col, int ln)
+int
+tdk_setcpos(int col, int ln)
 {
 	int wcol;
 	int wln;
@@ -141,32 +150,38 @@ int tdk_setcpos(int col, int ln)
 	       ln > wln || ansif(13, "\33[%d;%dH", ln, col);
 }
 
-void tdk_beep(void)
+void
+tdk_beep(void)
 {
 	ansi("\7");
 }
 
-void tdk_clearln(void)
+void
+tdk_clearln(void)
 {
 	ansi("\33[2K\33[1G");
 }
 
-void tdk_setclr(int clr, int lyr)
+void
+tdk_setclr(int clr, int lyr)
 {
 	ansif(6, "\33[%d%dm", lyr, clr);
 }
 
-void tdk_setcshp(int shp)
+void
+tdk_setcshp(int shp)
 {
 	ansif(6, "\33[%d q", shp);
 }
 
-void tdk_setcvis(int isvis)
+void
+tdk_setcvis(int isvis)
 {
 	ansi(isvis ? "\33[?25h" : "\33[?25l");
 }
 
-void tdk_seteff(int eff, int isenb)
+void
+tdk_seteff(int eff, int isenb)
 {
 	int i;
 	for (i = 3; i < 10; i++)
@@ -174,12 +189,14 @@ void tdk_seteff(int eff, int isenb)
 			ansif(6, "\33[%dm", isenb ? i : i + 20);
 }
 
-void tdk_setlum(int lum)
+void
+tdk_setlum(int lum)
 {
 	ansif(8, !lum ? "\33[22m" : "\33[22;%dm", lum);
 }
 
-void tdk_setwalt(int isenb)
+void
+tdk_setwalt(int isenb)
 {
 	ansi(isenb ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
 }
