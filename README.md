@@ -15,20 +15,18 @@
 
 ## ❡ About
 
-A simple C/C++ terminal manipulation library for Linux that is capable of handling some terminal properties, styles, effects and trivial key readings with UTF-8 encoding.
-
-Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
+A simple C99 terminal manipulation library for Linux that is capable of handling some terminal properties, styles and key readings with UTF-8 encoding.
 
 ## ❡ Install
 
-### Dependencies
+### ¦ Dependencies
 
 The following dependencies are required to install it:
 
 &emsp;**1.**&ensp;**git**: it will be used to clone this repository.\
 &emsp;**2.**&ensp;**gcc**, **make**: they will be used to compile and install it.
 
-### Procedures
+### ¦ Procedures
 
 Using a terminal, follow these steps:
 
@@ -75,7 +73,7 @@ sudo make uninstall;
 After installed, you can refer to its manual pages by using man:
 
 ```sh
-man tdk.3;
+man 3 tdk;
 ```
 
 ## ❡ Help

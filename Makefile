@@ -1,4 +1,4 @@
-VERSION:=v6.0.1
+VERSION:=v6.0.2
 CC:=cc
 CFLAGS:=-std=c99 -pedantic -Os -Wall
 INCPATH:=/usr/local/include
