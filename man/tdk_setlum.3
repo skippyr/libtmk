@@ -21,7 +21,7 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It sets the luminosity \fIlum\fR of the terminal foreground color.
+It sets the terminal foreground color luminosity to be \fIlum\fR.
 
 .SH LUMINOSITY
 
@@ -45,7 +45,8 @@ The dim luminosity.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	\fBchar\fR msg[] = "Here Are Dragons!";
 	tdk_setlum(tdk_LumBld);
@@ -54,14 +55,14 @@ The dim luminosity.
 	printf("%s\\n", msg);
 	tdk_setlum(tdk_LumDft);
 	printf("%s\\n", msg);
-	\fBreturn\fR (0);
+	\fBreturn\fR 0;
 }
 .fi
 
 .SH NOTES
 
 .PP
-Terminals may implement luminosities differently or not at all.
+Terminals may implement certain luminosities differently or not at all.
 
 .SH SEE ALSO
 

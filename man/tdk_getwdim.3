@@ -21,11 +21,13 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It gets the total of columns and lines in the terminal window and puts those
-values inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
+It gets the total of columns and lines in the terminal window and puts those values inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
 
 .PP
 If a size value is not required, its address may be set to NULL.
+
+.PP
+Upon success, it sets those values.
 
 .SH RETURN VALUES
 
@@ -37,13 +39,14 @@ It returns 0 on success, and 1 on failure.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	\fBint\fR wcol;
 	\fBint\fR wln;
 	tdk_getwdim(&wcol, &wln);
-	printf(":: Window Dimensions (columns = %d, lines = %d).\\n", wcol, wln);
-	\fBreturn\fR (0);
+	printf("Window Dimensions (columns = %d, lines = %d).\\n", wcol, wln);
+	\fBreturn\fR 0;
 }
 .fi
 

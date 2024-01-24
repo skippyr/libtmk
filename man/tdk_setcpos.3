@@ -21,12 +21,10 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It sets the terminal cursor column and line positions to be \fIcol\fR and
-\fIln\fR, respectively.
+It sets the terminal cursor column and line positions to be \fIcol\fR and \fIln\fR, respectively.
 
 .PP
-It considers an origin position at the top left corner of the terminal window.
-The column and line positions increase going right and down, respectively.
+It considers an origin position at the top left corner of the terminal window.  The column and line positions increase going right and down, respectively.
 
 .SH RETURN VALUES
 
@@ -38,11 +36,12 @@ It returns 0 on success, and 1 on failure.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	tdk_setcpos(0, 0);
 	printf("Here Are Dragons!\\n");
-	\fBreturn\fR (0);
+	\fBreturn\fR 0;
 }
 .fi
 

@@ -21,18 +21,16 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It gets the terminal cursor column and line positions and put those values
-inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
+It gets the terminal cursor column and line positions and put those values inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
 
 .PP
-It considers an origin position at the top left corner of the terminal window.
-The column and line positions increase going right and down, respectively.
+It considers an origin position at the top left corner of the terminal window.  The column and line positions increase going right and down, respectively.
 
 .PP
 If a position is not required, its address may be set to NULL.
 
 .PP
-Upon success, it clears the stdin buffer.
+Upon success, it sets those values and clears the stdin buffer.
 
 .SH RETURN VALUES
 
@@ -44,13 +42,14 @@ It returns 0 on success, and 1 on failure.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	\fBint\fR ccol;
 	\fBint\fR cln;
 	tdk_getcpos(&ccol, &cln);
-	printf(":: Cursor Position (column = %d, line = %d).\\n", ccol, cln);
-	\fBreturn\fR (0);
+	printf("Cursor Position (column = %d, line = %d).\\n", ccol, cln);
+	\fBreturn\fR 0;
 }
 .fi
 

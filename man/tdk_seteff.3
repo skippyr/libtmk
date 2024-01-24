@@ -21,8 +21,7 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It enables/disables the effects present in the bitmask \fIeff\fR based on the
-boolean \fIisenb\fR.
+It enables/disables the effect flags in the bitmask \fIeff\fR based on the boolean \fIisenb\fR.
 
 .SH EFFECTS
 
@@ -58,7 +57,8 @@ The strike-through effect.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	\fBchar\fR msg[] = "Here Are Dragons!";
 	tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
@@ -67,14 +67,14 @@ The strike-through effect.
 	printf("%s\\n", msg);
 	tdk_seteff(tdk_EffUnd, 0);
 	printf("%s\\n", msg);
-	\fBreturn\fR (0);
+	\fBreturn\fR 0;
 }
 .fi
 
 .SH NOTES
 
 .PP
-Terminals may implement effects differently or not at all.
+Terminals may implement certain effects differently or not at all.
 
 .SH SEE ALSO
 

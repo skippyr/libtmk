@@ -21,25 +21,28 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It rings the terminal bell, possibly emitting a system notification sound or
-a beep from the motherboard speaker.
+It rings the terminal bell, possibly emitting a system notification sound or a beep from the motherboard speaker.
+
+.PP
+It is usually used to notify, warn or emit an error. But, use it sparingly as it can be very annoying.
 
 .SH EXAMPLES
 
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	tdk_beep();
-	\fBreturn\fR (0);
+	\fBreturn\fR 0;
 }
 .fi
 
 .SH NOTES
 
 .PP
-Terminals may have the bell feature disabled by default.
+Some terminals have the bell feature disabled by default.
 
 .SH SEE ALSO
 

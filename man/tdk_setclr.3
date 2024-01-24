@@ -3,7 +3,7 @@
 .SH NAME
 
 .PP
-tdk_setclr - it sets the terminal foreground/background colors
+tdk_setclr - it sets a terminal color
 
 .SH LIBRARY
 
@@ -80,7 +80,8 @@ The background layer.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR main(\fBvoid\fR)
+\fBint\fR
+main(\fBvoid\fR)
 {
 	\fBchar\fR msg[] = "Here Are Dragons!";
 	tdk_setclr(tdk_ClrRed, tdk_LyrFg);
@@ -91,16 +92,14 @@ The background layer.
 	printf("%s\\n", msg);
 	tdk_setclr(tdk_ClrDft, tdk_LyrFg);
 	printf("%s\\n", msg);
-	\fBreturn\fR (0);
+	\fBreturn\fR 0;
 }
 .fi
 
 .SH NOTES
 
 .PP
-Terminals usually have issues rending the new line character (\\n) with a
-background color. It is always a good idea to reset it back to default before
-outputting it.
+Terminals usually have issues rending the new line character (\\n) with a background color. It is always a good idea to reset it back to default before outputting it.
 
 .SH SEE ALSO
 
