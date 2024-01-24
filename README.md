@@ -17,6 +17,9 @@
 
 A simple C99 terminal manipulation library for Linux that is capable of handling some terminal properties, styles and key readings with UTF-8 encoding.
 
+<p align="center"><img src="preview.webp" width="900" alt="" /></p>
+<p align="center"><sup><strong>Caption:</strong> a preview of an user interface made with libtdk (available as the file preview.c). The terminal theme used is <a href="https://github.com/skippyr/flamerial">flamerial</a> and font is <a href="https://github.com/be5invis/Iosevka">iosevka SS08</a>.</sup></p>
+
 ## ❡ Install
 
 ### ¦ Dependencies
