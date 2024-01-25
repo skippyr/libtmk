@@ -1,16 +1,16 @@
 #include <string.h>
 #include <tdk.h>
 
-void bottombar(void);
-void desktop(void);
-void die(char *msg);
-void topbar(void);
-void win(void);
+static void bottombar(void);
+static void desktop(void);
+static void die(char *msg);
+static void topbar(void);
+static void win(void);
 
-int wcol;
-int wln;
+static int wcol;
+static int wln;
 
-void
+static void
 bottombar(void)
 {
 	tdk_setcpos(wcol - 18, wln - 2);
@@ -33,7 +33,7 @@ bottombar(void)
 	printf(" to exit preview.");
 }
 
-void
+static void
 desktop(void)
 {
 	tdk_setcpos(0, 2);
@@ -45,7 +45,7 @@ desktop(void)
 	printf(" Help.pdf\n\n");
 }
 
-void
+static void
 die(char *msg)
 {
 	tdk_setclr(tdk_ClrRed, tdk_LyrFg);
@@ -55,27 +55,24 @@ die(char *msg)
 	exit(1);
 }
 
-void
+static void
 topbar(void)
 {
-	char *opts[] = {"File", "View", "Options", "Help"};
-	char stats[] = "󰃭 (Wed) Jan 24th  󰽥 19h00m   Search";
 	int i;
 	tdk_seteff(tdk_EffRev, 1);
 	for (i = 0; i < wcol; i++)
 		printf(" ");
 	tdk_setcpos(wcol - 37, 0);
-	printf("%s", stats);
+	printf("󰃭 (Wed) Jan 24th  󰽥 19h00m   Search");
 	tdk_setcpos(0, 0);
 	tdk_setlum(tdk_LumBld);
 	printf("   libtdk - preview ");
 	tdk_setlum(tdk_LumDft);
-	for (i = 0; i < sizeof(opts) / sizeof(NULL); i++)
-		printf(" %s ", opts[i]);
+	printf(" File  View  Options  Help");
 	tdk_seteff(tdk_EffRev, 0);
 }
 
-void
+static void
 win(void)
 {
 	tdk_setcpos(wcol - 30, 5);
