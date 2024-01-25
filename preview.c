@@ -13,25 +13,24 @@ int wln;
 void
 bottombar(void)
 {
-	int i;
-	tdk_setcpos(0, wln - 4);
-	printf("   skippyr/libtdk\n ");
+	tdk_setcpos(wcol - 18, wln - 2);
+	printf("  skippyr/libtdk");
+	tdk_setcpos(wcol - 30, wln - 1);
 	tdk_setclr(tdk_ClrRed, tdk_LyrFg);
 	tdk_seteff(tdk_EffUnd, 1);
 	printf("www.github.com/skippyr/libtdk");
 	tdk_seteff(tdk_EffUnd, 0);
 	tdk_setclr(tdk_ClrDft, tdk_LyrFg);
 	tdk_setcpos(0, wln - 1);
-	tdk_seteff(tdk_EffRev, 1);
-	for (i = 0; i < wcol; i++)
-		printf(" ");
-	tdk_setcpos(0, wln - 1);
-	printf("   Press ");
+	printf("  Press ");
 	tdk_setlum(tdk_LumBld);
 	printf("Escape");
 	tdk_setlum(tdk_LumDft);
-	printf(" to exit.");
-	tdk_seteff(tdk_EffRev, 0);
+	printf(" or ");
+	tdk_setlum(tdk_LumBld);
+	printf("Q");
+	tdk_setlum(tdk_LumDft);
+	printf(" to exit preview.");
 }
 
 void
@@ -60,12 +59,12 @@ void
 topbar(void)
 {
 	char *opts[] = {"File", "View", "Options", "Help"};
-	char stats[] = "󰃭 (Wed) Jan 24th  󰽥 19h00m";
+	char stats[] = "󰃭 (Wed) Jan 24th  󰽥 19h00m   Search";
 	int i;
 	tdk_seteff(tdk_EffRev, 1);
 	for (i = 0; i < wcol; i++)
 		printf(" ");
-	tdk_setcpos(wcol - 28, 0);
+	tdk_setcpos(wcol - 37, 0);
 	printf("%s", stats);
 	tdk_setcpos(0, 0);
 	tdk_setlum(tdk_LumBld);
@@ -92,6 +91,7 @@ win(void)
 int
 main(void)
 {
+	int key;
 	tdk_getwdim(&wcol, &wln);
 	if (!isatty(1) || !isatty(2))
 		die("no output stream must be redirected.\n");
@@ -103,7 +103,7 @@ main(void)
 	bottombar();
 	desktop();
 	win();
-	while (tdk_getkey() != tdk_KeyEsc);
+	while ((key = tdk_getkey()) != tdk_KeyEsc && key != 'q' && key != 'Q');
 	tdk_setcvis(1);
 	tdk_setwalt(0);
 	return 0;

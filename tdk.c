@@ -124,7 +124,7 @@ tdk_getkey(void)
 	}
 out:
 	clearin();
-	return (head < 0 || head == 9 || head == 10 || head > 26 ? head : 0);
+	return head < 0 || head == 9 || head == 10 || head > 26 ? head : 0;
 }
 
 int
