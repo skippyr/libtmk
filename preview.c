@@ -95,8 +95,8 @@ main(void)
 	tdk_getwdim(&wcol, &wln);
 	if (!isatty(1) || !isatty(2))
 		die("no output stream must be redirected.\n");
-	if (wcol < 83)
-		die("must have, at least, 83 columns.\n");
+	if (wcol < 90)
+		die("must have, at least, 90 columns.\n");
 	tdk_setwalt(1);
 	tdk_setcvis(0);
 	topbar();
