@@ -22,7 +22,7 @@ bottombar(void)
 	tdk_seteff(tdk_EffUnd, 0);
 	tdk_setclr(tdk_ClrDft, tdk_LyrFg);
 	tdk_setcpos(0, wln - 1);
-	printf("  Press ");
+	printf("   Press ");
 	tdk_setlum(tdk_LumBld);
 	printf("Escape");
 	tdk_setlum(tdk_LumDft);
