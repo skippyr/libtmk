@@ -1,24 +1,24 @@
 <p align="center">
-	<img src="banner.webp" alt="" />
+	<img src="imgs/ornament.webp" alt="" />
 </p>
 <h1 align="center">⊼⊵⊼⊵&ensp;libtdk&ensp;⊼⊵⊼⊵</h1>
 <p align="center">Terminal Development Kit</p>
 <p align="center">
-	<img src="https://img.shields.io/github/license/skippyr/libtdk?style=social" alt="" />
+	<img src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20license&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=social" alt="" />
+	<img src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20tag&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=social" alt="" />
+	<img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20commits&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/stars/skippyr/libtdk?style=social" alt="" />
+	<img src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20stars&labelColor=%2324130e&color=%23b8150d" alt="" />
 </p>
 
 ## ❡ About
 
 A simple C99 terminal manipulation library for Linux that is capable of handling some terminal properties, styles and key readings with UTF-8 encoding.
 
-<p align="center"><img src="preview.webp" width="900" alt="" /></p>
-<p align="center"><sup><strong>Caption:</strong> a preview of an user interface made with libtdk (available as the file preview.c). The terminal theme used is <a href="https://github.com/skippyr/flamerial">flamerial</a> and font is <a href="https://github.com/be5invis/Iosevka">iosevka SS08</a>.</sup></p>
+<p align="center"><img src="imgs/preview.webp" width="900" alt="" /></p>
+<p align="center"><sup><strong>Caption:</strong> a preview of an user interface made with libtdk (available as the file tools/preview.c). The terminal theme used is <a href="https://github.com/skippyr/flamerial">flamerial</a> and font is <a href="https://github.com/be5invis/Iosevka">iosevka SS08</a>.</sup></p>
 
 ## ❡ Install
 

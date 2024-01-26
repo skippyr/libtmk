@@ -7,15 +7,15 @@ MAN3PATH:=/usr/local/man/man3
 
 .PHONY: all clean install uninstall
 
-all: libtdk.so
+all: out/libtdk.so
 
 clean:
-	rm -f libtdk.so tdk.o;
+	rm -rf out;
 
 install: all
 	mkdir -p ${LIBPATH} ${INCPATH} ${MAN3PATH};
-	cp libtdk.so ${LIBPATH};
-	cp tdk.h ${INCPATH};
+	cp out/libtdk.so ${LIBPATH};
+	cp src/tdk.h ${INCPATH};
 	for m in $(wildcard man/*);\
 	do\
 		sed "s/\$${VERSION}/${VERSION}/" $${m} > ${MAN3PATH}/$${m##*/};\
@@ -24,8 +24,9 @@ install: all
 uninstall:
 	rm -f ${LIBPATH}/libtdk.so ${INCPATH}/tdk.h ${MAN3PATH}/{tdk.3,tdk_*.3};
 
-libtdk.so: tdk.o
+out/libtdk.so: out/tdk.o
 	${CC} -o${@} -shared ${^};
 
-tdk.o: tdk.c tdk.h
+out/tdk.o: src/tdk.c src/tdk.h
+	mkdir -p out;
 	${CC} ${CFLAGS} -o${@} -c -fPIC ${<};
