@@ -7,8 +7,7 @@ static void die(char *msg);
 static void topbar(void);
 static void win(void);
 
-static int wcol;
-static int wln;
+static int wcol, wln;
 
 static void
 bottombar(void)
