@@ -69,8 +69,7 @@ setnblk(int isenb)
 int
 tdk_getcpos(int *col, int *ln)
 {
-	int tmpcol;
-	int tmpln;
+	int tmpcol, tmpln;
 	if (clearin() || setraw(1) || ansi("\33[6n"))
 		return 1;
 	wscanf(L"\33[%d;%dR", &tmpln, &tmpcol);
@@ -85,9 +84,7 @@ tdk_getcpos(int *col, int *ln)
 int
 tdk_getkey(void)
 {
-	int head;
-	int i;
-	int trail[4];
+	int head, i, trail[4];
 	if ((!isatty(1) && !isatty(2)) || clearin())
 		return WEOF;
 	setraw(1);
@@ -144,10 +141,9 @@ tdk_getwdim(int *col, int *ln)
 int
 tdk_setcpos(int col, int ln)
 {
-	int wcol;
-	int wln;
-	return (tdk_getwdim(&wcol, &wln) || ++col < 1 || col > wcol || ++ln < 1 ||
-		ln > wln || ansif(13, "\33[%d;%dH", ln, col));
+	int wcol, wln;
+	return tdk_getwdim(&wcol, &wln) || ++col < 1 || col > wcol || ++ln < 1 ||
+	       ln > wln || ansif(13, "\33[%d;%dH", ln, col);
 }
 
 void
