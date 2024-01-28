@@ -1,6 +1,6 @@
 VERSION:=v6.0.3
 CC:=cc
-CFLAGS:=-std=c99 -pedantic -Os -Wall
+CFLAGS:=-std=c99 -pedantic -Os -Wall -Wextra
 INCPATH:=/usr/local/include
 LIBPATH:=/usr/local/lib
 MAN3PATH:=/usr/local/man/man3

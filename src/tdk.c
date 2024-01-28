@@ -1,8 +1,8 @@
 #include "tdk.h"
 
 #define PARSETRAIL(key, c0, c1, c2, c3)\
-	if (trail[0] == c0 && trail[1] == c1 && trail[2] == c2 &&\
-	    trail[3] == c3) {\
+	if (trail[0] == c0 && trail[1] == c1 && trail[2] == (int) c2 &&\
+	    trail[3] == (int) c3) {\
 		head = key;\
 		goto out;\
 	}
@@ -84,7 +84,7 @@ tdk_getcpos(int *col, int *ln)
 int
 tdk_getkey(void)
 {
-	int head, i, trail[4];
+	int head, trail[4], i;
 	if ((!isatty(1) && !isatty(2)) || clearin())
 		return WEOF;
 	setraw(1);
@@ -92,7 +92,7 @@ tdk_getkey(void)
 	setnblk(1);
 	for (i = 0; i < 4; i++)
 		trail[i] = getwchar();
-	if (head == 27 && trail[0] != WEOF) {
+	if (head == 27 && trail[0] != (int) WEOF) {
 		for (i = 65; i < 69; i++)
 			PARSETRAIL(i - 65 + tdk_KeyUpArr, 91, i, WEOF, WEOF);
 		for (i = 80; i < 84; i++)
