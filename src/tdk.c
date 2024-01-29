@@ -2,7 +2,7 @@
 
 #define PARSETRAIL(key, c0, c1, c2, c3)\
 	if (trail[0] == c0 && trail[1] == c1 && trail[2] == (int) c2 &&\
-	    trail[3] == (int) c3) {\
+		trail[3] == (int) c3) {\
 		head = key;\
 		goto out;\
 	}
@@ -17,7 +17,7 @@ static int
 ansi(char *msg)
 {
 	return !((isatty(1) && printf("%s", msg) >= 0 && !fflush(stdout)) ||
-		 (isatty(2) && fprintf(stderr, "%s", msg) >= 0));
+			 (isatty(2) && fprintf(stderr, "%s", msg) >= 0));
 }
 
 static int
@@ -129,7 +129,7 @@ tdk_getwdim(int *col, int *ln)
 {
 	struct winsize w;
 	if (ioctl(0, TIOCGWINSZ, &w) && ioctl(1, TIOCGWINSZ, &w) &&
-	    ioctl(2, TIOCGWINSZ, &w))
+		ioctl(2, TIOCGWINSZ, &w))
 		return 1;
 	if (col)
 		*col = w.ws_col;
@@ -143,7 +143,7 @@ tdk_setcpos(int col, int ln)
 {
 	int wcol, wln;
 	return tdk_getwdim(&wcol, &wln) || ++col < 1 || col > wcol || ++ln < 1 ||
-	       ln > wln || ansif(13, "\33[%d;%dH", ln, col);
+		   ln > wln || ansif(13, "\33[%d;%dH", ln, col);
 }
 
 void
