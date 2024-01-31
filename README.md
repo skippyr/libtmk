@@ -1,16 +1,16 @@
 <p align="center">
 	<img src="imgs/ornament.webp" alt="" />
 </p>
-<h1 align="center">⊼⊵⊼⊵&ensp;libtdk&ensp;⊼⊵⊼⊵</h1>
+<h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
 <p align="center">Terminal Development Kit</p>
 <p align="center">
-	<img src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20license&labelColor=%2324130e&color=%23b8150d" alt="" />
+	<img src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20tag&labelColor=%2324130e&color=%23b8150d" alt="" />
+	<img src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20commits&labelColor=%2324130e&color=%23b8150d" alt="" />
+	<img src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" alt="" />
 	&nbsp;
-	<img src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%8A%B5%20stars&labelColor=%2324130e&color=%23b8150d" alt="" />
+	<img src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" alt="" />
 </p>
 
 ## ❡ About
@@ -95,4 +95,4 @@ This project is licensed under the BSD-3-Clause License. Refer to the LICENSE fi
 
 &nbsp;
 
-<p align="center"><sup><strong>⊼⊵⊼⊵&ensp;Here Are Dragons!&ensp;⊼⊵⊼⊵</strong><br />Made with love by skippyr <3</sup></p>
+<p align="center"><sup><strong>≥v≥v&ensp;Here Are Dragons!&ensp;≥v≥v</strong><br />Made with love by skippyr <3</sup></p>
