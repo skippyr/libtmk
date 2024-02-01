@@ -9,8 +9,7 @@ static void win(void);
 
 static int wcol, wln;
 
-static void
-bottombar(void)
+static void bottombar(void)
 {
 	tdk_setcpos(wcol - 18, wln - 2);
 	printf("  skippyr/libtdk");
@@ -32,8 +31,7 @@ bottombar(void)
 	printf(" to exit preview.");
 }
 
-static void
-desktop(void)
+static void desktop(void)
 {
 	tdk_setcpos(0, 2);
 	printf("     \n");
@@ -44,8 +42,7 @@ desktop(void)
 	printf(" Help.pdf\n\n");
 }
 
-static void
-die(char *msg)
+static void die(char *msg)
 {
 	tdk_setclr(tdk_ClrRed, tdk_LyrFg);
 	fprintf(stderr, "preview: ");
@@ -54,8 +51,7 @@ die(char *msg)
 	exit(1);
 }
 
-static void
-topbar(void)
+static void topbar(void)
 {
 	int i;
 	tdk_seteff(tdk_EffRev, 1);
@@ -71,8 +67,7 @@ topbar(void)
 	tdk_seteff(tdk_EffRev, 0);
 }
 
-static void
-win(void)
+static void win(void)
 {
 	tdk_setcpos(wcol - 30, 5);
 	tdk_seteff(tdk_EffRev, 1);
@@ -84,8 +79,7 @@ win(void)
 	tdk_seteff(tdk_EffRev, 0);
 }
 
-int
-main(void)
+int main(void)
 {
 	int key;
 	tdk_getwdim(&wcol, &wln);
@@ -102,5 +96,5 @@ main(void)
 	while ((key = tdk_getkey()) != tdk_KeyEsc && key != 'q' && key != 'Q');
 	tdk_setcvis(1);
 	tdk_setwalt(0);
-	return 0;
+	return (0);
 }

@@ -28,13 +28,12 @@ It sets the terminal cursor visibility based on the boolean \fIisvis\fR.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR
-main(\fBvoid\fR)
+\fBint\fR main(\fBvoid\fR)
 {
 	tdk_setcvis(0);
 	tdk_getkey();
 	tdk_setcvis(1);
-	\fBreturn\fR 0;
+	\fBreturn\fR (0);
 }
 .fi
 

@@ -65,15 +65,14 @@ The navigation keys.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR
-main(\fBvoid\fR)
+\fBint\fR main(\fBvoid\fR)
 {
 	\fBint\fR key = tdk_getkey();
 	\fBif\fR (key == tdk_KeyUpArr)
 		printf("You pressed the Up Arrow key.\\n");
 	\fBelse if\fR (key == 'a' || key == 'A')
 		printf("You pressed the A key.\\n");
-	\fBreturn\fR 0;
+	\fBreturn\fR (0);
 }
 .fi
 

@@ -80,8 +80,7 @@ The background layer.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR
-main(\fBvoid\fR)
+\fBint\fR main(\fBvoid\fR)
 {
 	\fBchar\fR msg[] = "Here Are Dragons!";
 	tdk_setclr(tdk_ClrRed, tdk_LyrFg);
@@ -92,7 +91,7 @@ main(\fBvoid\fR)
 	printf("%s\\n", msg);
 	tdk_setclr(tdk_ClrDft, tdk_LyrFg);
 	printf("%s\\n", msg);
-	\fBreturn\fR 0;
+	\fBreturn\fR (0);
 }
 .fi
 

@@ -17,55 +17,57 @@
 
 A simple C99 terminal manipulation library for Linux that is capable of handling some terminal properties, styles and key readings with UTF-8 encoding.
 
+Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
+
 <p align="center"><img src="imgs/preview.webp" width="900" alt="" /></p>
 <p align="center"><sup><strong>Caption:</strong> a preview of an user interface made with libtdk (available as the file tools/preview.c). The terminal theme used is <a href="https://github.com/skippyr/flamerial">flamerial</a> and font is <a href="https://github.com/be5invis/Iosevka">iosevka</a>.</sup></p>
 
 ## ❡ Install
 
-### ¦ Dependencies
+### Dependencies
 
 The following dependencies are required to install it:
 
-&emsp;**1.**&ensp;**git**: it will be used to clone this repository.\
-&emsp;**2.**&ensp;**gcc**, **make**: they will be used to compile and install it.
+- **git**: it will be used to clone this repository.
+- **gcc**, **make**: they will be used to compile and install it.
 
-### ¦ Procedures
+### Procedures
 
 Using a terminal, follow these steps:
 
-&emsp;**1.**&ensp;Clone this repository using git:
+- Clone this repository using git:
 
 ```sh
 git clone https://github.com/skippyr/libtdk;
 ```
 
-&emsp;**2.**&ensp;Access the repository directory using cd:
+- Access the repository directory using cd:
 
 ```sh
 cd libtdk;
 ```
 
-&emsp;**3.**&ensp;Use make to compile and install it:
+- Use make to compile and install it:
 
 ```sh
 sudo make install clean;
 ```
 
-&emsp;**4.**&ensp;Export the following environment variables in your shell startup file:
+- Export the following environment variables in your shell startup file:
 
 ```sh
 export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib;
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
 ```
 
-&emsp;**5.**&ensp;Reopen your shell.
+- Reopen your shell.
 
 ## ❡ Uninstall
 
 Using a terminal, follow these steps:
 
-&emsp;**1.**&ensp;Go back to the repository directory.\
-&emsp;**2.**&ensp;Use make to uninstall it:
+- Go back to the repository directory.
+- Use make to uninstall it:
 
 ```sh
 sudo make uninstall;
@@ -76,7 +78,7 @@ sudo make uninstall;
 After installed, you can refer to its manual pages by using man:
 
 ```sh
-man 3 tdk;
+man tdk.3;
 ```
 
 ## ❡ Help
@@ -92,7 +94,3 @@ By contributing to this project, you must agree to license your work under the s
 ## ❡ License
 
 This project is licensed under the BSD-3-Clause License. Refer to the LICENSE file that comes in its source code for license and copyright details.
-
-&nbsp;
-
-<p align="center"><sup><strong>≥v≥v&ensp;Here Are Dragons!&ensp;≥v≥v</strong><br />Made with love by skippyr <3</sup></p>

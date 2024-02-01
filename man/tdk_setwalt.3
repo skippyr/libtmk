@@ -31,14 +31,13 @@ Opening the alternate screen while it is opened, resets it.
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR
-main(\fBvoid\fR)
+\fBint\fR main(\fBvoid\fR)
 {
 	tdk_setwalt(1);
 	printf("Here Are Dragons!");
 	tdk_getkey();
 	tdk_setwalt(0);
-	\fBreturn\fR 0;
+	\fBreturn\fR (0);
 }
 .fi
 
