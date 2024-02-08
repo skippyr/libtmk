@@ -21,50 +21,53 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It sets the terminal cursor shape to be \fIshp\fR.
+It sets the terminal cursor shape \fIshp\fR.
+
+.PP
+A custom shape must be manually reset before the end of your program to avoid messing up the shell session of the user.
+
+.PP
+No shape will be applied if the standard output and error streams are being redirected.
 
 .SH SHAPES
 
 .PP
-The \fIshp\fR parameter may be:
+There are values defined by the library to identify shapes:
 
 .TP
-.B tdk_ShpDft
-The default shape.
+.B TDK_SHPDFT
+The default shape. Used for resets.
 
 .TP
-.B tdk_ShpBBlk, tdk_ShpBlk
+.B TDK_SHPBLK, TDK_SHPBBLK
 The block shape.
 
 .TP
-.B tdk_ShpBUnd, tdk_ShpUnd
+.B TDK_SHPUND, TDK_SHPBUND
 The underline shape.
 
 .TP
-.B tdk_ShpBBar, tdk_ShpBar
+.B TDK_SHPBAR, TDK_SHPBBAR
 The bar shape.
 
 .PP
-Shapes prefixed with a "B" are blinking variants of that same shape.
+Shapes prefixed with B are blinking variants of that same shape. However, some terminal do not render blinking cursors by default.
 
 .SH EXAMPLES
 
 .nf
+\fB#include\fR <stddef.h>
 \fB#include\fR <tdk.h>
 
 \fBint\fR main(\fBvoid\fR)
 {
-	tdk_setcshp(tdk_ShpUnd);
-	tdk_getkey();
-	tdk_setcshp(tdk_ShpDft);
+	\fBint\fR key;
+	tdk_setcshp(TDK_SHPUND);
+	tdk_readkey(&key, NULL);
+	tdk_setcshp(TDK_SHPDFT);
 	\fBreturn\fR (0);
 }
 .fi
-
-.SH NOTES
-
-.PP
-Some terminals do not render blinking cursors by default.
 
 .SH SEE ALSO
 

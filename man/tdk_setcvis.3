@@ -21,17 +21,25 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It sets the terminal cursor visibility based on the boolean \fIisvis\fR.
+It sets the terminal cursor visibility based on value of the boolean \fIisvis\fR.
+
+.PP
+The visibility must be manually reset before the end of your program to avoid messing up the shell session of the user.
+
+.PP
+The visibility will not be set if the standard output and error streams are being redirected.
 
 .SH EXAMPLES
 
 .nf
+\fB#include\fR <stddef.h>
 \fB#include\fR <tdk.h>
 
 \fBint\fR main(\fBvoid\fR)
 {
+	\fBint\fR key;
 	tdk_setcvis(0);
-	tdk_getkey();
+	tdk_readkey(&key, NULL);
 	tdk_setcvis(1);
 	\fBreturn\fR (0);
 }

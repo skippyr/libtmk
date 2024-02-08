@@ -15,36 +15,36 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR tdk_getwdim(\fBint\fR \fI*col\fR, \fBint\fR \fI*ln\fR);
+\fBint\fR tdk_getwdim(\fBunsigned short int\fR *\fIcol\fR, \fBunsigned short int\fR *\fIrow\fR);
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It gets the total of columns and lines in the terminal window and puts those values inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
+It gets the total of columns and rows in the terminal window and puts those values inside of the addresses pointed by \fIcol\fR and \fIrow\fR, respectively.
 
 .PP
-If a size value is not required, its address may be set to NULL.
-
-.PP
-Upon success, it sets those values.
+Both parameters are optional: if one is not required, its address may be set to NULL.
 
 .SH RETURN VALUES
 
 .PP
-It returns 0 on success, and 1 on failure.
+On success, it returns 0, and -1 otherwise. It fails if all standard streams are being redirected.
 
 .SH EXAMPLES
 
 .nf
+\fB#include\fR <stdio.h>
 \fB#include\fR <tdk.h>
+
+\fBstatic unsigned short int\fR wcol_g;
+\fBstatic unsigned short int\fR wrow_g;
 
 \fBint\fR main(\fBvoid\fR)
 {
-	\fBint\fR wcol;
-	\fBint\fR wln;
-	tdk_getwdim(&wcol, &wln);
-	printf("Window Dimensions (columns = %d, lines = %d).\\n", wcol, wln);
+	tdk_getwdim(&wcol_g, &wrow_g);
+	printf(":: Total Of Columns: %hu.\fB\\n\fR", wcol_g);
+	printf(":: Total Of Rows   : %hu.\fB\\n\fR", wrow_g);
 	\fBreturn\fR (0);
 }
 .fi

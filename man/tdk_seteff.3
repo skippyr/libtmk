@@ -3,7 +3,7 @@
 .SH NAME
 
 .PP
-tdk_seteff - it enables/disables terminal effects
+tdk_seteff - it enables/disables terminal text effects
 
 .SH LIBRARY
 
@@ -21,59 +21,64 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .SH DESCRIPTION
 
 .PP
-It enables/disables the effect flags in the bitmask \fIeff\fR based on the boolean \fIisenb\fR.
+It enables/disables the terminal text effects flagged in the bitmask \fIeff\fR based on the value of the boolean \fIisenb\fR.
+
+.PP
+Any custom effects applied must be manually reset before the end of your program to avoid messing up the shell session of the user.
+
+.PP
+No effect will be applied if the standard output and error streams are being redirected.
 
 .SH EFFECTS
 
 .PP
-The bitmask \fIeff\fR may be composed by these flags:
+These are the bitmask flags defined by the library to identify effects. They may be used to compose the bitmask of the \fIeff\fR parameter:
 
 .TP
-.B tdk_EffItl
-The italic effect.
+.B TDK_EFFITL
+The italic effect: it makes the text curly. It may require the use of a font with italic style.
 
 .TP
-.B tdk_EffUnd
-The underline effect.
+.B TDK_EFFUND
+The underline effect: it draws a horizontal line below the text.
 
 .TP
-.B tdk_EffBlk
-The blinking effect.
+.B TDK_EFFBLK
+The blinking effect: it makes the text blink indefinetely over time.
 
 .TP
-.B tdk_EffRev
-The reverse-video effect.
+.B TDK_EFFREV
+The reverse-video effect: it swaps the foreground and background colors.
 
 .TP
-.B tdk_EffCon
-The conceal effect.
+.B TDK_EFFCON
+The conceal effect: it makes the text hard to read or invisible.
 
 .TP
-.B tdk_EffStr
-The strike-through effect.
+.B TDK_EFFSTR
+The strike-through effect: it draws a horizontal line crossing through the middle of the text.
+
+.PP
+Terminals may implement certain effects differently or not at all.
 
 .SH EXAMPLES
 
 .nf
+\fB#include\fR <stdio.h>
 \fB#include\fR <tdk.h>
 
 \fBint\fR main(\fBvoid\fR)
 {
 	\fBchar\fR msg[] = "Here Are Dragons!";
-	tdk_seteff(tdk_EffItl | tdk_EffUnd, 1);
-	printf("%s\\n", msg);
-	tdk_seteff(tdk_EffItl, 0);
-	printf("%s\\n", msg);
-	tdk_seteff(tdk_EffUnd, 0);
-	printf("%s\\n", msg);
+	tdk_seteff(TDK_EFFREV | TDK_EFFUND, 1);
+	printf("%s\fB\\n\fR", msg);
+	tdk_seteff(TDK_EFFREV, 0);
+	printf("%s\fB\\n\fR", msg);
+	tdk_seteff(TDK_EFFUND, 0);
+	printf("%s\fB\\n\fR", msg);
 	\fBreturn\fR (0);
 }
 .fi
-
-.SH NOTES
-
-.PP
-Terminals may implement certain effects differently or not at all.
 
 .SH SEE ALSO
 

@@ -1,0 +1,123 @@
+.TH tdk_set256clr 3 ${VERSION}
+
+.SH NAME
+
+.PP
+tdk_set256clr, tdk_sethexclr, tdk_setrgbclr - they set a terminal color
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-ltdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include\fR <tdk.h>
+
+\fBvoid\fR tdk_set256clr(\fBint\fR \fIclr\fR, \fBint\fR \fIlyr\fR);
+\fBvoid\fR tdk_sethexclr(\fBint\fR \fIhex\fR, \fBint\fR \fIlyr\fR);
+\fBvoid\fR tdk_setrgbclr(\fBint\fR \fIr\fR, \fBint\fR \fIg\fR, \fBint\fR \fIb\fR, \fBint\fR \fIlyr\fR);
+.fi
+
+.SH DESCRIPTION
+
+.PP
+They set a terminal color in the layer \fIlyr\fR. They differ by the color format they use:
+
+.IP \\[bu]
+tdk_set256clr() expects a color \fIclr\fR from the xterm color palette, a well-know terminal palette of 256 colors. The color may be a value from 0 to 255 or one defined by the library.
+
+This is also the only function capable of reseting colors.
+
+.IP \\[bu]
+tdk_sethexclr() expects a hex color \fIhex\fR, which may be any value in range from 0x0 to 0xffffff.
+
+.IP \\[bu]
+tdk_setrgbclr() expects an rgb color whose components are given by the parameters \fIr\fR, \fIg\fR and \fIb\fR. Each component may be a value from 0 to 255.
+
+.PP
+Any custom color applied must be manually reset before the end of your program to avoid messing up the shell session of the user.
+
+.PP
+The functions tdk_sethexclr() and tdk_setrgbclr() require that the terminal has truecolor support.
+
+.PP
+No color will be applied if the standard output and error streams are being redirected.
+
+.SH LAYERS
+
+.PP
+These are values defined by the library to identify layers:
+
+.TP
+.B TDK_LYRFG
+The foreground layer.
+
+.TP
+.B TDK_LYRBG
+The background layer.
+
+.SH COLORS
+
+.PP
+There are values defined by the library to identify the first 16 colors of the xterm color palette plus one for resets. They are intended to be used with tdk_set256clr():
+
+.TP
+.B TDK_CLRDFT
+The default color. Used for resets.
+
+.TP
+.B TDK_CLRRED, TDK_CLRLRED
+The red color.
+
+.TP
+.B TDK_CLRGRN, TDK_CLRLGRN
+The green color.
+
+.TP
+.B TDK_CLRYLW, TDK_CLRLYLW
+The yellow color.
+
+.TP
+.B TDK_CLRBLE, TDK_CLRLBLE
+The blue color.
+
+.TP
+.B TDK_CLRMAG, TDK_CLRLMAG
+The magenta color.
+
+.TP
+.B TDK_CLRCYN, TDK_CLRLCYN
+The cyan color.
+
+.TP
+.B TDK_CLRWHT, TDK_CLRLWHT
+The white color.
+
+.PP
+Colors prefixed with L are light variants of that same color.
+
+.SH EXAMPLES
+
+.nf
+\fB#include\fR <stdio.h>
+\fB#include\fR <tdk.h>
+
+\fBint\fR main(\fBvoid\fR)
+{
+	\fBchar\fR msg[] = "Here Are Dragons!";
+	tdk_set256clr(TDK_CLRRED, TDK_LYRFG);
+	printf("%s\fB\\n\fR", msg);
+	tdk_sethexclr(0xffff00, TDK_LYRFG);
+	printf("%s\fB\\n\fR", msg);
+	tdk_setrgbclr(0, 255, 0, TDK_LYRFG);
+	printf("%s\fB\\n\fR", msg);
+	tdk_set256clr(TDK_CLRDFT, TDK_LYRFG);
+	printf("%s\fB\\n\fR", msg);
+	\fBreturn\fR (0);
+}
+
+.SH SEE ALSO
+
+.BR tdk (3)

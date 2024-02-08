@@ -15,43 +15,47 @@ tdk (\fIlibtdk\fR, \fI-ltdk\fR)
 .nf
 \fB#include\fR <tdk.h>
 
-\fBint\fR tdk_getcpos(\fBint\fR \fI*col\fR, \fBint\fR \fI*ln\fR);
+\fBint\fR tdk_getcpos(\fBunsigned short int\fR *\fIcol\fR, \fBunsigned short int\fR *\fIrow\fR);
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It gets the terminal cursor column and line positions and put those values inside of the addresses pointed by \fIcol\fR and \fIln\fR, respectively.
+It gets the terminal cursor column and row positions and puts those values inside of the addresses pointed by \fIcol\fR and \fIrow\fR, respectively.
 
 .PP
-It considers an origin position at the top left corner of the terminal window.  The column and line positions increase going right and down, respectively.
+Both parameters are optional: if one is not required, its address may be set to NULL.
 
 .PP
-If a position is not required, its address may be set to NULL.
+It considers an origin position at the top left corner of the screen, where (col = 0, row = 0). The column and row positions increase going right and down, respectively.
 
 .PP
-Upon success, it sets those values and clears the stdin buffer.
+As it reads the answer given by the terminal through the input buffer, you need to ensure it is clean before using that. If you need to clear it up, you can use tdk_clearin() (3).
 
 .SH RETURN VALUES
 
 .PP
-It returns 0 on success, and 1 on failure.
+On success, it returns 0, and -1 otherwise. It fails if the standard input stream or the standard output and error streams are being redirected.
 
 .SH EXAMPLES
 
 .nf
+\fB#include\fR <stdio.h>
 \fB#include\fR <tdk.h>
+
+\fBstatic unsigned short int\fR ccol_g;
+\fBstatic unsigned short int\fR crow_g;
 
 \fBint\fR main(\fBvoid\fR)
 {
-	\fBint\fR ccol;
-	\fBint\fR cln;
-	tdk_getcpos(&ccol, &cln);
-	printf("Cursor Position (column = %d, line = %d).\\n", ccol, cln);
+	tdk_getcpos(&ccol_g, &crow_g);
+	printf(":: Cursor Column: %hu.\fB\\n\fR", ccol_g);
+	printf(":: Cursor Row   : %hu.\fB\\n\fR", crow_g);
 	\fBreturn\fR (0);
 }
 .fi
 
 .SH SEE ALSO
 
-.BR tdk (3)
+.BR tdk (3),
+.BR tdk_clearin (3)

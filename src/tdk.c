@@ -1,181 +1,207 @@
+#include <fcntl.h>
+#include <locale.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+#include <wchar.h>
 #include "tdk.h"
 
-#define PARSETRAIL(key, c0, c1, c2, c3)\
-	if (trail[0] == c0 && trail[1] == c1 && trail[2] == (int) c2 &&\
-		trail[3] == (int) c3) {\
-		head = key;\
-		goto out;\
+#define _TDK_HASLOCALECACHE (_tdk_cache_g & 1 << 6)
+#define _TDK_HASTTYCACHE (_tdk_cache_g & 1 << 7)
+#define _TDK_ISTTY(fd_m) (_tdk_cache_g & 1 << fd_m)
+#define _TDK_PARSECH(cond_m, key_m) \
+	if (cond_m) { \
+		*key = key_m; \
+		goto end; \
 	}
 
-static int ansi(char *msg);
-static int ansif(int len, char *fmt, ...);
-static int clearin(void);
-static int setraw(int isenb);
-static void setnblk(int isenb);
+static int _tdk_ansif(char *fmt, ...);
+static void _tdk_cachelocale(void);
+static void _tdk_cachetty(void);
 
-static int ansi(char *msg)
-{
-	return (!((isatty(1) && printf("%s", msg) >= 0 && !fflush(stdout)) ||
-			 (isatty(2) && fprintf(stderr, "%s", msg) >= 0)));
-}
+static char _tdk_cache_g = 0;
 
-static int ansif(int len, char *fmt, ...)
+static int _tdk_ansif(char *fmt, ...)
 {
-	char *msg;
-	int res;
 	va_list args;
-	if (!(msg = malloc(len)))
-		return (1);
+	_tdk_cachetty();
+	if (!_TDK_ISTTY(1) && !_TDK_ISTTY(2))
+		return (-1);
 	va_start(args, fmt);
-	vsnprintf(msg, len, fmt, args);
-	res = ansi(msg);
+	vfprintf(_TDK_ISTTY(1) ? stdout : stderr, fmt, args);
 	va_end(args);
-	free(msg);
-	return (res);
-}
-
-static int clearin(void)
-{
-	if (fwide(stdin, 0) < 0 || !setlocale(LC_ALL, "C.UTF-8") || setraw(1))
-		return (1);
-	setnblk(1);
-	while (getwchar() != WEOF);
-	setraw(0);
-	setnblk(0);
 	return (0);
 }
 
-static int setraw(int isenb)
+static void _tdk_cachelocale(void)
 {
-	struct termios t;
-	if (tcgetattr(0, &t))
-		return (1);
-	isenb ? (t.c_lflag &= ~(ICANON | ECHO)) : (t.c_lflag |= ICANON | ECHO);
-	tcsetattr(0, TCSANOW, &t);
-	return (0);
-}
-
-static void setnblk(int isenb)
-{
-	int fl = fcntl(0, F_GETFL);
-	fcntl(0, F_SETFL, isenb ? fl | O_NONBLOCK : fl & ~O_NONBLOCK);
-}
-
-int tdk_getcpos(int *col, int *ln)
-{
-	int tmpcol, tmpln;
-	if (clearin() || setraw(1) || ansi("\33[6n"))
-		return (1);
-	wscanf(L"\33[%d;%dR", &tmpln, &tmpcol);
-	if (col)
-		*col = --tmpcol;
-	if (ln)
-		*ln = --tmpln;
-	setraw(0);
-	return (0);
-}
-
-int tdk_getkey(void)
-{
-	int head, trail[4], i;
-	if ((!isatty(1) && !isatty(2)) || clearin())
-		return (WEOF);
-	setraw(1);
-	head = getwchar();
-	setnblk(1);
-	for (i = 0; i < 4; i++)
-		trail[i] = getwchar();
-	if (head == 27 && trail[0] != (int) WEOF) {
-		for (i = 65; i < 69; i++)
-			PARSETRAIL(i - 65 + tdk_KeyUpArr, 91, i, WEOF, WEOF);
-		for (i = 80; i < 84; i++)
-			PARSETRAIL(i - 80 + tdk_KeyF1, 79, i, WEOF, WEOF);
-		for (i = 65; i < 69; i++)
-			PARSETRAIL(i - 65 + tdk_KeyF1, 91, 91, i, WEOF);
-		PARSETRAIL(tdk_KeyF5, 91, 49, 53, 126);
-		PARSETRAIL(tdk_KeyF5, 91, 91, 69, WEOF);
-		for (i = 55; i < 58; i++)
-			PARSETRAIL(i - 55 + tdk_KeyF6, 91, 49, i, 126);
-		for (i = 48; i < 50; i++)
-			PARSETRAIL(i - 48 + tdk_KeyF9, 91, 50, i, 126);
-		for (i = 51; i < 53; i++)
-			PARSETRAIL(i - 51 + tdk_KeyF11, 91, 50, i, 126);
-		PARSETRAIL(tdk_KeyIns, 91, 52, 104, WEOF);
-		PARSETRAIL(tdk_KeyIns, 91, 50, 126, WEOF);
-		PARSETRAIL(tdk_KeyDel, 91, 80, WEOF, WEOF);
-		PARSETRAIL(tdk_KeyDel, 91, 51, 126, WEOF);
-		PARSETRAIL(tdk_KeyEnd, 91, 52, 126, WEOF);
-		PARSETRAIL(tdk_KeyEnd, 91, 70, WEOF, WEOF);
-		PARSETRAIL(tdk_KeyHome, 91, 72, WEOF, WEOF);
-		PARSETRAIL(tdk_KeyHome, 91, 49, 126, WEOF);
-		for (i = 53; i < 55; i++)
-			PARSETRAIL(i - 53 + tdk_KeyPgUp, 91, i, 126, WEOF);
-		head = 0;
+	if (!_TDK_HASLOCALECACHE) {
+		setlocale(LC_CTYPE, "C.UTF-8");
+		_tdk_cache_g |= 1 << 6;
 	}
-out:
-	clearin();
-	return (head < 0 || head == 9 || head == 10 || head > 26 ? head : 0);
 }
 
-int tdk_getwdim(int *col, int *ln)
+static void _tdk_cachetty(void)
 {
-	struct winsize w;
-	if (ioctl(0, TIOCGWINSZ, &w) && ioctl(1, TIOCGWINSZ, &w) &&
-		ioctl(2, TIOCGWINSZ, &w))
-		return (1);
-	if (col)
-		*col = w.ws_col;
-	if (ln)
-		*ln = w.ws_row;
-	return (0);
-}
-
-int tdk_setcpos(int col, int ln)
-{
-	int wcol, wln;
-	return (tdk_getwdim(&wcol, &wln) || ++col < 1 || col > wcol || ++ln < 1 ||
-			ln > wln || ansif(13, "\33[%d;%dH", ln, col));
+	if (!_TDK_HASTTYCACHE)
+		_tdk_cache_g |= isatty(0) | isatty(1) << 1 | isatty(2) << 2 | 1 << 7;
 }
 
 void tdk_beep(void)
 {
-	ansi("\7");
+	_tdk_ansif("\007");
+}
+
+void tdk_clearin(void)
+{
+	int fl = fcntl(0, F_GETFL);
+	struct termios t;
+	tcgetattr(0, &t);
+	t.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr(0, TCSANOW, &t);
+	fcntl(0, F_SETFL, fl | O_NONBLOCK);
+	while (getwchar() != WEOF);
+	t.c_lflag |= ICANON | ECHO;
+	tcsetattr(0, TCSANOW, &t);
+	fcntl(0, F_SETFL, fl);
 }
 
 void tdk_clearln(void)
 {
-	ansi("\33[2K\33[1G");
+	_tdk_ansif("\033[2K\033[1G");
 }
 
-void tdk_setclr(int clr, int lyr)
+int tdk_getcpos(unsigned short int *col, unsigned short int *row)
 {
-	ansif(6, "\33[%d%dm", lyr, clr);
+	unsigned short int tmpcol;
+	unsigned short int tmprow;
+	struct termios t;
+	if (_tdk_ansif("\033[6n") || tcgetattr(0, &t))
+		return (-1);
+	t.c_lflag &= ~(ICANON | ECHO);
+	tcsetattr(0, TCSANOW, &t);
+	wscanf(L"\033[%hu;%huR", &tmprow, &tmpcol);
+	if (col)
+		*col = --tmpcol;
+	if (row)
+		*row = --tmprow;
+	t.c_lflag |= ICANON | ECHO;
+	tcsetattr(0, TCSANOW, &t);
+	return (0);
+}
+
+int tdk_getwdim(unsigned short int *col, unsigned short int *row)
+{
+	struct winsize w;
+	if (ioctl(1, TIOCGWINSZ, &w) && ioctl(0, TIOCGWINSZ, &w) &&
+		ioctl(2, TIOCGWINSZ, &w))
+		return (-1);
+	if (col)
+		*col = w.ws_col;
+	if (row)
+		*row = w.ws_row;
+	return (0);
+}
+
+int tdk_readkey(int *key, char *mod)
+{
+	int ch[8];
+	int fl;
+	int i;
+	char tmpmod = 0;
+	struct termios t;
+	_tdk_cachetty();
+	if (!_TDK_ISTTY(0) || (!_TDK_ISTTY(1) && !_TDK_ISTTY(2)))
+		return (-1);
+	_tdk_cachelocale();
+	tcgetattr(0, &t);
+	t.c_lflag &= ~(ICANON | ECHO | ISIG);
+	t.c_iflag &= ~IXON;
+	tcsetattr(0, TCSANOW, &t);
+	*ch = getwchar();
+	fl = fcntl(0, F_GETFL);
+	fcntl(0, F_SETFL, fl | O_NONBLOCK);
+	if (*ch == 27 && ((ch[1] = getwchar()) == 79 || ch[1] == 91)) {
+		for (i = 2; i < 8; i++)
+			ch[i] = getwchar();
+		while (getwchar() != WEOF);
+		_TDK_PARSECH(ch[2] >= 65 && ch[2] <= 68, ch[2] - 65 + TDK_KEYUPARR);
+		_TDK_PARSECH(ch[3] == 126, ch[2] - 49 + TDK_KEYHOME);
+		_TDK_PARSECH(ch[3] == 104 || (ch[1] == 91 && ch[2] == 80),
+					 !(ch[3] == 104) + TDK_KEYINS);
+		_TDK_PARSECH(ch[2] == 70 || ch[2] == 72, ch[2] == 72 ? TDK_KEYHOME :
+					 TDK_KEYEND);
+		_TDK_PARSECH(ch[2] >= 80 && ch[2] <= 83, ch[2] - 80 + TDK_KEYF1);
+		_TDK_PARSECH(ch[3] >= 65 && ch[3] <= 69, ch[3] - 65 + TDK_KEYF1);
+		_TDK_PARSECH(ch[4] == 126, ch[3] == 53 ? TDK_KEYF5 : ch[3] >= 55 &&
+					 ch[3] <= 57 ? ch[3] - 55 + TDK_KEYF6 : ch[3] == 48 ||
+					 ch[3] == 49 ? ch[3] - 48 + TDK_KEYF9 : ch[3] - 51 +
+					 TDK_KEYF11);
+		_TDK_PARSECH(ch[7] == 117, (ch[6] == 50) + TDK_KEYPRTSC);
+		*key = 0;
+		goto end;
+	}
+	if ((*key = (tmpmod = *ch == 27 && ch[1] >= 0) ? ch[1] : *ch) >= 0 &&
+		*key <= 26 && *key != 9 && *key != 10) {
+		*key = !*key ? TDK_KEYSPACE : *key + 96;
+		tmpmod |= TDK_MODCTRL;
+	}
+ end:
+	if (mod)
+		*mod = tmpmod;
+	t.c_lflag |= ICANON | ECHO | ISIG;
+	t.c_iflag |= IXON;
+	tcsetattr(0, TCSANOW, &t);
+	fcntl(0, F_SETFL, fl);
+	return (0);
+}
+
+void tdk_set256clr(int clr, int lyr)
+{
+	_tdk_ansif(clr < 0 ? "\033[%d9m" : "\033[%d8;5;%dm", lyr, clr);
+}
+
+void tdk_setcpos(unsigned short int col, unsigned short int row)
+{
+	_tdk_ansif("\033[%d;%dH", ++row, ++col);
 }
 
 void tdk_setcshp(int shp)
 {
-	ansif(6, "\33[%d q", shp);
+	_tdk_ansif("\033[%d q", shp);
 }
 
-void tdk_setcvis(int isvis)
+void tdk_setcvis(int isenb)
 {
-	ansi(isvis ? "\33[?25h" : "\33[?25l");
+	_tdk_ansif("\033[?25%c", isenb ? 'h' : 'l');
 }
 
 void tdk_seteff(int eff, int isenb)
 {
 	int i;
 	for (i = 3; i < 10; i++)
-		if (1 << i & eff)
-			ansif(6, "\33[%dm", isenb ? i : i + 20);
+		if (eff & 1 << i)
+			_tdk_ansif("\033[%dm", isenb ? i : i + 20);
+}
+
+void tdk_sethexclr(int hex, int lyr)
+{
+	tdk_setrgbclr(hex >> 16 & 0xff, hex >> 8 & 0xff, hex & 0xff, lyr);
 }
 
 void tdk_setlum(int lum)
 {
-	ansif(8, !lum ? "\33[22m" : "\33[22;%dm", lum);
+	_tdk_ansif(!lum ? "\033[22m" : "\033[22;%dm", lum);
+}
+
+void tdk_setrgbclr(int r, int g, int b, int lyr)
+{
+	_tdk_ansif("\033[%d8;2;%d;%d;%dm", lyr, r, g, b);
 }
 
 void tdk_setwalt(int isenb)
 {
-	ansi(isenb ? "\33[?1049h\33[2J\33[1;1H" : "\33[?1049l");
+	_tdk_ansif(isenb ? "\033[?1049h\033[2J\033[1;1H" : "\033[?1049l");
 }
