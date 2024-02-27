@@ -4,6 +4,7 @@ CFLAGS:=-std=c99 -pedantic -Os -Wall -Wextra -ltdk
 INCPATH:=/usr/local/include
 LIBPATH:=/usr/local/lib
 MAN3PATH:=/usr/local/man/man3
+SHELL:=bash
 
 .PHONY: all clean install uninstall
 
