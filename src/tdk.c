@@ -1,207 +1,395 @@
+#ifdef _WIN32
+#include <Windows.h>
+#include <io.h>
+#else
 #include <fcntl.h>
-#include <locale.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
+#endif
+#include <stdarg.h>
+#include <stdio.h>
 #include <wchar.h>
+
 #include "tdk.h"
 
-#define _TDK_HASLOCALECACHE (_tdk_cache_g & 1 << 6)
-#define _TDK_HASTTYCACHE (_tdk_cache_g & 1 << 7)
-#define _TDK_ISTTY(fd_m) (_tdk_cache_g & 1 << fd_m)
-#define _TDK_PARSECH(cond_m, key_m) \
-	if (cond_m) { \
-		*key = key_m; \
-		goto end; \
-	}
+#define _tdk_HAS_TTY_CACHE (_tdk_g_cache & _tdk_HAS_TTY_CACHE_FLAG)
+#define _tdk_HAS_TTY_CACHE_FLAG (1 << 7)
+#ifdef _WIN32
+#define _tdk_HIGH_SURROGATE_BEGIN 0xd800
+#define _tdk_HIGH_SURROGATE_END 0xdbff
+#endif
+#define _tdk_IS_TTY(a_stream) (_tdk_g_cache & 1 << a_stream)
+#define _tdk_PARSE_KEY(a_condition, a_key) \
+    if (a_condition) \
+    { \
+        event->key = a_key; \
+        break; \
+    }
+#ifdef _WIN32
+#define _tdk_TTY_CACHE(a_file, a_stream) (!!_isatty(_fileno(a_file)) << a_stream)
+#else
+#define _tdk_TTY_CACHE(a_file, a_stream) (!!isatty(fileno(a_file)) << a_stream)
+#endif
 
-static int _tdk_ansif(char *fmt, ...);
-static void _tdk_cachelocale(void);
-static void _tdk_cachetty(void);
+static void _tdk_cacheTTY(void);
+static int _tdk_writeANSI(const char *format, ...);
 
-static char _tdk_cache_g = 0;
+static char _tdk_g_cache = 0;
 
-static int _tdk_ansif(char *fmt, ...)
+static void _tdk_cacheTTY(void)
 {
-	va_list args;
-	_tdk_cachetty();
-	if (!_TDK_ISTTY(1) && !_TDK_ISTTY(2))
-		return (-1);
-	va_start(args, fmt);
-	vfprintf(_TDK_ISTTY(1) ? stdout : stderr, fmt, args);
-	va_end(args);
-	return (0);
+    if (_tdk_HAS_TTY_CACHE)
+    {
+        return;
+    }
+#ifdef _WIN32
+    HANDLE handle;
+    DWORD mode;
+    SetConsoleOutputCP(CP_UTF8);
+    (GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) ||
+     GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
+        SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
+    _tdk_g_cache |= _tdk_TTY_CACHE(stdin, tdk_Stream_Input) | _tdk_TTY_CACHE(stdout, tdk_Stream_Output) |
+                    _tdk_TTY_CACHE(stderr, tdk_Stream_Error) | _tdk_HAS_TTY_CACHE_FLAG;
 }
 
-static void _tdk_cachelocale(void)
+static int _tdk_writeANSI(const char *format, ...)
 {
-	if (!_TDK_HASLOCALECACHE) {
-		setlocale(LC_CTYPE, "C.UTF-8");
-		_tdk_cache_g |= 1 << 6;
-	}
+    va_list arguments;
+    _tdk_cacheTTY();
+    if (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error))
+    {
+        return -1;
+    }
+    va_start(arguments, format);
+    int totalOfBytesWritten = vfprintf(_tdk_IS_TTY(tdk_Stream_Output) ? stdout : stderr, format, arguments);
+    va_end(arguments);
+    return -(totalOfBytesWritten < 0);
 }
 
-static void _tdk_cachetty(void)
+void tdk_clearCursorLine(void)
 {
-	if (!_TDK_HASTTYCACHE)
-		_tdk_cache_g |= isatty(0) | isatty(1) << 1 | isatty(2) << 2 | 1 << 7;
+    _tdk_writeANSI("\033[2K\033[1G");
 }
 
-void tdk_beep(void)
+void tdk_clearInputBuffer(void)
 {
-	_tdk_ansif("\007");
+#ifdef _WIN32
+    FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+    struct termios attributes;
+    int flags = fcntl(STDIN_FILENO, F_GETFL);
+    if (tcgetattr(STDIN_FILENO, &attributes))
+    {
+        return;
+    }
+    attributes.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+    while (getchar() != EOF)
+    {
+    }
+    attributes.c_lflag |= ICANON | ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    fcntl(STDIN_FILENO, F_SETFL, flags);
+#endif
 }
 
-void tdk_clearin(void)
+int tdk_isTTY(int stream)
 {
-	int fl = fcntl(0, F_GETFL);
-	struct termios t;
-	tcgetattr(0, &t);
-	t.c_lflag &= ~(ICANON | ECHO);
-	tcsetattr(0, TCSANOW, &t);
-	fcntl(0, F_SETFL, fl | O_NONBLOCK);
-	while (getwchar() != WEOF);
-	t.c_lflag |= ICANON | ECHO;
-	tcsetattr(0, TCSANOW, &t);
-	fcntl(0, F_SETFL, fl);
+    _tdk_cacheTTY();
+    return !!_tdk_IS_TTY(stream);
 }
 
-void tdk_clearln(void)
+int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
 {
-	_tdk_ansif("\033[2K\033[1G");
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+    if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
+        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+    {
+        return -1;
+    }
+    coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
+    coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
+#else
+    struct termios attributes;
+    if (_tdk_writeANSI("\033[6n") || tcgetattr(STDIN_FILENO, &attributes))
+    {
+        return -1;
+    }
+    attributes.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    int totalOfMatchesRead = scanf("\033[%hu;%huR", &coordinate->row, &coordinate->column);
+    attributes.c_lflag |= ICANON | ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    if (totalOfMatchesRead != 2)
+    {
+        return -1;
+    }
+    --coordinate->column;
+    --coordinate->row;
+#endif
+    return 0;
 }
 
-int tdk_getcpos(unsigned short int *col, unsigned short int *row)
+int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
 {
-	unsigned short int tmpcol;
-	unsigned short int tmprow;
-	struct termios t;
-	if (_tdk_ansif("\033[6n") || tcgetattr(0, &t))
-		return (-1);
-	t.c_lflag &= ~(ICANON | ECHO);
-	tcsetattr(0, TCSANOW, &t);
-	wscanf(L"\033[%hu;%huR", &tmprow, &tmpcol);
-	if (col)
-		*col = --tmpcol;
-	if (row)
-		*row = --tmprow;
-	t.c_lflag |= ICANON | ECHO;
-	tcsetattr(0, TCSANOW, &t);
-	return (0);
+#ifdef _WIN32
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+    if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
+        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+    {
+        return -1;
+    }
+    dimensions->totalOfColumns = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+    dimensions->totalOfRows = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+#else
+    struct winsize windowSize;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) &&
+        ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
+    {
+        return -1;
+    }
+    dimensions->totalOfColumns = windowSize.ws_col;
+    dimensions->totalOfRows = windowSize.ws_row;
+#endif
+    return 0;
 }
 
-int tdk_getwdim(unsigned short int *col, unsigned short int *row)
+int tdk_readKeyEvent(struct tdk_KeyEvent *event)
 {
-	struct winsize w;
-	if (ioctl(1, TIOCGWINSZ, &w) && ioctl(0, TIOCGWINSZ, &w) &&
-		ioctl(2, TIOCGWINSZ, &w))
-		return (-1);
-	if (col)
-		*col = w.ws_col;
-	if (row)
-		*row = w.ws_row;
-	return (0);
+    _tdk_cacheTTY();
+    if (!_tdk_IS_TTY(tdk_Stream_Input) || fwide(stdin, 0) > 0 ||
+        (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error)))
+    {
+        return -1;
+    }
+#ifdef _WIN32
+    HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
+    INPUT_RECORD record;
+    DWORD mode;
+    DWORD totalOfEventsRead;
+    int buffer;
+    GetConsoleMode(handle, &mode);
+    SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT);
+    while (1)
+    {
+        ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
+        if (record.EventType != KEY_EVENT || !record.Event.KeyEvent.bKeyDown ||
+            record.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL || record.Event.KeyEvent.wVirtualKeyCode == VK_SHIFT ||
+            record.Event.KeyEvent.wVirtualKeyCode == VK_MENU || record.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
+            record.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK || record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL)
+        {
+            continue;
+        }
+        event->key = 0;
+        if ((buffer = record.Event.KeyEvent.uChar.UnicodeChar))
+        {
+            if (buffer <= 26 && buffer != tdk_Key_Tab && buffer != tdk_Key_Enter)
+            {
+                event->key = buffer + 96;
+            }
+            else if (buffer >= _tdk_HIGH_SURROGATE_BEGIN && buffer <= _tdk_HIGH_SURROGATE_END)
+            {
+                ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
+                ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
+                *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2, (char *)&event->key, 4, NULL, NULL);
+            }
+            else
+            {
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1, (char *)&event->key, 4, NULL, NULL);
+            }
+            event->modifiers = !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
+                               !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
+                                   << 1;
+            break;
+        }
+        else if (record.Event.KeyEvent.dwControlKeyState &
+                 (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
+        {
+            continue;
+        }
+        event->modifiers = 0;
+        _tdk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_LEFT &&
+                           record.Event.KeyEvent.wVirtualKeyCode <= VK_DOWN,
+                       record.Event.KeyEvent.wVirtualKeyCode - VK_LEFT + tdk_Key_LeftArrow);
+        _tdk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_PRIOR &&
+                           record.Event.KeyEvent.wVirtualKeyCode <= VK_HOME,
+                       record.Event.KeyEvent.wVirtualKeyCode - VK_PRIOR + tdk_Key_PageUp);
+        _tdk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_INSERT &&
+                           record.Event.KeyEvent.wVirtualKeyCode <= VK_DELETE,
+                       record.Event.KeyEvent.wVirtualKeyCode - VK_INSERT + tdk_Key_Insert);
+        _tdk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_F1 &&
+                           record.Event.KeyEvent.wVirtualKeyCode <= VK_F12,
+                       record.Event.KeyEvent.wVirtualKeyCode - VK_F1 + tdk_Key_F1);
+    }
+    SetConsoleMode(handle, mode);
+#else
+    struct termios attributes;
+    int flags = fcntl(STDIN_FILENO, F_GETFL);
+    tcgetattr(STDIN_FILENO, &attributes);
+    attributes.c_lflag &= ~(ICANON | ECHO | ISIG);
+    attributes.c_iflag &= ~IXON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    while (1)
+    {
+        char buffer[5] = {0, 0, 0, 0, 0};
+        *buffer = getchar();
+        fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+        if (*buffer == 27 && (buffer[1] = getchar()) == 79 || buffer[1] == 91)
+        {
+            for (size_t index = 2; index < 5; ++index)
+            {
+                buffer[index] = getchar();
+            }
+            while (getchar() != EOF)
+            {
+            }
+            event->modifiers = 0;
+            _tdk_PARSE_KEY(buffer[2] >= 65 && buffer[2] <= 68, buffer[2] - 65 + tdk_Key_UpArrow);
+            _tdk_PARSE_KEY(buffer[3] == 126, buffer[2] - 49 + tdk_Key_Home);
+            _tdk_PARSE_KEY(buffer[3] == 104 || (buffer[1] == 91 && buffer[2] == 80),
+                           !(buffer[3] == 104) + tdk_Key_Insert);
+            _tdk_PARSE_KEY(buffer[2] == 70 || buffer[2] == 72, buffer[2] == 72 ? tdk_Key_Home : tdk_Key_End);
+            _tdk_PARSE_KEY(buffer[2] >= 80 && buffer[2] <= 83, buffer[2] - 80 + tdk_Key_F1);
+            _tdk_PARSE_KEY(buffer[3] >= 65 && buffer[3] <= 69, buffer[3] - 65 + tdk_Key_F1);
+            _tdk_PARSE_KEY(buffer[4] == 126, buffer[3] == 53                      ? tdk_Key_F5
+                                             : buffer[3] >= 55 && buffer[3] <= 57 ? buffer[3] - 55 + tdk_Key_F6
+                                             : buffer[3] == 48 || buffer[3] == 49 ? buffer[3] - 48 + tdk_Key_F9
+                                                                                  : buffer[3] - 51 + tdk_Key_F11);
+            fcntl(STDIN_FILENO, F_SETFL, flags);
+            continue;
+        }
+        if (*buffer & 1 << 7)
+        {
+            for (size_t index = 1; index < 1 + !!(*buffer & 1 << 6) + !!(*buffer & 1 << 5) + !!(*buffer & 1 << 4);
+                 ++index)
+            {
+                buffer[index] = getchar();
+            }
+            event->key = *((int *)buffer);
+            event->modifiers = 0;
+        }
+        else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF) ? buffer[1] : *buffer) >= 0 &&
+                 event->key <= 26 && event->key != tdk_Key_Tab && event->key != tdk_Key_Enter)
+        {
+            event->key = !event->key ? tdk_Key_Space : event->key + 96;
+            event->modifiers |= tdk_ModifierKey_Ctrl;
+        }
+        break;
+    }
+    attributes.c_lflag |= ICANON | ECHO | ISIG;
+    attributes.c_iflag |= IXON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+    fcntl(STDIN_FILENO, F_SETFL, flags);
+#endif
+    return 0;
 }
 
-int tdk_readkey(int *key, char *mod)
+void tdk_ringBell(void)
 {
-	int ch[8];
-	int fl;
-	int i;
-	char tmpmod = 0;
-	struct termios t;
-	_tdk_cachetty();
-	if (!_TDK_ISTTY(0) || (!_TDK_ISTTY(1) && !_TDK_ISTTY(2)))
-		return (-1);
-	_tdk_cachelocale();
-	tcgetattr(0, &t);
-	t.c_lflag &= ~(ICANON | ECHO | ISIG);
-	t.c_iflag &= ~IXON;
-	tcsetattr(0, TCSANOW, &t);
-	*ch = getwchar();
-	fl = fcntl(0, F_GETFL);
-	fcntl(0, F_SETFL, fl | O_NONBLOCK);
-	if (*ch == 27 && ((ch[1] = getwchar()) == 79 || ch[1] == 91)) {
-		for (i = 2; i < 8; i++)
-			ch[i] = getwchar();
-		while (getwchar() != WEOF);
-		_TDK_PARSECH(ch[2] >= 65 && ch[2] <= 68, ch[2] - 65 + TDK_KEYUPARR);
-		_TDK_PARSECH(ch[3] == 126, ch[2] - 49 + TDK_KEYHOME);
-		_TDK_PARSECH(ch[3] == 104 || (ch[1] == 91 && ch[2] == 80),
-					 !(ch[3] == 104) + TDK_KEYINS);
-		_TDK_PARSECH(ch[2] == 70 || ch[2] == 72, ch[2] == 72 ? TDK_KEYHOME :
-					 TDK_KEYEND);
-		_TDK_PARSECH(ch[2] >= 80 && ch[2] <= 83, ch[2] - 80 + TDK_KEYF1);
-		_TDK_PARSECH(ch[3] >= 65 && ch[3] <= 69, ch[3] - 65 + TDK_KEYF1);
-		_TDK_PARSECH(ch[4] == 126, ch[3] == 53 ? TDK_KEYF5 : ch[3] >= 55 &&
-					 ch[3] <= 57 ? ch[3] - 55 + TDK_KEYF6 : ch[3] == 48 ||
-					 ch[3] == 49 ? ch[3] - 48 + TDK_KEYF9 : ch[3] - 51 +
-					 TDK_KEYF11);
-		_TDK_PARSECH(ch[7] == 117, (ch[6] == 50) + TDK_KEYPRTSC);
-		*key = 0;
-		goto end;
-	}
-	if ((*key = (tmpmod = *ch == 27 && ch[1] >= 0) ? ch[1] : *ch) >= 0 &&
-		*key <= 26 && *key != 9 && *key != 10) {
-		*key = !*key ? TDK_KEYSPACE : *key + 96;
-		tmpmod |= TDK_MODCTRL;
-	}
- end:
-	if (mod)
-		*mod = tmpmod;
-	t.c_lflag |= ICANON | ECHO | ISIG;
-	t.c_iflag |= IXON;
-	tcsetattr(0, TCSANOW, &t);
-	fcntl(0, F_SETFL, fl);
-	return (0);
+    _tdk_writeANSI("\007");
 }
 
-void tdk_set256clr(int clr, int lyr)
+void tdk_set256Color(int color, int layer)
 {
-	_tdk_ansif(clr < 0 ? "\033[%d9m" : "\033[%d8;5;%dm", lyr, clr);
+    _tdk_writeANSI(color == tdk_Color_Default ? "\033[%d9m" : "\033[%d8;5;%dm", layer, color);
 }
 
-void tdk_setcpos(unsigned short int col, unsigned short int row)
+void tdk_setAlternateWindow(int isToEnable)
 {
-	_tdk_ansif("\033[%d;%dH", ++row, ++col);
+    _tdk_writeANSI(isToEnable ? "\033[?1049h\033[2J\033[1;1H" : "\033[?1049l");
 }
 
-void tdk_setcshp(int shp)
+int tdk_setCursorCoordinate(struct tdk_Coordinate coordinate)
 {
-	_tdk_ansif("\033[%d q", shp);
+    struct tdk_Dimensions windowDimensions;
+    return -(tdk_getWindowDimensions(&windowDimensions) || ++coordinate.column <= 0 ||
+             coordinate.column > windowDimensions.totalOfColumns ||
+             ++coordinate.row <= 0 && coordinate.row > windowDimensions.totalOfRows ||
+             _tdk_writeANSI("\033[%hu;%huH", coordinate.row, coordinate.column));
 }
 
-void tdk_setcvis(int isenb)
+void tdk_setCursorShape(int shape)
 {
-	_tdk_ansif("\033[?25%c", isenb ? 'h' : 'l');
+    _tdk_writeANSI("\033[%d q", shape);
 }
 
-void tdk_seteff(int eff, int isenb)
+void tdk_setCursorVisibility(int isToShow)
 {
-	int i;
-	for (i = 3; i < 10; i++)
-		if (eff & 1 << i)
-			_tdk_ansif("\033[%dm", isenb ? i : i + 20);
+    _tdk_writeANSI("\033[?25%c", isToShow ? 'h' : 'l');
 }
 
-void tdk_sethexclr(int hex, int lyr)
+void tdk_setEffect(int effect, int isToEnable)
 {
-	tdk_setrgbclr(hex >> 16 & 0xff, hex >> 8 & 0xff, hex & 0xff, lyr);
+    for (int ansi = 3; ansi < 10; ++ansi)
+    {
+        if (effect & 1 << ansi)
+        {
+            _tdk_writeANSI("\033[%dm", isToEnable ? ansi : ansi + 20);
+        }
+    }
 }
 
-void tdk_setlum(int lum)
+void tdk_setHEXColor(int color, int layer)
 {
-	_tdk_ansif(!lum ? "\033[22m" : "\033[22;%dm", lum);
+    tdk_setRGBColor((struct tdk_RGB){color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff}, layer);
 }
 
-void tdk_setrgbclr(int r, int g, int b, int lyr)
+void tdk_setRGBColor(struct tdk_RGB color, int layer)
 {
-	_tdk_ansif("\033[%d8;2;%d;%d;%dm", lyr, r, g, b);
+    _tdk_writeANSI("\033[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
 }
 
-void tdk_setwalt(int isenb)
+void tdk_setWeight(int weight)
 {
-	_tdk_ansif(isenb ? "\033[?1049h\033[2J\033[1;1H" : "\033[?1049l");
+    _tdk_writeANSI(weight == tdk_Weight_Default ? "\033[22m" : "\033[22;%dm", weight);
+}
+
+int tdk_write(const char *format, ...)
+{
+    va_list arguments;
+    _tdk_cacheTTY();
+    va_start(arguments, format);
+    int totalOfBytesWritten = vprintf(format, arguments);
+    va_end(arguments);
+    return totalOfBytesWritten;
+}
+
+int tdk_writeError(const char *format, ...)
+{
+    va_list arguments;
+    _tdk_cacheTTY();
+    va_start(arguments, format);
+    fflush(stdout);
+    int totalOfBytesWritten = vfprintf(stderr, format, arguments);
+    va_end(arguments);
+    return totalOfBytesWritten;
+}
+
+int tdk_writeErrorLine(const char *format, ...)
+{
+    va_list arguments;
+    _tdk_cacheTTY();
+    va_start(arguments, format);
+    fflush(stdout);
+    int totalOfBytesWritten = vfprintf(stderr, format, arguments);
+    fprintf(stderr, "\n");
+    va_end(arguments);
+    return totalOfBytesWritten < 0 ? -1 : totalOfBytesWritten + 1;
+}
+
+int tdk_writeLine(const char *format, ...)
+{
+    va_list arguments;
+    _tdk_cacheTTY();
+    va_start(arguments, format);
+    int totalOfBytesWritten = vprintf(format, arguments);
+    putchar('\n');
+    va_end(arguments);
+    return totalOfBytesWritten < 0 ? -1 : totalOfBytesWritten + 1;
 }

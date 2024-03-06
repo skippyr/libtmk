@@ -1,0 +1,9 @@
+AccessModifierOffset: -4
+AlignEscapedNewlines: DontAlign
+AllowShortLambdasOnASingleLine: None
+BasedOnStyle: Microsoft
+BreakAfterJavaFieldAnnotations: true
+FixNamespaceComments: false
+JavaScriptQuotes: Double
+NamespaceIndentation : All
+SpacesInContainerLiterals: false

@@ -1,21 +1,21 @@
 <p align="center">
-	<img alt="" src="ornament.webp" />
+    <img alt="" src="assets/ornament.webp" />
 </p>
 <h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
 <p align="center">Terminal Development Kit</p>
 <p align="center">
-	<img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
-	&nbsp;
-	<img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
-	&nbsp;
-	<img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
-	&nbsp;
-	<img alt="" src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
+    <img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
 </p>
 
 ## ❡ About
 
-A simple C99 terminal manipulation library for GNU/Linux that is capable of handling some terminal properties, styles and key readings with UTF-8 encoding.
+A simple C99 terminal manipulation library for Linux and Windows that can be used to develop cross-platform terminal application using C and C++. In summary, it includes features to manipulate terminal properties, styles and key events encoded in UTF-8.
 
 Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
 
@@ -23,60 +23,55 @@ Designed to be an alternative to curses-like libraries, it offers a solid base f
 
 ### Dependencies
 
-The following dependencies are required to install it:
+The following dependencies must be installed before installing it:
 
-- `git`: it will be used to clone this repository.
-- `gcc`, `make`: they will be used to build and install this library.
+#### Dependencies For Windows
+
+- **Visual Studio 2022**: it provides all the tools required to build this library.
+- **git**: it will be used to clone this repository.
+
+#### Dependencies For Linux
+
+- **gcc**, **cmake**, **ninja**: they will be used to build this library.
+- **git**: it will be used to clone this repository.
 
 ### Procedures
 
-Follow these steps:
+The recommended way of using this library is by including it as a git submodule in your project and using CMake to perform its build and linking. That way you will be able to automatically download it as a dependency when you clone your repository and also be able to decide whether or not to update it.
 
-- Clone this repository using `git`:
+To do such, follow these steps:
+
+- In the root of your project, where your `CMakeLists.txt` is, clone this repository as a submodule:
 
 ```sh
-git clone --depth 1 https://github.com/skippyr/libtdk;
+git submodule add --depth 1 https://github.com/skippyr/libtdk lib/libtdk
 ```
 
-- Access the repository using `cd`:
+- In your `CMakeLists.txt`, add this library and link it to your executable target. In this example, it will be linked to an executable `src/main.c`, but adapt it to your case:
 
-```sh
-cd libtdk;
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(example-project)
+# Add the executable to the build.
+add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
+# Add the library to the build.
+add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c")
+# Includes its header file to the executable build.
+target_include_directories(main PRIVATE "${CMAKE_SOURCE_DIR}/lib/libtdk/src")
+# Links the library to the executable build.
+target_link_libraries(main tdk)
 ```
 
-- Use `make` to build and install it:
+- Now, you are able to build your project and use the library in your executable:
 
 ```sh
-sudo make install clean;
-```
-
-- Export the following environment variables in your shell configuration file:
-
-```sh
-export LIBRARY_PATH=${LIBRARY_PATH}:/usr/local/lib;
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib;
-```
-
-- Reopen your shell.
-
-## ❡ Uninstall
-
-Follow these steps:
-
-- Go back to the repository directory.
-- Use `make` to uninstall it.
-
-```sh
-sudo make uninstall;
+cmake -G Ninja -B out
+cmake --build out
 ```
 
 ## ❡ Documentation
 
-Once installed, you can read its documentation using `man`:
-
-```sh
-man tdk.3;
-```
+After installed, you can learn how to use it by reading its [documentation](docs.md).
 
 ## ❡ Help
 
@@ -93,4 +88,4 @@ By contributing to this project, you agree to license your work under the same l
 This project is licensed under the BSD-3-Clause License. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;
-<p align="center"><sup><strong>≥v≥v&ensp;Here Are Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>
+<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>
