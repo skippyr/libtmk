@@ -39,7 +39,7 @@ The following dependencies must be installed before installing it:
 
 The recommended way of using this library is by including it as a git submodule in your project and using CMake to perform its build and linking. That way you will be able to automatically download it as a dependency when you clone your repository and also be able to decide whether or not to update it.
 
-To do such, follow these steps:
+On Windows, using either `Developer Command Prompt For VS 2022` or `Developer PowerShell For VS 2022`, or, on Linux, using any terminal, follow these steps:
 
 - In the root of your project, where your `CMakeLists.txt` is, clone this repository as a submodule:
 
