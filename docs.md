@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="" src="assets/ornament.webp" />
+  <img alt="" src="assets/ornament.webp" />
 </p>
 <h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
 <p align="center">Terminal Development Kit - Documentation</p>
@@ -135,8 +135,8 @@ Describes a coordinate in the terminal window.
 
 ```c
 struct tdk_Coordinate {
-  unsigned short column;
-  unsigned short row;
+    unsigned short column;
+    unsigned short row;
 };
 ```
 
@@ -159,8 +159,8 @@ Describes the dimensions of the terminal window.
 
 ```c
 struct tdk_Dimensions {
-  unsigned short totalOfColumns;
-  unsigned short totalOfRows;
+    unsigned short totalOfColumns;
+    unsigned short totalOfRows;
 };
 ```
 
@@ -179,8 +179,8 @@ Describes a terminal key event.
 
 ```c
 struct tdk_KeyEvent {
-  int key;
-  char modifiers;
+    int key;
+    char modifiers;
 };
 ```
 
@@ -199,9 +199,9 @@ Describes an RGB color and its components.
 
 ```c
 struct tdk_RGB {
-  unsigned char red;
-  unsigned char green;
-  unsigned char blue;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
 };
 ```
 
@@ -230,11 +230,12 @@ void tdk_clearCursorLine(void);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_write("Hello, world!");
-  tdk_clearCursorLine();
-  tdk_writeLine("Here Be Dragons!");
-  return 0;
+int main(void)
+{
+    tdk_write("Hello, world!");
+    tdk_clearCursorLine();
+    tdk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -264,9 +265,10 @@ void tdk_clearInputBuffer(void);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_clearInputBuffer();
-  return 0;
+int main(void)
+{
+    tdk_clearInputBuffer();
+    return 0;
 }
 ```
 
@@ -295,11 +297,12 @@ If the stream is a TTY, it returns `1`, and `0` otherwise.
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_writeLine(":: Input : %d.", tdk_isTTY(tdk_Stream_Input));
-  tdk_writeLine(":: Output: %d.", tdk_isTTY(tdk_Stream_Output));
-  tdk_writeLine(":: Error : %d.", tdk_isTTY(tdk_Stream_Error));
-  return 0;
+int main(void)
+{
+    tdk_writeLine(":: Input : %d.", tdk_isTTY(tdk_Stream_Input));
+    tdk_writeLine(":: Output: %d.", tdk_isTTY(tdk_Stream_Output));
+    tdk_writeLine(":: Error : %d.", tdk_isTTY(tdk_Stream_Error));
+    return 0;
 }
 ```
 
@@ -335,12 +338,13 @@ The coordinate system considers an origin coordinate, where `{.column = 0, .row 
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_Coordinate cursorCoordinate;
-  tdk_getCursorCoordinate(&cursorCoordinate);
-  tdk_writeLine(":: Cursor Column: %hu.", cursorCoordinate.column);
-  tdk_writeLine(":: Cursor Row   : %hu.", cursorCoordinate.row);
-  return 0;
+int main(void)
+{
+    struct tdk_Coordinate cursorCoordinate;
+    tdk_getCursorCoordinate(&cursorCoordinate);
+    tdk_writeLine(":: Cursor Column: %hu.", cursorCoordinate.column);
+    tdk_writeLine(":: Cursor Row   : %hu.", cursorCoordinate.row);
+    return 0;
 }
 ```
 
@@ -374,11 +378,12 @@ On success, it returns `0`, and `-1` otherwise. It fails:
 
 static struct tdk_Dimensions g_windowDimensions;
 
-int main(void) {
-  tdk_getWindowDimensions(&g_windowDimensions);
-  tdk_writeLine(":: Total of columns: %hu.", g_windowDimensions.totalOfColumns);
-  tdk_writeLine(":: Total of rows   : %hu.", g_windowDimensions.totalOfRows);
-  return 0;
+int main(void)
+{
+    tdk_getWindowDimensions(&g_windowDimensions);
+    tdk_writeLine(":: Total of columns: %hu.", g_windowDimensions.totalOfColumns);
+    tdk_writeLine(":: Total of rows   : %hu.", g_windowDimensions.totalOfRows);
+    return 0;
 }
 ```
 
@@ -417,22 +422,21 @@ On success, it returns `0`, and `-1` otherwise. It fails:
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_KeyEvent keyEvent;
-  tdk_readKeyEvent(&keyEvent);
-  if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_ModifierKey_Ctrl &&
-     !(keyEvent.modifiers & tdk_ModifierKey_Alt)) {
-    tdk_writeLine("Ctrl + A");
-  } else if (keyEvent.key == 'B' && !keyEvent.modifiers) {
-    tdk_writeLine("Shift + B");
-  }
-  else if (keyEvent.key == tdk_Key_UpArrow) {
-    tdk_writeLine("Up Arrow");
-  }
-  else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12) {
-    tdk_writeLine("Function Keys");
-  }
-  return 0;
+int main(void)
+{
+    struct tdk_KeyEvent keyEvent;
+    tdk_readKeyEvent(&keyEvent);
+    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_ModifierKey_Ctrl &&
+        !(keyEvent.modifiers & tdk_ModifierKey_Alt)) {
+        tdk_writeLine("Ctrl + A");
+    } else if (keyEvent.key == 'B' && !keyEvent.modifiers) {
+        tdk_writeLine("Shift + B");
+    } else if (keyEvent.key == tdk_Key_UpArrow) {
+        tdk_writeLine("Up Arrow");
+    } else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12) {
+        tdk_writeLine("Function Keys");
+    }
+    return 0;
 }
 ```
 
@@ -457,9 +461,10 @@ As it can be considered annoying, some terminal have their bell feature disabled
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_ringBell();
-  return 0;
+int main(void)
+{
+    tdk_ringBell();
+    return 0;
 }
 ```
 
@@ -490,17 +495,18 @@ Sets a color from the xterm 256 colors palette in a terminal layer or resets a c
 ```c
 #include <tdk.h>
 
-int main(void) {
-  char message[] = "Here Be Dragons!";
-  tdk_set256Color(tdk_Color_Red, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_set256Color(tdk_Color_Yellow, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_set256Color(tdk_Color_Green, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  return 0;
+int main(void)
+{
+    char message[] = "Here Be Dragons!";
+    tdk_set256Color(tdk_Color_Red, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_set256Color(tdk_Color_Yellow, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_set256Color(tdk_Color_Green, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    return 0;
 }
 ```
 
@@ -531,13 +537,14 @@ void tdk_setAlternateWindow(int isToEnable);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_KeyEvent keyEvent;
-  tdk_setAlternateWindow(1);
-  tdk_write("Here Be Dragons!");
-  tdk_readKeyEvent(&keyEvent);
-  tdk_setAlternateWindow(0);
-  return 0;
+int main(void)
+{
+    struct tdk_KeyEvent keyEvent;
+    tdk_setAlternateWindow(1);
+    tdk_write("Here Be Dragons!");
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setAlternateWindow(0);
+    return 0;
 }
 ```
 
@@ -573,14 +580,15 @@ The coordinate system considers an origin coordinate, where `{.column = 0, .row 
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_KeyEvent keyEvent;
-  tdk_setAlternateWindow(1);
-  tdk_setCursorCoordinate(4, 2);
-  tdk_write("Here Be Dragons!");
-  tdk_readKeyEvent(&keyEvent);
-  tdk_setAlternateWindow(0);
-  return 0;
+int main(void)
+{
+    struct tdk_KeyEvent keyEvent;
+    tdk_setAlternateWindow(1);
+    tdk_setCursorCoordinate(4, 2);
+    tdk_write("Here Be Dragons!");
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setAlternateWindow(0);
+    return 0;
 }
 ```
 
@@ -610,12 +618,13 @@ void tdk_setCursorShape(int shape);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_KeyEvent keyEvent;
-  tdk_setCursorShape(tdk_CursorShape_Underline);
-  tdk_readKeyEvent(&keyEvent);
-  tdk_setCursorShape(tdk_CursorShape_Default);
-  return 0;
+int main(void)
+{
+    struct tdk_KeyEvent keyEvent;
+    tdk_setCursorShape(tdk_CursorShape_Underline);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorShape(tdk_CursorShape_Default);
+    return 0;
 }
 ```
 
@@ -645,12 +654,13 @@ void tdk_setCursorVisibility(int isToShow);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  struct tdk_KeyEvent keyEvent;
-  tdk_setCursorVisibility(0);
-  tdk_readKeyEvent(&keyEvent);
-  tdk_setCursorVisibility(1);
-  return 0;
+int main(void)
+{
+    struct tdk_KeyEvent keyEvent;
+    tdk_setCursorVisibility(0);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorVisibility(1);
+    return 0;
 }
 ```
 
@@ -681,15 +691,16 @@ void tdk_setEffect(int effect, int isToEnable);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  char message[] = "Here Be Dragons!";
-  tdk_setEffect(tdk_Effect_Underline | tdk_Effect_ReverseVideo, 1);
-  tdk_writeLine(message);
-  tdk_setEffect(tdk_Effect_ReverseVideo, 0);
-  tdk_writeLine(message);
-  tdk_setEffect(tdk_Effect_Underline, 0);
-  tdk_writeLine(message);
-  return 0;
+int main(void)
+{
+    char message[] = "Here Be Dragons!";
+    tdk_setEffect(tdk_Effect_Underline | tdk_Effect_ReverseVideo, 1);
+    tdk_writeLine(message);
+    tdk_setEffect(tdk_Effect_ReverseVideo, 0);
+    tdk_writeLine(message);
+    tdk_setEffect(tdk_Effect_Underline, 0);
+    tdk_writeLine(message);
+    return 0;
 }
 ```
 
@@ -721,17 +732,18 @@ void tdk_setHEXColor(int color, int layer);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  char message[] = "Here Be Dragons!";
-  tdk_setHEXColor(0xff0000, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_setHEXColor(0xffff00, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_setHEXColor(0x00ff00, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  return 0;
+int main(void)
+{
+    char message[] = "Here Be Dragons!";
+    tdk_setHEXColor(0xff0000, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_setHEXColor(0xffff00, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_setHEXColor(0x00ff00, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    return 0;
 }
 ```
 
@@ -763,20 +775,21 @@ void tdk_setRGBColor(struct tdk_RGB color, int layer);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  char message[] = "Here Be Dragons!";
-  struct tdk_RGB red = {255, 0, 0};
-  struct tdk_RGB yellow = {255, 255, 0};
-  struct tdk_RGB green = {0, 255, 0};
-  tdk_setRGBColor(red, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_setRGBColor(yellow, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_setRGBColor(green, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
-  tdk_writeLine(message);
-  return 0;
+int main(void)
+{
+    char message[] = "Here Be Dragons!";
+    struct tdk_RGB red = {255, 0, 0};
+    struct tdk_RGB yellow = {255, 255, 0};
+    struct tdk_RGB green = {0, 255, 0};
+    tdk_setRGBColor(red, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_setRGBColor(yellow, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_setRGBColor(green, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
+    tdk_writeLine(message);
+    return 0;
 }
 ```
 
@@ -806,15 +819,16 @@ void tdk_setWeight(int weight);
 ```c
 #include <tdk.h>
 
-int main(void) {
-  char message[] = "Here Be Dragons!";
-  tdk_setWeight(tdk_Weight_Bold);
-  tdk_writeLine(message);
-  tdk_setWeight(tdk_Weight_Dim);
-  tdk_writeLine(message);
-  tdk_setWeight(tdk_Weight_Default);
-  tdk_writeLine(message);
-  return 0;
+int main(void)
+{
+    char message[] = "Here Be Dragons!";
+    tdk_setWeight(tdk_Weight_Bold);
+    tdk_writeLine(message);
+    tdk_setWeight(tdk_Weight_Dim);
+    tdk_writeLine(message);
+    tdk_setWeight(tdk_Weight_Default);
+    tdk_writeLine(message);
+    return 0;
 }
 ```
 
@@ -848,9 +862,10 @@ On Windows, it sets the console page `CP_UTF8`.
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_write("Here Be Dragons!\n");
-  return 0;
+int main(void)
+{
+    tdk_write("Here Be Dragons!\n");
+    return 0;
 }
 ```
 
@@ -885,9 +900,10 @@ On success, it returns the number of bytes written excluding the `NULL` characte
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_writeError("Here Be Dragons!\n");
-  return 0;
+int main(void)
+{
+    tdk_writeError("Here Be Dragons!\n");
+    return 0;
 }
 ```
 
@@ -922,9 +938,10 @@ On success, it returns the number of bytes written excluding the `NULL` characte
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_writeErrorLine("Here Be Dragons!");
-  return 0;
+int main(void)
+{
+    tdk_writeErrorLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -958,9 +975,10 @@ On Windows, it sets the console page `CP_UTF8`.
 ```c
 #include <tdk.h>
 
-int main(void) {
-  tdk_writeLine("Here Be Dragons!");
-  return 0;
+int main(void)
+{
+    tdk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
