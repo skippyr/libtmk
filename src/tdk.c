@@ -32,7 +32,7 @@
 #endif
 
 static void _tdk_cacheTTY(void);
-static int _tdk_writeANSI(const char *format, ...);
+static int _tdk_writeANSI(char *format, ...);
 
 static char _tdk_g_cache = 0;
 
@@ -54,7 +54,7 @@ static void _tdk_cacheTTY(void)
                     _tdk_TTY_CACHE(stderr, tdk_Stream_Error) | _tdk_HAS_TTY_CACHE_FLAG;
 }
 
-static int _tdk_writeANSI(const char *format, ...)
+static int _tdk_writeANSI(char *format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
