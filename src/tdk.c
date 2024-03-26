@@ -20,10 +20,11 @@
 #define _tdk_HIGH_SURROGATE_END 0xdbff
 #endif
 #define _tdk_IS_TTY(a_stream) (_tdk_g_cache & 1 << a_stream)
-#define _tdk_PARSE_KEY(a_condition, a_key)                                                         \
-    if (a_condition) {                                                                             \
-        event->key = a_key;                                                                        \
-        break;                                                                                     \
+#define _tdk_PARSE_KEY(a_condition, a_key) \
+    if (a_condition) \
+    { \
+        event->key = a_key; \
+        break; \
     }
 #ifdef _WIN32
 #define _tdk_TTY_CACHE(a_file, a_stream) (!!_isatty(_fileno(a_file)) << a_stream)
@@ -38,7 +39,8 @@ static char _tdk_g_cache = 0;
 
 static void _tdk_cacheTTY(void)
 {
-    if (_tdk_HAS_TTY_CACHE) {
+    if (_tdk_HAS_TTY_CACHE)
+    {
         return;
     }
 #ifdef _WIN32
@@ -58,7 +60,8 @@ static int _tdk_writeANSI(char *format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
-    if (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error)) {
+    if (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error))
+    {
         return -1;
     }
     va_start(arguments, format);
@@ -80,13 +83,15 @@ void tdk_clearInputBuffer(void)
 #else
     struct termios attributes;
     int flags = fcntl(STDIN_FILENO, F_GETFL);
-    if (tcgetattr(STDIN_FILENO, &attributes)) {
+    if (tcgetattr(STDIN_FILENO, &attributes))
+    {
         return;
     }
     attributes.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-    while (getchar() != EOF) {
+    while (getchar() != EOF)
+    {
     }
     attributes.c_lflag |= ICANON | ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
@@ -105,14 +110,16 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
     if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
-        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo)) {
+        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+    {
         return -1;
     }
     coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
     coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
 #else
     struct termios attributes;
-    if (_tdk_writeANSI("\033[6n") || tcgetattr(STDIN_FILENO, &attributes)) {
+    if (_tdk_writeANSI("\033[6n") || tcgetattr(STDIN_FILENO, &attributes))
+    {
         return -1;
     }
     attributes.c_lflag &= ~(ICANON | ECHO);
@@ -120,7 +127,8 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
     int totalMatchesRead = scanf("\033[%hu;%huR", &coordinate->row, &coordinate->column);
     attributes.c_lflag |= ICANON | ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-    if (totalMatchesRead != 2) {
+    if (totalMatchesRead != 2)
+    {
         return -1;
     }
     --coordinate->column;
@@ -134,7 +142,8 @@ int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
     if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
-        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo)) {
+        !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+    {
         return -1;
     }
     dimensions->totalOfColumns = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
@@ -143,7 +152,8 @@ int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
     struct winsize windowSize;
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) &&
         ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) &&
-        ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize)) {
+        ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
+    {
         return -1;
     }
     dimensions->totalOfColumns = windowSize.ws_col;
@@ -156,7 +166,8 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
 {
     _tdk_cacheTTY();
     if (!_tdk_IS_TTY(tdk_Stream_Input) || fwide(stdin, 0) > 0 ||
-        (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error))) {
+        (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error)))
+    {
         return -1;
     }
 #ifdef _WIN32
@@ -167,7 +178,8 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
     int buffer;
     GetConsoleMode(handle, &mode);
     SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT);
-    while (1) {
+    while (1)
+    {
         ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
         if (record.EventType != KEY_EVENT || !record.Event.KeyEvent.bKeyDown ||
             record.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL ||
@@ -175,20 +187,27 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             record.Event.KeyEvent.wVirtualKeyCode == VK_MENU ||
             record.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
             record.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL) {
+            record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL)
+        {
             continue;
         }
         event->key = 0;
-        if ((buffer = record.Event.KeyEvent.uChar.UnicodeChar)) {
-            if (buffer <= 26 && buffer != tdk_Key_Tab && buffer != tdk_Key_Enter) {
+        if ((buffer = record.Event.KeyEvent.uChar.UnicodeChar))
+        {
+            if (buffer <= 26 && buffer != tdk_Key_Tab && buffer != tdk_Key_Enter)
+            {
                 event->key = buffer + 96;
-            } else if (buffer >= _tdk_HIGH_SURROGATE_BEGIN && buffer <= _tdk_HIGH_SURROGATE_END) {
+            }
+            else if (buffer >= _tdk_HIGH_SURROGATE_BEGIN && buffer <= _tdk_HIGH_SURROGATE_END)
+            {
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
                 *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
                 WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2, (char *)&event->key, 4, NULL,
                                     NULL);
-            } else {
+            }
+            else
+            {
                 WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1, (char *)&event->key, 4, NULL,
                                     NULL);
             }
@@ -198,9 +217,11 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
                                   (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
                                    << 1;
             break;
-        } else if (record.Event.KeyEvent.dwControlKeyState &
-                   (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED |
-                    SHIFT_PRESSED)) {
+        }
+        else if (record.Event.KeyEvent.dwControlKeyState &
+                 (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED |
+                  SHIFT_PRESSED))
+        {
             continue;
         }
         event->modifiers = 0;
@@ -225,15 +246,19 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
     attributes.c_lflag &= ~(ICANON | ECHO | ISIG);
     attributes.c_iflag &= ~IXON;
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-    while (1) {
+    while (1)
+    {
         char buffer[5] = {0, 0, 0, 0, 0};
         *buffer = getchar();
         fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-        if (*buffer == 27 && (buffer[1] = getchar()) == 79 || buffer[1] == 91) {
-            for (size_t index = 2; index < 5; ++index) {
+        if (*buffer == 27 && (buffer[1] = getchar()) == 79 || buffer[1] == 91)
+        {
+            for (size_t index = 2; index < 5; ++index)
+            {
                 buffer[index] = getchar();
             }
-            while (getchar() != EOF) {
+            while (getchar() != EOF)
+            {
             }
             event->modifiers = 0;
             _tdk_PARSE_KEY(buffer[2] >= 65 && buffer[2] <= 68, buffer[2] - 65 + tdk_Key_UpArrow);
@@ -252,18 +277,22 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             fcntl(STDIN_FILENO, F_SETFL, flags);
             continue;
         }
-        if (*buffer & 1 << 7) {
+        if (*buffer & 1 << 7)
+        {
             for (size_t index = 1;
                  index < 1 + !!(*buffer & 1 << 6) + !!(*buffer & 1 << 5) + !!(*buffer & 1 << 4);
-                 ++index) {
+                 ++index)
+            {
                 buffer[index] = getchar();
             }
             event->key = *(int *)buffer;
             event->modifiers = 0;
-        } else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF)
-                                     ? buffer[1]
-                                     : *buffer) >= 0 &&
-                   event->key <= 26 && event->key != tdk_Key_Tab && event->key != tdk_Key_Enter) {
+        }
+        else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF)
+                                   ? buffer[1]
+                                   : *buffer) >= 0 &&
+                 event->key <= 26 && event->key != tdk_Key_Tab && event->key != tdk_Key_Enter)
+        {
             event->key = !event->key ? tdk_Key_Space : event->key + 96;
             event->modifiers |= tdk_ModifierKey_Ctrl;
         }
@@ -313,8 +342,10 @@ void tdk_setCursorVisibility(int isToShow)
 
 void tdk_setEffect(int effect, int isToEnable)
 {
-    for (int ansi = 3; ansi < 10; ++ansi) {
-        if (effect & 1 << ansi) {
+    for (int ansi = 3; ansi < 10; ++ansi)
+    {
+        if (effect & 1 << ansi)
+        {
             _tdk_writeANSI("\033[%dm", isToEnable ? ansi : ansi + 20);
         }
     }

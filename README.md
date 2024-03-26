@@ -53,9 +53,10 @@ git submodule add --depth 1 https://github.com/skippyr/libtdk lib/libtdk
 cmake_minimum_required(VERSION 3.20)
 project(example-project)
 # Add the executable to the build.
-add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
+add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c" "${CMAKE_SOURCE_DIR}/src/main.h")
 # Add the library to the build.
-add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c")
+add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c"
+                "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.h")
 # Includes its header file to the executable build.
 target_include_directories(main PRIVATE "${CMAKE_SOURCE_DIR}/lib/libtdk/src")
 # Links the library to the executable build.
@@ -65,8 +66,8 @@ target_link_libraries(main tdk)
 - Now, you are able to build your project and use the library in your executable:
 
 ```sh
-cmake -G Ninja -B out
-cmake --build out
+cmake -G Ninja -B build
+cmake --build build
 ```
 
 ## ❡ Documentation

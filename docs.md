@@ -134,7 +134,8 @@ Describes a coordinate in the terminal window.
 #### Declaration
 
 ```c
-struct tdk_Coordinate {
+struct tdk_Coordinate
+{
     unsigned short column;
     unsigned short row;
 };
@@ -158,7 +159,8 @@ Describes the dimensions of the terminal window.
 #### Declaration
 
 ```c
-struct tdk_Dimensions {
+struct tdk_Dimensions
+{
     unsigned short totalOfColumns;
     unsigned short totalOfRows;
 };
@@ -178,7 +180,8 @@ Describes a terminal key event.
 #### Declaration
 
 ```c
-struct tdk_KeyEvent {
+struct tdk_KeyEvent
+{
     int key;
     char modifiers;
 };
@@ -198,7 +201,8 @@ Describes an RGB color and its components.
 #### Declaration
 
 ```c
-struct tdk_RGB {
+struct tdk_RGB
+{
     unsigned char red;
     unsigned char green;
     unsigned char blue;
@@ -427,13 +431,20 @@ int main(void)
     struct tdk_KeyEvent keyEvent;
     tdk_readKeyEvent(&keyEvent);
     if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_ModifierKey_Ctrl &&
-        !(keyEvent.modifiers & tdk_ModifierKey_Alt)) {
+        !(keyEvent.modifiers & tdk_ModifierKey_Alt))
+    {
         tdk_writeLine("Ctrl + A");
-    } else if (keyEvent.key == 'B' && !keyEvent.modifiers) {
+    }
+    else if (keyEvent.key == 'B' && !keyEvent.modifiers)
+    {
         tdk_writeLine("Shift + B");
-    } else if (keyEvent.key == tdk_Key_UpArrow) {
+    }
+    else if (keyEvent.key == tdk_Key_UpArrow)
+    {
         tdk_writeLine("Up Arrow");
-    } else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12) {
+    }
+    else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12)
+    {
         tdk_writeLine("Function Keys");
     }
     return 0;
