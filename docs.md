@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="" src="assets/ornament.webp" />
+    <img alt="" src="assets/ornament.webp" />
 </p>
 <h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
 <p align="center">Terminal Development Kit - Documentation</p>
