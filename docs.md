@@ -239,7 +239,7 @@ int main(void)
     tdk_write("Hello, world!");
     tdk_clearCursorLine();
     tdk_writeLine("Here Be Dragons!");
-    return 0;
+    return (0);
 }
 ```
 
@@ -272,7 +272,7 @@ void tdk_clearInputBuffer(void);
 int main(void)
 {
     tdk_clearInputBuffer();
-    return 0;
+    return (0);
 }
 ```
 
@@ -306,7 +306,7 @@ int main(void)
     tdk_writeLine(":: Input : %d.", tdk_isTTY(tdk_Stream_Input));
     tdk_writeLine(":: Output: %d.", tdk_isTTY(tdk_Stream_Output));
     tdk_writeLine(":: Error : %d.", tdk_isTTY(tdk_Stream_Error));
-    return 0;
+    return (0);
 }
 ```
 
@@ -348,7 +348,7 @@ int main(void)
     tdk_getCursorCoordinate(&cursorCoordinate);
     tdk_writeLine(":: Cursor Column: %hu.", cursorCoordinate.column);
     tdk_writeLine(":: Cursor Row   : %hu.", cursorCoordinate.row);
-    return 0;
+    return (0);
 }
 ```
 
@@ -387,7 +387,7 @@ int main(void)
     tdk_getWindowDimensions(&g_windowDimensions);
     tdk_writeLine(":: Total of columns: %hu.", g_windowDimensions.totalOfColumns);
     tdk_writeLine(":: Total of rows   : %hu.", g_windowDimensions.totalOfRows);
-    return 0;
+    return (0);
 }
 ```
 
@@ -430,8 +430,7 @@ int main(void)
 {
     struct tdk_KeyEvent keyEvent;
     tdk_readKeyEvent(&keyEvent);
-    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_ModifierKey_Ctrl &&
-        !(keyEvent.modifiers & tdk_ModifierKey_Alt))
+    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_ModifierKey_Ctrl && !(keyEvent.modifiers & tdk_ModifierKey_Alt))
     {
         tdk_writeLine("Ctrl + A");
     }
@@ -447,7 +446,7 @@ int main(void)
     {
         tdk_writeLine("Function Keys");
     }
-    return 0;
+    return (0);
 }
 ```
 
@@ -475,7 +474,7 @@ As it can be considered annoying, some terminal have their bell feature disabled
 int main(void)
 {
     tdk_ringBell();
-    return 0;
+    return (0);
 }
 ```
 
@@ -517,7 +516,7 @@ int main(void)
     tdk_writeLine(message);
     tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
     tdk_writeLine(message);
-    return 0;
+    return (0);
 }
 ```
 
@@ -555,7 +554,7 @@ int main(void)
     tdk_write("Here Be Dragons!");
     tdk_readKeyEvent(&keyEvent);
     tdk_setAlternateWindow(0);
-    return 0;
+    return (0);
 }
 ```
 
@@ -599,7 +598,7 @@ int main(void)
     tdk_write("Here Be Dragons!");
     tdk_readKeyEvent(&keyEvent);
     tdk_setAlternateWindow(0);
-    return 0;
+    return (0);
 }
 ```
 
@@ -635,7 +634,7 @@ int main(void)
     tdk_setCursorShape(tdk_CursorShape_Underline);
     tdk_readKeyEvent(&keyEvent);
     tdk_setCursorShape(tdk_CursorShape_Default);
-    return 0;
+    return (0);
 }
 ```
 
@@ -671,7 +670,7 @@ int main(void)
     tdk_setCursorVisibility(0);
     tdk_readKeyEvent(&keyEvent);
     tdk_setCursorVisibility(1);
-    return 0;
+    return (0);
 }
 ```
 
@@ -711,7 +710,7 @@ int main(void)
     tdk_writeLine(message);
     tdk_setEffect(tdk_Effect_Underline, 0);
     tdk_writeLine(message);
-    return 0;
+    return (0);
 }
 ```
 
@@ -754,7 +753,7 @@ int main(void)
     tdk_writeLine(message);
     tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
     tdk_writeLine(message);
-    return 0;
+    return (0);
 }
 ```
 
@@ -800,7 +799,7 @@ int main(void)
     tdk_writeLine(message);
     tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
     tdk_writeLine(message);
-    return 0;
+    return (0);
 }
 ```
 
@@ -839,7 +838,7 @@ int main(void)
     tdk_writeLine(message);
     tdk_setWeight(tdk_Weight_Default);
     tdk_writeLine(message);
-    return 0;
+    return (0);
 }
 ```
 
@@ -876,7 +875,7 @@ On Windows, it sets the console page `CP_UTF8`.
 int main(void)
 {
     tdk_write("Here Be Dragons!\n");
-    return 0;
+    return (0);
 }
 ```
 
@@ -914,7 +913,7 @@ On success, it returns the number of bytes written excluding the `NULL` characte
 int main(void)
 {
     tdk_writeError("Here Be Dragons!\n");
-    return 0;
+    return (0);
 }
 ```
 
@@ -952,7 +951,7 @@ On success, it returns the number of bytes written excluding the `NULL` characte
 int main(void)
 {
     tdk_writeErrorLine("Here Be Dragons!");
-    return 0;
+    return (0);
 }
 ```
 
@@ -989,7 +988,7 @@ On Windows, it sets the console page `CP_UTF8`.
 int main(void)
 {
     tdk_writeLine("Here Be Dragons!");
-    return 0;
+    return (0);
 }
 ```
 

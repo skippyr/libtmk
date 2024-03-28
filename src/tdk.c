@@ -52,8 +52,7 @@ static void _tdk_cacheTTY(void)
      GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
         SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 #endif
-    _tdk_g_cache |= _tdk_TTY_CACHE(stdin, tdk_Stream_Input) |
-                    _tdk_TTY_CACHE(stdout, tdk_Stream_Output) |
+    _tdk_g_cache |= _tdk_TTY_CACHE(stdin, tdk_Stream_Input) | _tdk_TTY_CACHE(stdout, tdk_Stream_Output) |
                     _tdk_TTY_CACHE(stderr, tdk_Stream_Error) | _tdk_HAS_TTY_CACHE_FLAG;
 }
 
@@ -63,13 +62,12 @@ static int _tdk_writeANSI(char *format, ...)
     _tdk_cacheTTY();
     if (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error))
     {
-        return -1;
+        return (-1);
     }
     va_start(arguments, format);
-    int totalBytesWritten =
-        vfprintf(_tdk_IS_TTY(tdk_Stream_Output) ? stdout : stderr, format, arguments);
+    int totalBytesWritten = vfprintf(_tdk_IS_TTY(tdk_Stream_Output) ? stdout : stderr, format, arguments);
     va_end(arguments);
-    return -(totalBytesWritten < 0);
+    return (-(totalBytesWritten < 0));
 }
 
 void tdk_clearCursorLine(void)
@@ -103,7 +101,7 @@ void tdk_clearInputBuffer(void)
 int tdk_isTTY(int stream)
 {
     _tdk_cacheTTY();
-    return !!_tdk_IS_TTY(stream);
+    return (!!_tdk_IS_TTY(stream));
 }
 
 int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
@@ -113,7 +111,7 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
     if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
         !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
     {
-        return -1;
+        return (-1);
     }
     coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
     coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
@@ -121,7 +119,7 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
     struct termios attributes;
     if (_tdk_writeANSI("\033[6n") || tcgetattr(STDIN_FILENO, &attributes))
     {
-        return -1;
+        return (-1);
     }
     attributes.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
@@ -130,12 +128,12 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
     if (totalMatchesRead != 2)
     {
-        return -1;
+        return (-1);
     }
     --coordinate->column;
     --coordinate->row;
 #endif
-    return 0;
+    return (0);
 }
 
 int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
@@ -145,22 +143,21 @@ int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
     if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) &&
         !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
     {
-        return -1;
+        return (-1);
     }
     dimensions->totalOfColumns = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
     dimensions->totalOfRows = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
 #else
     struct winsize windowSize;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) &&
-        ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) &&
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) &&
         ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
     {
-        return -1;
+        return (-1);
     }
     dimensions->totalOfColumns = windowSize.ws_col;
     dimensions->totalOfRows = windowSize.ws_row;
 #endif
-    return 0;
+    return (0);
 }
 
 int tdk_readKeyEvent(struct tdk_KeyEvent *event)
@@ -169,7 +166,7 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
     if (!_tdk_IS_TTY(tdk_Stream_Input) || fwide(stdin, 0) > 0 ||
         (!_tdk_IS_TTY(tdk_Stream_Output) && !_tdk_IS_TTY(tdk_Stream_Error)))
     {
-        return -1;
+        return (-1);
     }
 #ifdef _WIN32
     HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
@@ -183,12 +180,9 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
     {
         ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
         if (record.EventType != KEY_EVENT || !record.Event.KeyEvent.bKeyDown ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_SHIFT ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_MENU ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK ||
-            record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL)
+            record.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL || record.Event.KeyEvent.wVirtualKeyCode == VK_SHIFT ||
+            record.Event.KeyEvent.wVirtualKeyCode == VK_MENU || record.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
+            record.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK || record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL)
         {
             continue;
         }
@@ -204,24 +198,19 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
                 *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
-                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2, (char *)&event->key, 4, NULL,
-                                    NULL);
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2, (char *)&event->key, 4, NULL, NULL);
             }
             else
             {
-                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1, (char *)&event->key, 4, NULL,
-                                    NULL);
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1, (char *)&event->key, 4, NULL, NULL);
             }
-            event->modifiers = !!(record.Event.KeyEvent.dwControlKeyState &
-                                  (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
-                               !!(record.Event.KeyEvent.dwControlKeyState &
-                                  (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
+            event->modifiers = !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
+                               !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
                                    << 1;
             break;
         }
         else if (record.Event.KeyEvent.dwControlKeyState &
-                 (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED |
-                  SHIFT_PRESSED))
+                 (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED | SHIFT_PRESSED))
         {
             continue;
         }
@@ -266,22 +255,19 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             _tdk_PARSE_KEY(buffer[3] == 126, buffer[2] - 49 + tdk_Key_Home);
             _tdk_PARSE_KEY(buffer[3] == 104 || (buffer[1] == 91 && buffer[2] == 80),
                            !(buffer[3] == 104) + tdk_Key_Insert);
-            _tdk_PARSE_KEY(buffer[2] == 70 || buffer[2] == 72,
-                           buffer[2] == 72 ? tdk_Key_Home : tdk_Key_End);
+            _tdk_PARSE_KEY(buffer[2] == 70 || buffer[2] == 72, buffer[2] == 72 ? tdk_Key_Home : tdk_Key_End);
             _tdk_PARSE_KEY(buffer[2] >= 80 && buffer[2] <= 83, buffer[2] - 80 + tdk_Key_F1);
             _tdk_PARSE_KEY(buffer[3] >= 65 && buffer[3] <= 69, buffer[3] - 65 + tdk_Key_F1);
-            _tdk_PARSE_KEY(buffer[4] == 126,
-                           buffer[3] == 53                      ? tdk_Key_F5
-                           : buffer[3] >= 55 && buffer[3] <= 57 ? buffer[3] - 55 + tdk_Key_F6
-                           : buffer[3] == 48 || buffer[3] == 49 ? buffer[3] - 48 + tdk_Key_F9
-                                                                : buffer[3] - 51 + tdk_Key_F11);
+            _tdk_PARSE_KEY(buffer[4] == 126, buffer[3] == 53                      ? tdk_Key_F5
+                                             : buffer[3] >= 55 && buffer[3] <= 57 ? buffer[3] - 55 + tdk_Key_F6
+                                             : buffer[3] == 48 || buffer[3] == 49 ? buffer[3] - 48 + tdk_Key_F9
+                                                                                  : buffer[3] - 51 + tdk_Key_F11);
             fcntl(STDIN_FILENO, F_SETFL, flags);
             continue;
         }
         if (*buffer & 1 << 7)
         {
-            for (size_t index = 1;
-                 index < 1 + !!(*buffer & 1 << 6) + !!(*buffer & 1 << 5) + !!(*buffer & 1 << 4);
+            for (size_t index = 1; index < 1 + !!(*buffer & 1 << 6) + !!(*buffer & 1 << 5) + !!(*buffer & 1 << 4);
                  ++index)
             {
                 buffer[index] = getchar();
@@ -289,9 +275,7 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             event->key = *(int *)buffer;
             event->modifiers = 0;
         }
-        else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF)
-                                   ? buffer[1]
-                                   : *buffer) >= 0 &&
+        else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF) ? buffer[1] : *buffer) >= 0 &&
                  event->key <= 26 && event->key != tdk_Key_Tab && event->key != tdk_Key_Enter)
         {
             event->key = !event->key ? tdk_Key_Space : event->key + 96;
@@ -304,7 +288,7 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
     fcntl(STDIN_FILENO, F_SETFL, flags);
 #endif
-    return 0;
+    return (0);
 }
 
 void tdk_ringBell(void)
@@ -325,10 +309,10 @@ void tdk_setAlternateWindow(int isToEnable)
 int tdk_setCursorCoordinate(struct tdk_Coordinate coordinate)
 {
     struct tdk_Dimensions windowDimensions;
-    return -(tdk_getWindowDimensions(&windowDimensions) || ++coordinate.column <= 0 ||
-             coordinate.column > windowDimensions.totalOfColumns ||
-             ++coordinate.row <= 0 && coordinate.row > windowDimensions.totalOfRows ||
-             _tdk_writeANSI("\033[%hu;%huH", coordinate.row, coordinate.column));
+    return (-(tdk_getWindowDimensions(&windowDimensions) || ++coordinate.column <= 0 ||
+              coordinate.column > windowDimensions.totalOfColumns ||
+              ++coordinate.row <= 0 && coordinate.row > windowDimensions.totalOfRows ||
+              _tdk_writeANSI("\033[%hu;%huH", coordinate.row, coordinate.column)));
 }
 
 void tdk_setCursorShape(int shape)
@@ -374,7 +358,7 @@ int tdk_write(const char *format, ...)
     va_start(arguments, format);
     int totalBytesWritten = vprintf(format, arguments);
     va_end(arguments);
-    return totalBytesWritten;
+    return (totalBytesWritten);
 }
 
 int tdk_writeError(const char *format, ...)
@@ -385,7 +369,7 @@ int tdk_writeError(const char *format, ...)
     fflush(stdout);
     int totalBytesWritten = vfprintf(stderr, format, arguments);
     va_end(arguments);
-    return totalBytesWritten;
+    return (totalBytesWritten);
 }
 
 int tdk_writeErrorLine(const char *format, ...)
@@ -397,7 +381,7 @@ int tdk_writeErrorLine(const char *format, ...)
     int totalBytesWritten = vfprintf(stderr, format, arguments);
     fprintf(stderr, "\n");
     va_end(arguments);
-    return totalBytesWritten < 0 ? -1 : totalBytesWritten + 1;
+    return (totalBytesWritten < 0 ? -1 : totalBytesWritten + 1);
 }
 
 int tdk_writeLine(const char *format, ...)
@@ -408,5 +392,5 @@ int tdk_writeLine(const char *format, ...)
     int totalBytesWritten = vprintf(format, arguments);
     putchar('\n');
     va_end(arguments);
-    return totalBytesWritten < 0 ? -1 : totalBytesWritten + 1;
+    return (totalBytesWritten < 0 ? -1 : totalBytesWritten + 1);
 }
