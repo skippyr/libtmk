@@ -14,11 +14,14 @@ int main(void)
     signed char buffer[] = {-1, -1, -1, -1, -1};
     read(STDIN_FILENO, &buffer, sizeof(buffer));
     printf("\033[2K\033[1G");
-    for (size_t index = 0; index < sizeof(buffer); ++index) {
-        if (buffer[index] >= 0) {
+    for (size_t index = 0; index < sizeof(buffer); ++index)
+    {
+        if (buffer[index] >= 0)
+        {
             printf("%d", buffer[index]);
         }
-        if (index < sizeof(buffer) - 1) {
+        if (index < sizeof(buffer) - 1)
+        {
             putchar(' ');
         }
     }

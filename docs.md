@@ -319,7 +319,7 @@ Gets the terminal cursor coordinate.
 #### Declaration
 
 ```c
-int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate);
+int tdk_getCursorCoordinate(struct tdk_Coordinate* coordinate);
 ```
 
 #### Parameters
@@ -361,7 +361,7 @@ Gets the terminal window dimensions.
 #### Declaration
 
 ```c
-int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions);
+int tdk_getWindowDimensions(struct tdk_Dimensions* dimensions);
 ```
 
 #### Parameters
@@ -400,7 +400,7 @@ Reads a key event from the input buffer and removes it from the buffer.
 #### Declaration
 
 ```c
-int tdk_readKeyEvent(struct tdk_KeyEvent *event);
+int tdk_readKeyEvent(struct tdk_KeyEvent* event);
 ```
 
 #### Parameters
@@ -851,7 +851,7 @@ Writes an UTF-8 encoded string to the standard output stream based on a format, 
 #### Declaration
 
 ```c
-int tdk_write(const char *format, ...);
+int tdk_write(const char* format, ...);
 ```
 
 #### Parameters
@@ -888,7 +888,7 @@ Writes an UTF-8 encoded string to the standard error stream based on a format, s
 #### Declaration
 
 ```c
-int tdk_writeError(const char *format, ...);
+int tdk_writeError(const char* format, ...);
 ```
 
 #### Parameters
@@ -926,7 +926,7 @@ Writes an UTF-8 encoded string to the standard error stream with a newline appen
 #### Declaration
 
 ```c
-int tdk_writeErrorLine(const char *format, ...);
+int tdk_writeErrorLine(const char* format, ...);
 ```
 
 #### Parameters
@@ -964,7 +964,7 @@ Writes an UTF-8 encoded string to the standard output stream with a newline appe
 #### Declaration
 
 ```c
-int tdk_writeLine(const char *format, ...);
+int tdk_writeLine(const char* format, ...);
 ```
 
 #### Parameters

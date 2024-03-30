@@ -34,7 +34,7 @@
 #endif
 
 static void _tdk_cacheTTY(void);
-static int _tdk_writeANSI(char *format, ...);
+static int _tdk_writeANSI(char* format, ...);
 
 static char _tdk_g_cache = 0;
 
@@ -56,7 +56,7 @@ static void _tdk_cacheTTY(void)
                     _tdk_TTY_CACHE(stderr, tdk_Stream_Error) | _tdk_HAS_TTY_CACHE_FLAG;
 }
 
-static int _tdk_writeANSI(char *format, ...)
+static int _tdk_writeANSI(char* format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
@@ -104,7 +104,7 @@ int tdk_isTTY(int stream)
     return (!!_tdk_IS_TTY(stream));
 }
 
-int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
+int tdk_getCursorCoordinate(struct tdk_Coordinate* coordinate)
 {
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -136,7 +136,7 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate)
     return (0);
 }
 
-int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
+int tdk_getWindowDimensions(struct tdk_Dimensions* dimensions)
 {
 #ifdef _WIN32
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -160,7 +160,7 @@ int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions)
     return (0);
 }
 
-int tdk_readKeyEvent(struct tdk_KeyEvent *event)
+int tdk_readKeyEvent(struct tdk_KeyEvent* event)
 {
     _tdk_cacheTTY();
     if (!_tdk_IS_TTY(tdk_Stream_Input) || fwide(stdin, 0) > 0 ||
@@ -197,12 +197,12 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             {
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
                 ReadConsoleInputW(handle, &record, 1, &totalOfEventsRead);
-                *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
-                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2, (char *)&event->key, 4, NULL, NULL);
+                *((short*)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)&buffer, 2, (char*)&event->key, 4, NULL, NULL);
             }
             else
             {
-                WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1, (char *)&event->key, 4, NULL, NULL);
+                WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)&buffer, 1, (char*)&event->key, 4, NULL, NULL);
             }
             event->modifiers = !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
                                !!(record.Event.KeyEvent.dwControlKeyState & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
@@ -272,7 +272,7 @@ int tdk_readKeyEvent(struct tdk_KeyEvent *event)
             {
                 buffer[index] = getchar();
             }
-            event->key = *(int *)buffer;
+            event->key = *(int*)buffer;
             event->modifiers = 0;
         }
         else if ((event->key = (event->modifiers = *buffer == 27 && buffer[1] != EOF) ? buffer[1] : *buffer) >= 0 &&
@@ -351,7 +351,7 @@ void tdk_setWeight(int weight)
     _tdk_writeANSI(weight == tdk_Weight_Default ? "\033[22m" : "\033[22;%dm", weight);
 }
 
-int tdk_write(const char *format, ...)
+int tdk_write(const char* format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
@@ -361,7 +361,7 @@ int tdk_write(const char *format, ...)
     return (totalBytesWritten);
 }
 
-int tdk_writeError(const char *format, ...)
+int tdk_writeError(const char* format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
@@ -372,7 +372,7 @@ int tdk_writeError(const char *format, ...)
     return (totalBytesWritten);
 }
 
-int tdk_writeErrorLine(const char *format, ...)
+int tdk_writeErrorLine(const char* format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();
@@ -384,7 +384,7 @@ int tdk_writeErrorLine(const char *format, ...)
     return (totalBytesWritten < 0 ? -1 : totalBytesWritten + 1);
 }
 
-int tdk_writeLine(const char *format, ...)
+int tdk_writeLine(const char* format, ...)
 {
     va_list arguments;
     _tdk_cacheTTY();

@@ -151,9 +151,9 @@ extern "C"
     void tdk_clearCursorLine(void);
     void tdk_clearInputBuffer(void);
     int tdk_isTTY(int stream);
-    int tdk_getCursorCoordinate(struct tdk_Coordinate *coordinate);
-    int tdk_getWindowDimensions(struct tdk_Dimensions *dimensions);
-    int tdk_readKeyEvent(struct tdk_KeyEvent *event);
+    int tdk_getCursorCoordinate(struct tdk_Coordinate* coordinate);
+    int tdk_getWindowDimensions(struct tdk_Dimensions* dimensions);
+    int tdk_readKeyEvent(struct tdk_KeyEvent* event);
     void tdk_ringBell(void);
     void tdk_set256Color(int color, int layer);
     void tdk_setAlternateWindow(int isToEnable);
@@ -164,10 +164,10 @@ extern "C"
     void tdk_setHEXColor(int color, int layer);
     void tdk_setRGBColor(struct tdk_RGB color, int layer);
     void tdk_setWeight(int weight);
-    int tdk_write(const char *format, ...);
-    int tdk_writeError(const char *format, ...);
-    int tdk_writeErrorLine(const char *format, ...);
-    int tdk_writeLine(const char *format, ...);
+    int tdk_write(const char* format, ...);
+    int tdk_writeError(const char* format, ...);
+    int tdk_writeErrorLine(const char* format, ...);
+    int tdk_writeLine(const char* format, ...);
 #ifdef __cplusplus
 }
 #endif
