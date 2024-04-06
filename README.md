@@ -55,8 +55,7 @@ project(example-project)
 # Add the executable to the build.
 add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c" "${CMAKE_SOURCE_DIR}/src/main.h")
 # Add the library to the build.
-add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c"
-                "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.h")
+add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c" "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.h")
 # Includes its header file to the executable build.
 target_include_directories(main PRIVATE "${CMAKE_SOURCE_DIR}/lib/libtdk/src")
 # Links the library to the executable build.
