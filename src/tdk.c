@@ -72,7 +72,7 @@ static int _tdk_writeANSI(char* format, ...)
 
 void tdk_clearCursorLine(void)
 {
-    _tdk_writeANSI("\033[2K\033[1G");
+    _tdk_writeANSI("\x1b[2K\x1b[1G");
 }
 
 void tdk_clearInputBuffer(void)
@@ -117,13 +117,13 @@ int tdk_getCursorCoordinate(struct tdk_Coordinate* coordinate)
     coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
 #else
     struct termios attributes;
-    if (_tdk_writeANSI("\033[6n") || tcgetattr(STDIN_FILENO, &attributes))
+    if (_tdk_writeANSI("\x1b[6n") || tcgetattr(STDIN_FILENO, &attributes))
     {
         return -1;
     }
     attributes.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-    int totalMatchesRead = scanf("\033[%hu;%huR", &coordinate->row, &coordinate->column);
+    int totalMatchesRead = scanf("\x1b[%hu;%huR", &coordinate->row, &coordinate->column);
     attributes.c_lflag |= ICANON | ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
     if (totalMatchesRead != 2)
@@ -298,12 +298,12 @@ void tdk_ringBell(void)
 
 void tdk_set256Color(int color, int layer)
 {
-    _tdk_writeANSI(color == tdk_Color_Default ? "\033[%d9m" : "\033[%d8;5;%dm", layer, color);
+    _tdk_writeANSI(color == tdk_Color_Default ? "\x1b[%d9m" : "\x1b[%d8;5;%dm", layer, color);
 }
 
 void tdk_setAlternateWindow(int isToEnable)
 {
-    _tdk_writeANSI(isToEnable ? "\033[?1049h\033[2J\033[1;1H" : "\033[?1049l");
+    _tdk_writeANSI(isToEnable ? "\x1b[?1049h\x1b[2J\x1b[1;1H" : "\x1b[?1049l");
 }
 
 int tdk_setCursorCoordinate(struct tdk_Coordinate coordinate)
@@ -312,17 +312,17 @@ int tdk_setCursorCoordinate(struct tdk_Coordinate coordinate)
     return -(tdk_getWindowDimensions(&windowDimensions) || ++coordinate.column <= 0 ||
              coordinate.column > windowDimensions.totalColumns ||
              ++coordinate.row <= 0 && coordinate.row > windowDimensions.totalRows ||
-             _tdk_writeANSI("\033[%hu;%huH", coordinate.row, coordinate.column));
+             _tdk_writeANSI("\x1b[%hu;%huH", coordinate.row, coordinate.column));
 }
 
 void tdk_setCursorShape(int shape)
 {
-    _tdk_writeANSI("\033[%d q", shape);
+    _tdk_writeANSI("\x1b[%d q", shape);
 }
 
 void tdk_setCursorVisibility(int isToShow)
 {
-    _tdk_writeANSI("\033[?25%c", isToShow ? 'h' : 'l');
+    _tdk_writeANSI("\x1b[?25%c", isToShow ? 'h' : 'l');
 }
 
 void tdk_setEffect(int effect, int isToEnable)
@@ -331,7 +331,7 @@ void tdk_setEffect(int effect, int isToEnable)
     {
         if (effect & 1 << ansi)
         {
-            _tdk_writeANSI("\033[%dm", isToEnable ? ansi : ansi + 20);
+            _tdk_writeANSI("\x1b[%dm", isToEnable ? ansi : ansi + 20);
         }
     }
 }
@@ -343,12 +343,12 @@ void tdk_setHEXColor(int color, int layer)
 
 void tdk_setRGBColor(struct tdk_RGB color, int layer)
 {
-    _tdk_writeANSI("\033[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
+    _tdk_writeANSI("\x1b[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
 }
 
 void tdk_setWeight(int weight)
 {
-    _tdk_writeANSI(weight == tdk_Weight_Default ? "\033[22m" : "\033[22;%dm", weight);
+    _tdk_writeANSI(weight == tdk_Weight_Default ? "\x1b[22m" : "\x1b[22;%dm", weight);
 }
 
 int tdk_write(const char* format, ...)
