@@ -1,16 +1,16 @@
 <p align="center">
-    <img alt="" src="assets/ornament.webp" />
+  <img alt="" src="assets/ornament.webp" />
 </p>
 <h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
 <p align="center">Terminal Development Kit</p>
 <p align="center">
-    <img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
-    &nbsp;
-    <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
-    &nbsp;
-    <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
-    &nbsp;
-    <img alt="" src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
+  <img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
+  &nbsp;
+  <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
+  &nbsp;
+  <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
+  &nbsp;
+  <img alt="" src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
 </p>
 
 ## ❡ About
@@ -39,12 +39,12 @@ The following dependencies must be installed before installing it:
 
 The recommended way of using this library is by including it as a git submodule in your project and using CMake to perform its build and linking. That way you will be able to automatically download it as a dependency when you clone your repository and also be able to decide whether or not to update it.
 
-On Windows, using either `Developer Command Prompt For VS 2022` or `Developer PowerShell For VS 2022`, or, on Linux, using any terminal, follow these steps:
+On Windows, using `Developer PowerShell For VS 2022`, or, on Linux, using any terminal, follow these steps:
 
 - In the root of your project, where your `CMakeLists.txt` is, clone this repository as a submodule:
 
 ```sh
-git submodule add --depth 1 https://github.com/skippyr/libtdk lib/libtdk
+git submodule add --depth 1 "https://github.com/skippyr/libtdk" "lib/libtdk";
 ```
 
 - In your `CMakeLists.txt`, add this library and link it to your executable target. In this example, it will be linked to an executable `src/main.c`, but adapt it to your case:
@@ -66,8 +66,8 @@ target_link_libraries(main tdk)
 - Now, you are able to build your project and use the library in your executable:
 
 ```sh
-cmake -G Ninja -B build
-cmake --build build
+cmake -G Ninja -B build;
+cmake --build build;
 ```
 
 ## ❡ Documentation
@@ -86,7 +86,7 @@ By contributing to this project, you agree to license your work under the same l
 
 ## ❡ License
 
-This project is licensed under the BSD-3-Clause License. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
+This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;
 <p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>

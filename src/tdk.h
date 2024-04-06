@@ -127,8 +127,8 @@ struct tdk_Coordinate
 
 struct tdk_Dimensions
 {
-    unsigned short totalOfColumns;
-    unsigned short totalOfRows;
+    unsigned short totalColumns;
+    unsigned short totalRows;
 };
 
 struct tdk_KeyEvent
