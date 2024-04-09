@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#include "tdk.h"
+
 #ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
@@ -11,8 +13,6 @@
 #include <termios.h>
 #include <unistd.h>
 #endif
-
-#include "tdk.h"
 
 #define _tdk_HAS_TTY_CACHE (_tdk_g_cache & _tdk_HAS_TTY_CACHE_FLAG)
 #define _tdk_HAS_TTY_CACHE_FLAG (1 << 7)
