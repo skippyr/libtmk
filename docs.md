@@ -205,7 +205,7 @@ struct tdk_RGB
 {
     unsigned char red;
     unsigned char green;
-   unsigned char blue;
+    unsigned char blue;
 };
 ```
 
