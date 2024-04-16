@@ -1,0 +1,148 @@
+.TH tdk_set256clr 3 ${VERSION}
+
+.SH NAME
+
+.PP
+tdk_set256clr, tdk_sethexclr, tdk_setrgbclr - sets a terminal color
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-tdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include <tdk.h>
+
+void tdk_set256clr(int \fIclr\fB, int \fIlyr\fB);
+void tdk_sethexclr(int \fIclr\fB, int \fIlyr\fB);
+void tdk_setrgbclr(int \fIr\fB, int \fIg\fB, int \fIb\fB, int \fIlyr\fB);\fR
+.fi
+
+.SH DESCRIPTION
+
+.PP
+These functions set a color of a specific format into the terminal layer \fIlyr\fR:
+
+.TP
+.IP \\[bu]
+The function \fBtdk_set256clr\fR expects a color \fIclr\fR from the xterm 256 colors palette, which can be any value in range from 0 to 255 or a color value defined by the library.
+
+This palette offers the best compatibility with the current terminal theme.
+
+This is the only color function that can reset a color.
+
+.TP
+.IP \\[bu]
+The function \fBtdk_sethexclr\fR expects a HEX color \fIclr\fR, which can be any value in range from 0x0 to 0xffffff.
+
+This color format requires the terminal to have truecolor support.
+
+.TP
+.IP \\[bu]
+The function \fBtdk_setrgbclr\fR expects the three components of an RGB color: red (\fIr\fR), green (\fIg\fR) and blue (\fIb\fR). Each component can be any value in range from 0 to 255.
+
+This color format requires the terminal to have truecolor support.
+
+.SH LAYERS
+
+.PP
+These are layer values defined by the library that may be used as the \fIlyr\fR parameter:
+
+.TP
+.B TDK_LYRFG
+The foreground layer.
+
+.TP
+.B TDK_LYRBG
+The background layer.
+
+.SH COLORS
+
+.PP
+These are color values defined by the library that may be used as the \fIclr\fR parameter of the function \fBtdk_set256clr\fR.
+
+.PP
+They refer to the first 16 values of the palette it uses plus one color used for resets and they are mapped to colors from the current terminal theme:
+
+.TP
+.B TDK_CLRDFT
+The default color. Used for resets.
+
+.TP
+.B TDK_CLRRED, TDK_CLRLRED
+The regular and light variants of the red color.
+
+.TP
+.B TDK_CLRGRN, TDK_CLRLGRN
+The regular and light variants of the green color.
+
+.TP
+.B TDK_CLRYLW, TDK_CLRLYLW
+The regular and light variants of the yellow color.
+
+.TP
+.B TDK_CLRBLE, TDK_CLRLBLE
+The regular and light variants of the blue color.
+
+.TP
+.B TDK_CLRMAG, TDK_CLRLMAG
+The regular and light variants of the magenta color.
+
+.TP
+.B TDK_CLRCYN, TDK_CLRLCYN
+The regular and light variants of the cyan color.
+
+.TP
+.B TDK_CLRWHT, TDK_CLRLWHT
+The regular and light variants of the white color.
+
+.SH EXAMPLES
+
+.nf
+#include <stdio.h>
+
+#include <tdk.h>
+
+int
+main(void)
+{
+    char *msg = "Here Be Dragons!";
+    tdk_set256clr(TDK_CLRRED, TDK_LYRFG);
+    puts(msg);
+    tdk_set256clr(TDK_CLRYLW, TDK_LYRFG);
+    puts(msg);
+    tdk_set256clr(TDK_CLRGRN, TDK_LYRFG);
+    puts(msg);
+    tdk_set256clr(TDK_CLRDFT, TDK_LYRFG);
+    puts(msg);
+    return 0;
+}
+.fi
+
+.SH NOTES
+
+.TP
+.IP \\[bu]
+A custom color must be reset before the end of your program to avoid conflicts with the current shell session.
+
+.TP
+.IP \\[bu]
+A custom background color may be badly rendered when outputting the newline character while the terminal screen scrolls down on overflow. Always reset the background color before outputting that character.
+
+.TP
+.IP \\[bu]
+These functions cache ANSI escape sequences in the standard output buffer if the standard output stream is a TTY.
+
+Before writting to the standard error stream, ensure to flush the standard output buffer by using \fBfflush\fR(3) for them to be used.
+
+.TP
+.IP \\[bu]
+No color is set if the standard output and error streams are being redirected/piped or are wide character oriented.
+
+.SH SEE ALSO
+
+.BR fflush (3),
+.BR puts (3),
+.BR tdk (3)

@@ -2,7 +2,6 @@
 	<img alt="" src="assets/ornament.webp" />
 </p>
 <h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
-<p align="center">Terminal Development Kit</p>
 <p align="center">
 	<img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
 	&nbsp;
@@ -15,9 +14,9 @@
 
 ## ❡ About
 
-A simple C99 terminal manipulation library for Linux and Windows that can be used to develop cross-platform terminal application using C and C++. In summary, it includes features to manipulate terminal properties, styles and key events encoded in UTF-8.
+A simple C99 terminal manipulation library for Linux that can be used to create general purpose terminal applications.
 
-Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
+It includes features to manipulate terminal properties, styles and key readings with UTF-8 encoding.
 
 ## ❡ Install
 
@@ -25,53 +24,60 @@ Designed to be an alternative to curses-like libraries, it offers a solid base f
 
 The following dependencies must be installed before installing it:
 
-#### Dependencies For Windows
-
-- **Visual Studio 2022**: it provides all the tools required to build this library.
 - **git**: it will be used to clone this repository.
-
-#### Dependencies For Linux
-
-- **gcc**, **cmake**, **ninja**: they will be used to build this library.
-- **git**: it will be used to clone this repository.
+- **gcc**, **make**: they will be used to compile this software.
 
 ### Procedures
 
-The recommended way of using this library is by including it as a git submodule in your project and using CMake to perform its build and linking. That way you will be able to automatically download it as a dependency when you clone your repository and also be able to decide whether or not to update it.
+To install this software, using a terminal, follow these steps:
 
-On Windows, using `Developer PowerShell For VS 2022`, or, on Linux, using any terminal, follow these steps:
-
-- In the root of your project, where your `CMakeLists.txt` is, clone this repository as a submodule:
+- Clone this repository using `git`:
 
 ```sh
-git submodule add --depth 1 "https://github.com/skippyr/libtdk" "lib/libtdk";
+git clone --depth 1 "https://github.com/skippyr/libtdk";
 ```
 
-- In your `CMakeLists.txt`, add this library and link it to your executable target. In this example, it will be linked to an executable `src/main.c`, but adapt it to your case:
-
-```cmake
-cmake_minimum_required(VERSION 3.20)
-project(example-project)
-# Add the executable to the build.
-add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c" "${CMAKE_SOURCE_DIR}/src/main.h")
-# Add the library to the build.
-add_library(tdk "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.c" "${CMAKE_SOURCE_DIR}/lib/libtdk/src/tdk.h")
-# Includes its header file to the executable build.
-target_include_directories(main PRIVATE "${CMAKE_SOURCE_DIR}/lib/libtdk/src")
-# Links the library to the executable build.
-target_link_libraries(main tdk)
-```
-
-- Now, you are able to build your project and use the library in your executable:
+- Access the directory of the repository you cloned using `cd`:
 
 ```sh
-cmake -G Ninja -B build;
-cmake --build build;
+cd "libtdk";
+```
+
+- Use `make` to compile and install this software:
+
+```sh
+make install;
+```
+
+- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `~/.local/share`:
+
+```zsh
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:~/.local/share/lib";
+export LIBRARY_PATH="${LD_LIBRARY_PATH}:~/.local/share/lib";
+export MANPATH="${MANPATH}:~/.local/share/man";
+export CPATH="${CPATH}:~/.local/share/include";
+```
+
+- Open a new shell session.
+
+## ❡ Uninstall
+
+To uninstall this software, using a terminal, follow these steps:
+
+- Go back to the directory of the repository you cloned.
+- Use `make` to uninstall it:
+
+```sh
+make uninstall;
 ```
 
 ## ❡ Documentation
 
-After installed, you can learn how to use it by reading its [documentation](docs.md).
+After installed, you can access its documentation using `man`:
+
+```sh
+man tdk.3;
+```
 
 ## ❡ Help
 

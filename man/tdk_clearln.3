@@ -1,0 +1,51 @@
+.TH tdk_clearln 3 ${VERSION}
+
+.SH NAME
+
+.PP
+tdk_clearln - clears the terminal cursor line
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-tdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include <tdk.h>
+
+void tdk_clearln(void);\fR
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It clears the terminal cursor line and puts the cursor at its beginning, allowing its contents to be repainted.
+
+.SH EXAMPLES
+
+.nf
+#include <tdk.h>
+
+int
+main(void)
+{
+    printf("Hello, world!");
+    tdk_clearln();
+    puts("Here Be Dragons!");
+    return 0;
+}
+.fi
+
+.SH NOTES
+
+.TP
+.IP \\[bu]
+It will not clear the line if the standard output and error streams are being redirected/piped or are wide character oriented.
+
+.SH SEE ALSO
+
+.BR printf (3),
+.BR puts (3),
+.BR tdk (3)

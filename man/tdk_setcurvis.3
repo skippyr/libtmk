@@ -1,0 +1,63 @@
+.TH tdk_setcurvis 3 ${VERSION}
+
+.SH NAME
+
+.PP
+tdk_setcurvis - sets the terminal cursor visibility
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-tdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include <tdk.h>
+
+void tdk_setcurvis(int \fIisvis\fB);\fR
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It sets the visibility of the terminal cursor based on the boolean \fIisvis\fR: a non-zero value makes it visible, while zero makes it hidden.
+
+.SH EXAMPLES
+
+.nf
+#include <stdio.h>
+
+#include <tdk.h>
+
+int
+main(void)
+{
+    tdk_setcurvis(0);
+    tdk_readkey(NULL, NULL);
+    tdk_setcurvis(1);
+    return 0;
+}
+.fi
+
+.SH NOTES
+
+.TP
+.IP \\[bu]
+A hidden visibility must be reset before the end of your program to avoid conflicts with the current shell session.
+
+.TP
+.IP \\[bu]
+This function caches ANSI escape sequences in the standard output buffer if the standard output stream is a TTY.
+
+Before writting to the standard error stream, ensure to flush the standard output buffer by using \fBfflush\fR(3) for them to be used.
+
+.TP
+.IP \\[bu]
+The visibility is not set if the standard output and error streams are being redirected/piped or are wide character oriented.
+
+.SH SEE ALSO
+
+.BR fflush (3),
+.BR tdk (3),
+.BR tdk_readkey (3)
