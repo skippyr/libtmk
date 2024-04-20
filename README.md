@@ -52,10 +52,10 @@ make install;
 - Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `~/.local/share`:
 
 ```zsh
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:~/.local/share/lib";
-export LIBRARY_PATH="${LD_LIBRARY_PATH}:~/.local/share/lib";
-export MANPATH="${MANPATH}:~/.local/share/man";
-export CPATH="${CPATH}:~/.local/share/include";
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${HOME}/.local/share/lib";
+export LIBRARY_PATH="${LD_LIBRARY_PATH}:${HOME}/.local/share/lib";
+export MANPATH="${MANPATH}:${HOME}/.local/share/man";
+export CPATH="${CPATH}:${HOME}/.local/share/include";
 ```
 
 - Open a new shell session.

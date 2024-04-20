@@ -2,16 +2,16 @@ VERSION:=v10.0.0
 CC:=cc
 CFLAGS:=-std=c99 -Wpedantic -Wall -Wextra -Wno-unused-result -Os
 SHELL:=bash
-CPATH:=~/.local/share/include
-LIBPATH:=~/.local/share/lib
-MANPATH:=~/.local/share/man
+CPATH:=$${HOME}/.local/share/include
+LIBPATH:=$${HOME}/.local/share/lib
+MANPATH:=$${HOME}/.local/share/man
 
 .PHONY: all clean install uninstall
 
 all: build/lib/libtdk.so
 
 clean:
-	rm -rf build;
+	rm -rf "build";
 
 install: build/lib/libtdk.so src/tdk.h
 	mkdir -p ${LIBPATH} ${CPATH} ${MANPATH}/man3;
@@ -32,9 +32,9 @@ uninstall:
 	rm -f ${LIBPATH}/libtdk.so ${CPATH}/tdk.h ${MANPATH}/man3/{tdk.3,tdk_*.3};
 
 build/obj/tdk.o: src/tdk.c src/tdk.h
-	mkdir -p build/obj;
+	mkdir -p "build/obj";
 	${CC} ${CFLAGS} -fPIC -c -o ${@} ${<};
 
 build/lib/libtdk.so: build/obj/tdk.o
-	mkdir -p build/lib;
+	mkdir -p "build/lib";
 	${CC} ${CFLAGS} -shared -o ${@} ${<};
