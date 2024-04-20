@@ -49,7 +49,7 @@ cd "libtdk";
 make install;
 ```
 
-- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `~/.local/share`:
+- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `${HOME}/.local/share`:
 
 ```zsh
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${HOME}/.local/share/lib";
