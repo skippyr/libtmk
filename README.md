@@ -34,13 +34,13 @@ To install this software, using a terminal, follow these steps:
 - Clone this repository using `git`:
 
 ```sh
-git clone --depth 1 "https://github.com/skippyr/libtdk";
+git clone --depth 1 https://github.com/skippyr/libtdk;
 ```
 
 - Access the directory of the repository you cloned using `cd`:
 
 ```sh
-cd "libtdk";
+cd libtdk;
 ```
 
 - Use `make` to compile and install this software:
@@ -49,13 +49,13 @@ cd "libtdk";
 make install;
 ```
 
-- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `${HOME}/.local/share`:
+- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `~/.local/share`:
 
 ```zsh
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${HOME}/.local/share/lib";
-export LIBRARY_PATH="${LD_LIBRARY_PATH}:${HOME}/.local/share/lib";
-export MANPATH="${MANPATH}:${HOME}/.local/share/man";
-export CPATH="${CPATH}:${HOME}/.local/share/include";
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/share/lib;
+export LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/share/lib;
+export MANPATH=${MANPATH}:~/.local/share/man;
+export CPATH=${CPATH}:~/.local/share/include;
 ```
 
 - Open a new shell session.
