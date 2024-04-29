@@ -1,9 +1,9 @@
-.TH tdk_setwgt 3 ${VERSION}
+.TH tdk_setWeight 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_setwgt - sets the terminal foreground weight
+tdk_setWeight - sets the terminal foreground weight
 
 .SH LIBRARY
 
@@ -15,29 +15,29 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_setwgt(int \fIwgt\fB);\fR
+void tdk_setWeight(int \fIweight\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It sets the weight \fIwgt\fR of the terminal foreground.
+It sets the \fIweight\fR of the terminal foreground.
 
 .SH WEIGHTS
 
 .PP
-These are weight values defined by the library that may be used as the \fIwgt\fR parameter:
+These are custom weight values defined by the library that may be used as the \fIweight\fR parameter:
 
 .TP
-.B TDK_WGTDFT
+.B tdk_Weight_Default
 The default weight. Used for resets.
 
 .TP
-.B TDK_WGTBLD
+.B tdk_Weight_Bold
 The bold weight: usually rendered with bold weight and/or with light colors. It may require the use of a font with bold weight.
 
 .TP
-.B TDK_WGTDIM
+.B tdk_Weight_Dim
 The dim weight: usually rendered with a faint color.
 
 .SH EXAMPLES
@@ -47,16 +47,15 @@ The dim weight: usually rendered with a faint color.
 
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    char *msg = "Here Be Dragons!";
-    tdk_setwgt(TDK_WGTBLD);
-    puts(msg);
-    tdk_setwgt(TDK_WGTDIM);
-    puts(msg);
-    tdk_setwgt(TDK_WGTDFT);
-    puts(msg);
+    const char *message = "Here Be Dragons!";
+    tdk_setWeight(tdk_Weight_Bold);
+    puts(message);
+    tdk_setWeight(tdk_Weight_Dim);
+    puts(message);
+    tdk_setWeight(tdk_Weight_Default);
+    puts(message);
     return 0;
 }
 .fi

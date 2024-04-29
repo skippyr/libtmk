@@ -1,9 +1,9 @@
-.TH tdk_ringbell 3 ${VERSION}
+.TH tdk_ringBell 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_ringbell - rings the terminal bell
+tdk_ringBell - rings the terminal bell
 
 .SH LIBRARY
 
@@ -15,7 +15,7 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_ringbell(void);\fR
+void tdk_ringBell(void);\fR
 .fi
 
 .SH DESCRIPTION
@@ -28,10 +28,9 @@ It rings the terminal bell, possibly emitting a bell indicator in the title bar,
 .nf
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    tdk_ringbell();
+    tdk_ringBell();
     return 0;
 }
 .fi

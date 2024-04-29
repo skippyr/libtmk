@@ -6,7 +6,7 @@ CPATH:=~/.local/share/include
 LIBPATH:=~/.local/share/lib
 MANPATH:=~/.local/share/man
 
-.PHONY: all clean install uninstall
+.PHONY: all clean install uninstall tools
 
 all: build/lib/libtdk.so
 
@@ -17,19 +17,21 @@ install: build/lib/libtdk.so src/tdk.h
 	mkdir -p ${LIBPATH} ${CPATH} ${MANPATH}/man3;
 	cp ${<} ${LIBPATH};
 	cp $(word 2, ${^}) ${CPATH};
-	for m in $(wildcard man/*); \
+	for manual in $(wildcard man/*); \
 	do \
-		if [[ -L $${m} ]]; \
+		if [[ -L $${manual} ]]; \
 		then \
-			cp -d $${m} ${MANPATH}/man3; \
+			cp -d $${manual} ${MANPATH}/man3; \
 		else \
-			f=$${m##*/}; \
-			sed s/\$${VERSION}/${VERSION}/ $${m} > ${MANPATH}/man3/$${f}; \
+			name=$${manual##*/}; \
+			sed s/\$${VERSION}/${VERSION}/ $${manual} > ${MANPATH}/man3/$${name}; \
 		fi \
 	done
 
 uninstall:
 	rm -f ${LIBPATH}/libtdk.so ${CPATH}/tdk.h ${MANPATH}/man3/{tdk.3,tdk_*.3};
+
+tools: build/tools/key-dump
 
 build/obj/tdk.o: src/tdk.c src/tdk.h
 	mkdir -p build/obj;
@@ -38,3 +40,7 @@ build/obj/tdk.o: src/tdk.c src/tdk.h
 build/lib/libtdk.so: build/obj/tdk.o
 	mkdir -p build/lib;
 	${CC} ${CFLAGS} -shared -o ${@} ${<};
+
+build/tools/key-dump: tools/key-dump.c
+	mkdir -p build/tools;
+	${CC} ${CFLAGS} -o ${@} ${<};

@@ -15,21 +15,21 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_clearin(void);
-void tdk_clearln(void);
-int tdk_getcurpos(unsigned short *\fIcol\fB, unsigned short *\fIrow\fB);
-int tdk_getwindim(unsigned short *\fIcols\fB, unsigned short *\fIrows\fB);
-int tdk_readkey(int *\fIkey\fB, int *\fImods\fB);
-void tdk_ringbell(void);
-void tdk_set256clr(int \fIclr\fB, int \fIlyr\fB);
-void tdk_setaltwin(int \fIisenb\fB);
-void tdk_setcurpos(unsigned short \fIcol\fB, unsigned short \fIrow\fB);
-void tdk_setcurshp(int \fIshp\fB);
-void tdk_setcurvis(int \fIisvis\fB);
-void tdk_seteff(int \fIeff\fB, int \fIisenb\fB);
-void tdk_sethexclr(int \fIclr\fB, int \fIlyr\fB);
-void tdk_setrgbclr(int \fIr\fB, int \fIg\fB, int \fIb\fB, int \fIlyr\fB);
-void tdk_setwgt(int \fIwgt\fB);\fR
+void tdk_clearCursorLine(void);
+void tdk_clearInputBuffer(void);
+int tdk_getCursorCoordinate(struct tdk_Coordinate *\fIcoordinate\fB);
+int tdk_getScreenDimensions(struct tdk_Dimensions *\fIdimensions\fB);
+int tdk_readKeyEvent(struct tdk_KeyEvent *\fIevent\fB);
+void tdk_ringBell(void);
+void tdk_set256Color(int \fIcolor\fB, int \fIlayer\fB);
+void tdk_setAlternateScreen(int \fIisToEnable\fB);
+void tdk_setCursorCoordinate(struct tdk_Coordinate \fIcoordinate\fB);
+void tdk_setCursorShape(int \fIshape\fB);
+void tdk_setCursorVisibility(int \fIisToShow\fB);
+void tdk_setEffect(int \fIeffect\fB, int \fIisToEnable\fB);
+void tdk_setHexColor(int \fIcolor\fB, int \fIlayer\fB);
+void tdk_setRGBColor(struct tdk_RGB \fIcolor\fB, int \fIlayer\fB);
+void tdk_setWeight(int \fIweight\fB);\fR
 .fi
 
 .SH STANDARDS
@@ -61,7 +61,7 @@ It does not provide full resets of terminal properties. Do not manipulate them m
 .SH RESERVED NAMES
 
 .PP
-This library reserves all names starting with "tdk_" and "TDK_". An underline may be used as a prefix to indentify names reserved to the library implementation.
+This library reserves all names starting with "tdk_". An underline may be used as a prefix to indentify names reserved to the library implementation.
 
 .SH SOURCE CODE
 

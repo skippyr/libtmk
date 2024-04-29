@@ -1,9 +1,9 @@
-.TH tdk_clearin 3 ${VERSION}
+.TH tdk_clearInputBuffer 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_clearin - clears the standard input buffer
+tdk_clearInputBuffer - clears the standard input buffer
 
 .SH LIBRARY
 
@@ -15,7 +15,7 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_clearin(void);\fR
+void tdk_clearInputBuffer(void);\fR
 .fi
 
 .SH DESCRIPTION
@@ -28,10 +28,11 @@ It clears the standard input buffer, allowing new readings to be performed witho
 .nf
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    tdk_clearin();
+    struct tdk_KeyEvent keyEvent;
+    tdk_clearInputBuffer();
+    tdk_readKeyEvent(&keyEvent);
     return 0;
 }
 .fi

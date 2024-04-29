@@ -1,9 +1,9 @@
-.TH tdk_setcurvis 3 ${VERSION}
+.TH tdk_setCursorVisibility 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_setcurvis - sets the terminal cursor visibility
+tdk_setCursorVisibility - sets the terminal cursor visibility
 
 .SH LIBRARY
 
@@ -15,13 +15,13 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_setcurvis(int \fIisvis\fB);\fR
+void tdk_setCursorVisibility(int \fIisToShow\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It sets the visibility of the terminal cursor based on the boolean \fIisvis\fR: a non-zero value makes it visible, while zero makes it hidden.
+It sets the visibility of the terminal cursor based on the boolean \fIisToShow\fR: a non-zero value makes it visible, while zero makes it hidden.
 
 .SH EXAMPLES
 
@@ -30,12 +30,12 @@ It sets the visibility of the terminal cursor based on the boolean \fIisvis\fR: 
 
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    tdk_setcurvis(0);
-    tdk_readkey(NULL, NULL);
-    tdk_setcurvis(1);
+    struct tdk_KeyEvent keyEvent;
+    tdk_setCursorVisibility(0);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorVisibility(1);
     return 0;
 }
 .fi
@@ -60,4 +60,4 @@ The visibility is not set if the standard output and error streams are being red
 
 .BR fflush (3),
 .BR tdk (3),
-.BR tdk_readkey (3)
+.BR tdk_readKeyEvent (3)

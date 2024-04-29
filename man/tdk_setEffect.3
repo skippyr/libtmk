@@ -1,9 +1,9 @@
-.TH tdk_seteff 3 ${VERSION}
+.TH tdk_setEffect 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_seteff - sets the state of terminal effects
+tdk_setEffect - sets the state of terminal effects
 
 .SH LIBRARY
 
@@ -15,41 +15,41 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_seteff(int \fIeff\fB, int \fIisenb\fB);\fR
+void tdk_setEffect(int \fIeffect\fB, int \fIisToEnable\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It sets the state of the terminal effects flagged in the bitmask \fIeff\fR based on the boolean \fIisenb\fR: a non-zero value enables them, while zero disables them.
+It sets the state of the terminal effects flagged in the bitmask \fIeffect\fR based on the boolean \fIisToEnable\fR: a non-zero value enables them, while zero disables them.
 
 .SH EFFECTS
 
 .PP
-These are effect values defined by the library that may be used to compose the bitmask used as the \fIeff\fR parameter:
+These are custom effect values defined by the library that may be used to compose the bitmask used as the \fIeff\fR parameter:
 
 .TP
-.B TDK_EFFITL
+.B tdk_Effect_Italic
 The italic effect: it makes the text curly. It may require the use of a font with italic style.
 
 .TP
-.B TDK_EFFUND
+.B tdk_Effect_Underline
 The underline effect: it draws a horizontal line below the text.
 
 .TP
-.B TDK_EFFBLK
+.B tdk_Effect_Blinking
 The blinking effect: it makes the text blink indefinitely.
 
 .TP
-.B TDK_EFFREV
+.B tdk_Effect_ReverseVideo
 The reverse-video effect: it swaps the background and foreground colors.
 
 .TP
-.B TDK_EFFCON
+.B tdk_Effect_Conceal
 The conceal effect: it makes the text invisible or hard to see.
 
 .TP
-.B TDK_EFFSTR
+.B tdk_Effect_Strikethrough
 The strike-through effect: it draws a horizontal line in the middle of the text.
 
 .SH EXAMPLES
@@ -59,16 +59,15 @@ The strike-through effect: it draws a horizontal line in the middle of the text.
 
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    char *msg = "Here Be Dragons!";
-    tdk_seteff(TDK_EFFUND | TDK_EFFREV, 1);
-    puts(msg);
-    tdk_seteff(TDK_EFFREV, 0);
-    puts(msg);
-    tdk_seteff(TDK_EFFUND, 0);
-    puts(msg);
+    const char *message = "Here Be Dragons!";
+    tdk_setEffect(tdk_Effect_Underline | tdk_Effect_ReverseVideo, 1);
+    puts(message);
+    tdk_setEffect(tdk_Effect_ReverseVideo, 0);
+    puts(message);
+    tdk_setEffect(tdk_Effect_Underline, 0);
+    puts(message);
     return 0;
 }
 .fi

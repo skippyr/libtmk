@@ -1,9 +1,9 @@
-.TH tdk_getcurshp 3 ${VERSION}
+.TH tdk_setCursorShape 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_setcurshp - sets the terminal cursor shape
+tdk_setCursorShape - sets the terminal cursor shape
 
 .SH LIBRARY
 
@@ -15,33 +15,33 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_setcurshp(int \fIshp\fB);\fR
+void tdk_setCursorShape(int \fIshape\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It sets the terminal cursor shape \fIshp\fR.
+It sets the terminal cursor \fIshape\fR.
 
 .SH SHAPES
 
 .PP
-These are shape values defined by the library that may be used as the \fIshp\fR parameter:
+These are custom shape values defined by the library that may be used as the \fIshape\fR parameter:
 
 .TP
-.B TDK_SHPDFT
+.B tdk_Shape_Default
 The default shape. Used for resets.
 
 .TP
-.B TDK_SHPBLK, TDK_SHPBBLK
+.B tdk_Shape_Block, tdk_Shape_BlinkingBlock
 The regular and blinking variants of the block shape.
 
 .TP
-.B TDK_SHPUND, TDK_SHPBUND
+.B tdk_Shape_Underline, tdk_Shape_BlinkingUnderline
 The regular and blinking variants of the underline shape.
 
 .TP
-.B TDK_SHPBAR, TDK_SHPBBAR
+.B tdk_Shape_Bar, tdk_Shape_BlinkingBar
 The regular and blinking variants of the bar shape.
 
 .SH EXAMPLES
@@ -49,15 +49,17 @@ The regular and blinking variants of the bar shape.
 .nf
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
-    tdk_setcurshp(TDK_SHPUND);
-    tdk_readkey(NULL, NULL);
-    tdk_setcurshp(TDK_SHPBLK);
-    tdk_readkey(NULL, NULL);
-    tdk_setcurshp(TDK_SHPDFT);
-    tdk_readkey(NULL, NULL);
+    struct tdk_KeyEvent keyEvent;
+    tdk_setCursorShape(tdk_Shape_Underline);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorShape(tdk_Shape_Block);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorShape(tdk_Shape_Bar);
+    tdk_readKeyEvent(&keyEvent);
+    tdk_setCursorShape(tdk_Shape_Default);
+    tdk_readKeyEvent(&keyEvent);
     return 0;
 }
 .fi

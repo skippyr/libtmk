@@ -1,9 +1,9 @@
-.TH tdk_clearln 3 ${VERSION}
+.TH tdk_clearCursorLine 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_clearln - clears the terminal cursor line
+tdk_clearCursorLine - clears the terminal cursor line
 
 .SH LIBRARY
 
@@ -15,7 +15,7 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_clearln(void);\fR
+void tdk_clearCursorLine(void);\fR
 .fi
 
 .SH DESCRIPTION
@@ -28,11 +28,10 @@ It clears the terminal cursor line and puts the cursor at its beginning, allowin
 .nf
 #include <tdk.h>
 
-int
-main(void)
+int main(void)
 {
     printf("Hello, world!");
-    tdk_clearln();
+    tdk_clearCursorLine();
     puts("Here Be Dragons!");
     return 0;
 }

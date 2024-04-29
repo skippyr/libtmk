@@ -1,0 +1,55 @@
+.TH tdk_getScreenDimensions 3 ${VERSION}
+
+.SH NAME
+
+.PP
+tdk_getScreenDimensions - gets the terminal screen dimensions
+
+.SH LIBRARY
+
+.PP
+tdk (\fIlibtdk\fR, \fI-tdk\fR)
+
+.SH SYNOPSIS
+
+.nf
+\fB#include <tdk.h>
+
+int tdk_getScreenDimensions(struct tdk_Dimensions *\fIdimensions\fB);\fR
+.fi
+
+.SH DESCRIPTION
+
+.PP
+It gets the terminal screen dimensions and puts that information into the address pointed by the \fIdimensions\fR, if successful.
+
+.SH RETURN VALUES
+
+.PP
+It returns 0 on success, and -1 on failure. It fails if:
+
+.TP
+.IP \\[bu]
+All standard streams are being redirected/piped.
+
+.SH EXAMPLES
+
+.nf
+#include <stdio.h>
+
+#include <tdk.h>
+
+int main(void)
+{
+    struct tdk_Dimensions screenDimensions;
+    tdk_getScreenDimensions(&screenDimensions);
+    printf("Total columns: %hu.\\n", screenDimensions.totalColumns);
+    printf("Total rows   : %hu.\\n", screenDimensions.totalRows);
+    return 0;
+}
+.fi
+
+.SH SEE ALSO
+
+.BR printf (3),
+.BR tdk (3)
