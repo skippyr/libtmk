@@ -1,5 +1,3 @@
-#include <stdbool.h>
-
 #ifndef _tdk_H
 #define _tdk_H
 enum tdk_Color
