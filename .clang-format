@@ -3,6 +3,8 @@ AlignTrailingComments: false
 AllowShortLambdasOnASingleLine: None
 AlwaysBreakTemplateDeclarations: true
 BasedOnStyle: Microsoft
+BreakBeforeBraces: WebKit
+ColumnLimit: 90
 BreakAfterJavaFieldAnnotations: true
 FixNamespaceComments: false
 JavaScriptQuotes: Double

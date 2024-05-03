@@ -109,20 +109,14 @@ int main(void)
 {
     struct tdk_KeyEvent keyEvent;
     tdk_readKeykeyEvent(&keyEvent);
-    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_Modifier_Ctrl && !(keyEvent.modifiers & tdk_Modifier_Alt))
-    {
+    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_Modifier_Ctrl &&
+        !(keyEvent.modifiers & tdk_Modifier_Alt)) {
         puts("Ctrl + A");
-    }
-    else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12)
-    {
+    } else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12) {
         puts("F1 to F12");
-    }
-    else if (keyEvent.key == tdk_Key_UpArrow)
-    {
+    } else if (keyEvent.key == tdk_Key_UpArrow) {
         puts("Up Arrow");
-    }
-    else if (keyEvent.key == *(int *)"🐉")
-    {
+    } else if (keyEvent.key == *(int *)"🐉") {
         puts("Dragon Emoji");
     }
     return 0;
