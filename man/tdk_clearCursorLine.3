@@ -21,11 +21,13 @@ void tdk_clearCursorLine(void);\fR
 .SH DESCRIPTION
 
 .PP
-It clears the terminal cursor line and puts the cursor at its beginning, allowing its contents to be repainted.
+Clears the terminal cursor line and puts the cursor at its beginning, allowing its contents to be repainted.
 
 .SH EXAMPLES
 
 .nf
+#include <stdio.h>
+
 #include <tdk.h>
 
 int main(void)
@@ -41,10 +43,17 @@ int main(void)
 
 .TP
 .IP \\[bu]
+This function caches ANSI escape sequences in the standard output buffer if the standard output stream is a TTY.
+
+Before writting to the standard error stream, ensure to flush the standard output buffer by using \fBfflush\fR(3) for them to be used.
+
+.TP
+.IP \\[bu]
 It will not clear the line if the standard output and error streams are being redirected/piped or are wide character oriented.
 
 .SH SEE ALSO
 
+.BR fflush (3),
 .BR printf (3),
 .BR puts (3),
 .BR tdk (3)

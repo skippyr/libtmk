@@ -1,9 +1,9 @@
-.TH tdk_setAlternateScreenBuffer 3 ${VERSION}
+.TH tdk_setAlternateScreen 3 ${VERSION}
 
 .SH NAME
 
 .PP
-tdk_setAlternateScreenBuffer - sets the state of the alternate screen buffer
+tdk_setAlternateScreen - sets the state of the alternate screen buffer
 
 .SH LIBRARY
 
@@ -15,13 +15,13 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-void tdk_setAlternateScreenBuffer(int \fIisToEnable\fB);\fR
+void tdk_setAlternateScreen(int \fIisToEnable\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-It sets the state of the alternate screen buffer based on the value of the boolean \fIisToEnable\fR: a non-zero value enables it, while zero disables it.
+Sets the state of the alternate screen buffer based on the value of the boolean \fIisToEnable\fR: a non-zero value enables it, while zero disables it.
 
 .SH EXAMPLES
 
@@ -31,10 +31,10 @@ It sets the state of the alternate screen buffer based on the value of the boole
 int main(void)
 {
     struct tdk_KeyEvent keyEvent;
-    tdk_setAlternateScreenBuffer(1);
+    tdk_setAlternateScreen(1);
     printf("Here Be Dragons!");
     tdk_readKeyEvent(&keyEvent);
-    tdk_setAlternateScreenBuffer(0);
+    tdk_setAlternateScreen(0);
     return 0;
 }
 .fi

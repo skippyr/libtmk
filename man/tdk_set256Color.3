@@ -3,7 +3,7 @@
 .SH NAME
 
 .PP
-tdk_set256Color, tdk_setHexColor, tdk_setRGBColor - sets a terminal color
+tdk_set256Color, tdk_setHexColor, tdk_setRGBColor - set a terminal color
 
 .SH LIBRARY
 
@@ -23,11 +23,11 @@ void tdk_setRGBColor(struct tdk_RGB \fIcolor\fB, int \fIlayer\fB);\fR
 .SH DESCRIPTION
 
 .PP
-These functions set a color of a specific format into a terminal \fIlayer\fR:
+Set a color of a specific format into a terminal \fIlayer\fR:
 
 .TP
 .IP \\[bu]
-The function \fBtdk_set256Color\fR expects a \fIcolor\fR from the xterm 256 colors palette, which can be any value in range from 0 to 255 or a color value defined by the library.
+The function \fBtdk_set256Color\fR expects a \fIcolor\fR from the xterm 256 colors palette, which can be any value in range from 0 to 255 or a custom color value defined by the library.
 
 This palette offers the best compatibility with the current terminal theme.
 
