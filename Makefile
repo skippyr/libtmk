@@ -1,10 +1,10 @@
 VERSION:=v11.0.0
 CC:=cc
 CFLAGS:=-std=c99 -Wpedantic -Wall -Wextra -Wno-unused-result -Os
-SHELL:=bash
 CPATH:=~/.local/share/include
 LIBPATH:=~/.local/share/lib
 MANPATH:=~/.local/share/man
+SHELL:=bash
 
 .PHONY: all clean install uninstall tools
 
