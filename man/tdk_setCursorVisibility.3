@@ -30,13 +30,11 @@ Sets the visibility of the terminal cursor based on the boolean \fIisToShow\fR: 
 
 #include <tdk.h>
 
-int main(void)
-{
-    struct tdk_KeyEvent keyEvent;
-    tdk_setCursorVisibility(0);
-    tdk_readKeyEvent(&keyEvent);
-    tdk_setCursorVisibility(1);
-    return 0;
+int main(void) {
+  tdk_setCursorVisibility(0);
+  tdk_readKeyEvent(NULL, NULL);
+  tdk_setCursorVisibility(1);
+  return 0;
 }
 .fi
 

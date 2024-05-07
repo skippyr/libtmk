@@ -28,12 +28,12 @@ Clears the standard input buffer, allowing new readings to be performed without 
 .nf
 #include <tdk.h>
 
-int main(void)
-{
-    struct tdk_KeyEvent keyEvent;
-    tdk_clearInputBuffer();
-    tdk_readKeyEvent(&keyEvent);
-    return 0;
+int main(void) {
+  int key;
+  int modifiers;
+  tdk_clearInputBuffer();
+  tdk_readKeyEvent(&key, &modifiers);
+  return 0;
 }
 .fi
 

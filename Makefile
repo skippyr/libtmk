@@ -1,4 +1,4 @@
-VERSION:=v11.0.0
+VERSION:=v12.0.0
 CC:=cc
 CFLAGS:=-std=c99 -Wpedantic -Wall -Wextra -Wno-unused-result -Os
 CPATH:=~/.local/share/include

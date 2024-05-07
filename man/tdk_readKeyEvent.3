@@ -15,32 +15,24 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-int tdk_readKeyEvent(struct tdk_KeyEvent *\fIevent\fB);\fR
+int tdk_readKeyEvent(int *\fIkey\fB, int *\fImodifiers\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .PP
-Reads characters from the standard input buffer and parses key events. All information retrieved gets into the address pointed by the \fIevent\fR parameter, if successfull.
+Reads characters from the standard input buffer and parses key events. All information retrieved gets into the addresses pointed by its parameters, if successfull:
+
+.TP
+.IP \\[bu]
+\fBkey:\fR receives the key pressed during the event. It may be an UTF-8 grapheme or a custom value defined by the library.
+
+.TP
+.IP \\[bu]
+\fBmodifiers:\fR receives a bitmask containing the modifier keys being hold during the event. It may be composed by custom values defined by the library.
 
 .PP
-The \fItdk_KeyEvent\fR struct is composed by the following fields:
-
-.nf
-struct tdk_KeyEvent
-{
-    int key;
-    int modifiers;
-};
-.fi
-
-.TP
-.IP \\[bu]
-\fBkey:\fR the key pressed during the event. It may be an UTF-8 grapheme or a custom value defined by the library.
-
-.TP
-.IP \\[bu]
-\fBmodifiers:\fR a bitmask containing the modifier keys being hold during the event. It may be composed by custom values defined by the library.
+Both parameters are optional. If one is not required, use NULL.
 
 .SH RETURN VALUES
 
@@ -58,7 +50,7 @@ The standard output and error streams are being redirected/piped.
 .SH KEYS
 
 .PP
-These are custom key values defined by the library that may be set into the \fIkey\fR field of the \fIevent\fR parameter.
+These are custom key values defined by the library that may be set into the \fIkey\fR parameter.
 
 .PP
 They identify keys that are not represented by UTF-8 characters and some others that are but which value can be used to improve readability.
@@ -82,7 +74,7 @@ The insertion/deletion keys.
 .SH MODIFIERS
 
 .PP
-These are custom modifier key values defined by the library that may be used to compose the bitmask set into the \fImodifiers\fR field of the \fIevent\fR parameter.
+These are custom modifier key values defined by the library that may be used to compose the bitmask set into the \fImodifiers\fR parameter.
 
 .TP
 .B tdk_Modifier_Alt
@@ -105,21 +97,21 @@ As a limitation of this library, modifier keys can only be identified in keys re
 
 #include <tdk.h>
 
-int main(void)
-{
-    struct tdk_KeyEvent keyEvent;
-    tdk_readKeykeyEvent(&keyEvent);
-    if (keyEvent.key == 'a' && keyEvent.modifiers & tdk_Modifier_Ctrl &&
-        !(keyEvent.modifiers & tdk_Modifier_Alt)) {
-        puts("Ctrl + A");
-    } else if (keyEvent.key >= tdk_Key_F1 && keyEvent.key <= tdk_Key_F12) {
-        puts("F1 to F12");
-    } else if (keyEvent.key == tdk_Key_UpArrow) {
-        puts("Up Arrow");
-    } else if (keyEvent.key == *(int *)"🐉") {
-        puts("Dragon Emoji");
-    }
-    return 0;
+int main(void) {
+  int key;
+  int modifiers;
+  tdk_readKeyEvent(&key, &modifiers);
+  if (key == 'a' && modifiers & tdk_Modifier_Ctrl &&
+      !(modifiers & tdk_Modifier_Alt)) {
+    puts("Ctrl + A");
+  } else if (key >= tdk_Key_F1 && key <= tdk_Key_F12) {
+    puts("F1 to F12");
+  } else if (key == tdk_Key_UpArrow) {
+    puts("Up Arrow");
+  } else if (key == *(int *)"🐉") {
+    puts("Dragon Emoji");
+  }
+  return 0;
 }
 .fi
 

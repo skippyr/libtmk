@@ -59,16 +59,15 @@ The strike-through effect: it draws a horizontal line in the middle of the text.
 
 #include <tdk.h>
 
-int main(void)
-{
-    const char *message = "Here Be Dragons!";
-    tdk_setEffect(tdk_Effect_Underline | tdk_Effect_ReverseVideo, 1);
-    puts(message);
-    tdk_setEffect(tdk_Effect_ReverseVideo, 0);
-    puts(message);
-    tdk_setEffect(tdk_Effect_Underline, 0);
-    puts(message);
-    return 0;
+int main(void) {
+  const char *message = "Here Be Dragons!";
+  tdk_setEffect(tdk_Effect_Underline | tdk_Effect_ReverseVideo, 1);
+  puts(message);
+  tdk_setEffect(tdk_Effect_ReverseVideo, 0);
+  puts(message);
+  tdk_setEffect(tdk_Effect_Underline, 0);
+  puts(message);
+  return 0;
 }
 .fi
 

@@ -17,18 +17,19 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 
 void tdk_clearCursorLine(void);
 void tdk_clearInputBuffer(void);
-int tdk_getCursorCoordinate(struct tdk_Coordinate *\fIcoordinate\fB);
-int tdk_getScreenDimensions(struct tdk_Dimensions *\fIdimensions\fB);
-int tdk_readKeyEvent(struct tdk_KeyEvent *\fIevent\fB);
+int tdk_getCursorCoordinate(unsigned short *\fIcolumn\fB, unsigned short *\fIrow\fB);
+int tdk_getWindowDimensions(unsigned short *\fItotalColumns\fB,
+                            unsigned short *\fItotalRows\fB);
+int tdk_readKeyEvent(int *\fIkey\fB, int \fImodifiers\fB);
 void tdk_ringBell(void);
 void tdk_set256Color(int \fIcolor\fB, int \fIlayer\fB);
 void tdk_setAlternateScreen(int \fIisToEnable\fB);
-void tdk_setCursorCoordinate(struct tdk_Coordinate \fIcoordinate\fB);
+void tdk_setCursorCoordinate(unsigned short \fIcolumn\fB, unsigned short \fIrow\fB);
 void tdk_setCursorShape(int \fIshape\fB);
 void tdk_setCursorVisibility(int \fIisToShow\fB);
 void tdk_setEffect(int \fIeffect\fB, int \fIisToEnable\fB);
 void tdk_setHexColor(int \fIcolor\fB, int \fIlayer\fB);
-void tdk_setRGBColor(struct tdk_RGB \fIcolor\fB, int \fIlayer\fB);
+void tdk_setRGBColor(int \fIred\fB, int \fIgreen\fB, int \fIblue\fB, int \fIlayer\fB);
 void tdk_setWeight(int \fIweight\fB);\fR
 .fi
 

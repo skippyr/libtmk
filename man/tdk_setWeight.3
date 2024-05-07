@@ -47,16 +47,15 @@ The dim weight: usually rendered with a faint color.
 
 #include <tdk.h>
 
-int main(void)
-{
-    const char *message = "Here Be Dragons!";
-    tdk_setWeight(tdk_Weight_Bold);
-    puts(message);
-    tdk_setWeight(tdk_Weight_Dim);
-    puts(message);
-    tdk_setWeight(tdk_Weight_Default);
-    puts(message);
-    return 0;
+int main(void) {
+  const char *message = "Here Be Dragons!";
+  tdk_setWeight(tdk_Weight_Bold);
+  puts(message);
+  tdk_setWeight(tdk_Weight_Dim);
+  puts(message);
+  tdk_setWeight(tdk_Weight_Default);
+  puts(message);
+  return 0;
 }
 .fi
 

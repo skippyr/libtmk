@@ -17,7 +17,7 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 
 void tdk_set256Color(int \fIcolor\fB, int \fIlayer\fB);
 void tdk_setHexColor(int \fIcolor\fB, int \fIlayer\fB);
-void tdk_setRGBColor(struct tdk_RGB \fIcolor\fB, int \fIlayer\fB);\fR
+void tdk_setRGBColor(int \fIred\fB, int \fIgreen\fB, int \fIblue\fB, int \fIlayer\fB);\fR
 .fi
 
 .SH DESCRIPTION
@@ -41,36 +41,7 @@ This color format requires the terminal to have truecolor support.
 
 .TP
 .IP \\[bu]
-The function \fBtdk_setRGBColor\fR expects an RGB \fIcolor\fR.
-
-This color format requires the terminal to have truecolor support.
-
-.PP
-The \fItdk_RGB\fR struct is composed by the following fields:
-
-.nf
-struct tdk_RGB
-{
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
-};
-.fi
-
-.TP
-.IP \\[bu]
-\fBred: \fR the red component of the color.
-
-.TP
-.IP \\[bu]
-\fBgreen: \fR the green component of the color.
-
-.TP
-.IP \\[bu]
-\fBblue: \fR the blue component of the color.
-
-.PP
-Each component may be any value in range from 0 to 255.
+The function \fBtdk_setRGBColor\fR expects the \fIred\fR, \fIgreen\fR and \fIblue\fR components of an RGB color. Each component may be any value in range from 0 to 255.
 
 .SH LAYERS
 
@@ -132,18 +103,17 @@ The regular and light variants of the white color.
 
 #include <tdk.h>
 
-int main(void)
-{
-    const char *message = "Here Be Dragons!";
-    tdk_set256Color(tdk_Color_Red, tdk_Layer_Foreground);
-    puts(message);
-    tdk_set256Color(tdk_Color_Yellow, tdk_Layer_Foreground);
-    puts(message);
-    tdk_set256Color(tdk_Color_Green, tdk_Layer_Foreground);
-    puts(message);
-    tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
-    puts(message);
-    return 0;
+int main(void) {
+  const char *message = "Here Be Dragons!";
+  tdk_set256Color(tdk_Color_Red, tdk_Layer_Foreground);
+  puts(message);
+  tdk_set256Color(tdk_Color_Yellow, tdk_Layer_Foreground);
+  puts(message);
+  tdk_set256Color(tdk_Color_Green, tdk_Layer_Foreground);
+  puts(message);
+  tdk_set256Color(tdk_Color_Default, tdk_Layer_Foreground);
+  puts(message);
+  return 0;
 }
 .fi
 

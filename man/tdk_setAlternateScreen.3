@@ -28,14 +28,12 @@ Sets the state of the alternate screen buffer based on the value of the boolean 
 .nf
 #include <tdk.h>
 
-int main(void)
-{
-    struct tdk_KeyEvent keyEvent;
-    tdk_setAlternateScreen(1);
-    printf("Here Be Dragons!");
-    tdk_readKeyEvent(&keyEvent);
-    tdk_setAlternateScreen(0);
-    return 0;
+int main(void) {
+  tdk_setAlternateScreen(1);
+  printf("Here Be Dragons!");
+  tdk_readKeyEvent(NULL, NULL);
+  tdk_setAlternateScreen(0);
+  return 0;
 }
 .fi
 

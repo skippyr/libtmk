@@ -15,43 +15,26 @@ tdk (\fIlibtdk\fR, \fI-tdk\fR)
 .nf
 \fB#include <tdk.h>
 
-int tdk_getCursorCoordinate(struct tdk_Coordinate *\fIcoordinate\fB);
-void tdk_setCursorCoordinate(struct tdk_Coordinate \fIcoordinate\fB);\fR
+int tdk_getCursorCoordinate(unsigned short *\fIcolumn\fB, unsigned short *\fIrow\fB);
+void tdk_setCursorCoordinate(unsigned short \fIcolumn\fB, unsigned short \fIrow\fB);\fR
 .fi
 
 .SH DESCRIPTION
 
 .TP
 .IP \\[bu]
-The function \fBtdk_getCursorCoordinate\fR gets the terminal cursor coordinate and puts that information inside of the address pointed by the \fIcoordinate\fR parameter, if successful.
+The function \fBtdk_getCursorCoordinate\fR gets the column and row components of the terminal cursor coordinate and puts that information inside of the addresses pointed by the \fIcolumn\fR and \fIrow\fR parameters, respectively, if successful.
+
+Both parameters are optional. If one is not required, use NULL.
 
 .TP
 .IP \\[bu]
-The function \fBtdk_setCursorCoordinate\fR sets the terminal cursor coordinate specified by the \fIcoordinate\fR parameter.
+The function \fBtdk_setCursorCoordinate\fR sets the \fIcolumn\fR and \fIrow\fR components of the terminal cursor coordinate.
 
-The coordinate given will always be fit within the terminal screen boundaries. If you need, use \fBtdk_getScreenDimensions\fR(3) to retrieve the terminal screen dimensions and use that information to handle possible exceptions and make precise/relative positioning.
+The coordinate given will always be fit within the terminal window boundaries. If you need, use \fBtdk_getWindowDimensions\fR(3) to retrieve the terminal window dimensions and use that information to handle possible exceptions and make precise/relative positioning.
 
 .PP
-The \fItdk_Coordinate\fR struct is composed by the following fields:
-
-.nf
-struct tdk_Coordinate
-{
-    unsigned short column;
-    unsigned short row;
-};
-.fi
-
-.TP
-.IP \\[bu]
-\fBcolumn:\fR the column component of the coordinate.
-
-.TP
-.IP \\[bu]
-\fBrow:\fR the row component of the coordinate.
-
-.PP
-Both functions use a reference point at the top left corner of the screen, where both column and row components of the coordinate are zero. From there, the column and row components increase going right and down, respectively.
+Both functions use a reference point at the top left corner of the terminal window, where both column and row components of the coordinate are zero. From there, those components increase going right and down, respectively.
 
 .SH RETURN VALUES
 
@@ -69,14 +52,13 @@ The standard input stream or the standard output and error streams are being red
 
 #include <tdk.h>
 
-int main(void)
-{
-    struct tdk_Coordinate cursorCoordinate;
-    tdk_getCursorCoordinate(&cursorCoordinate);
-    cursorCoordinate.column = 5;
-    tdk_setCursorCoordinate(cursorCoordinate);
-    puts("Here Be Dragons!");
-    return 0;
+int main(void) {
+  unsigned short cursorColumn;
+  unsigned short cursorRow;
+  tdk_getCursorCoordinate(&cursorColumn, &cursorRow);
+  tdk_setCursorCoordinate(cursorColumn + 5, cursorRow);
+  puts("Here Be Dragons!");
+  return 0;
 }
 .fi
 
@@ -101,4 +83,4 @@ The cursor position is not set by \fBtdk_setCursorCoordinate\fR if the standard 
 .BR fflush (3),
 .BR puts (3),
 .BR tdk (3),
-.BR tdk_getScreenDimensions (3)
+.BR tdk_getWindowDimensions (3)
