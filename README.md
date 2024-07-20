@@ -1,91 +1,82 @@
 <p align="center">
-  <img alt="" src="assets/ornament.webp" />
+  <img alt="" src="assets/ornament.png" width=1020 />
 </p>
-<h1 align="center">≥v≥v&ensp;libtdk&ensp;≥v≥v</h1>
+<h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
+<p align="center">Terminal Manipulation Kit</p>
 <p align="center">
-  <img alt="" src="https://img.shields.io/github/license/skippyr/libtdk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
+  <img alt="" src="https://img.shields.io/github/license/skippyr/libtmk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
   &nbsp;
-  <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtdk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
+  <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtmk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
   &nbsp;
-  <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtdk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
+  <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtmk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
   &nbsp;
-  <img alt="" src="https://img.shields.io/github/stars/skippyr/libtdk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
+  <img alt="" src="https://img.shields.io/github/stars/skippyr/libtmk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
 </p>
 
 ## ❡ About
 
-A simple C99 terminal manipulation library for Linux that can be used to create general purpose terminal applications.
+A simple C99 terminal manipulation library for C/C++ with features to manipulate terminal properties, styles and key readings targetting UTF-8 encoding. It is available on Windows, Linux and MacOS.
 
-It includes features to manipulate terminal properties, styles and key readings with UTF-8 encoding.
+Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
 
 ## ❡ Install
 
 ### Dependencies
 
-The following dependencies must be installed before installing it:
+The following dependencies must be installed before it:
 
+#### Dependencies For Windows
+
+- [**Visual Studio 2022**](https://visualstudio.microsoft.com): it provides all the tools required to build this library.
+- [**git**](https://git-scm.com): it will be used to clone this repository.
+
+#### Dependencies For Linux
+
+- **gcc**, **cmake**: they will be used to build this library.
 - **git**: it will be used to clone this repository.
-- **gcc**, **make**: they will be used to compile this software.
+
+> [!TIP]
+> Use your distro package manager to install these packages.
+
+#### Dependencies For MacOS
+
+- **Apple Command Line Tools**, **cmake**: they will be used to build this library.
+- **git**: it will be used to clone this repository.
+
+> [!TIP]
+> Use `xcode-select --install` to install the Apple command line tools. For the rest, use [HomeBrew](https://brew.sh/).
 
 ### Procedures
 
-To install this software, using a terminal, follow these steps:
-
-- Clone this repository using `git`:
-
-```sh
-git clone --depth 1 https://github.com/skippyr/libtdk;
-```
-
-- Access the directory of the repository you cloned using `cd`:
-
-```sh
-cd libtdk;
-```
-
-- Use `make` to compile and install this software:
-
-```sh
-make install;
-```
-
-- Add the following environment variables to your shell startup file in order to include the installed files that are at the directories under `~/.local/share`:
+- In the root of your project, use `git` to add this library as a submodule:
 
 ```zsh
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/share/lib;
-export LIBRARY_PATH=${LD_LIBRARY_PATH}:~/.local/share/lib;
-export MANPATH=${MANPATH}:~/.local/share/man;
-export CPATH=${CPATH}:~/.local/share/include;
+git submodule add https://github.com/skippyr/libtmk libs/libtmk;
 ```
 
-- Open a new shell session.
+- In your `CMakeLists.txt` file, add the library as a subdirectory (it will be target `tmk`) and link it against your executable target, in this example, it will be `src/main.c`:
 
-## ❡ Uninstall
-
-To uninstall this software, using a terminal, follow these steps:
-
-- Go back to the directory of the repository you cloned.
-- Use `make` to uninstall it:
-
-```sh
-make uninstall;
+```cmake
+cmake_minimum_required(VERSION 3.20)
+project(tmk)
+add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
+add_subdirectory("${CMAKE_SOURCE_DIR}/libs/libtmk" "${CMAKE_BINARY_DIR}/libtmk")
+target_link_libraries(main tmk)
 ```
+
+- The next time you build your project, the library will be automatically linked into your executable.
 
 ## ❡ Documentation
 
-After installed, you can access its documentation using `man`:
-
-```sh
-man tdk.3;
-```
+After installed, you can learn how to use it by reading its [documentation](DOCS.md) or by hovering your mouse pointer over any of its identifiers in your IDE.
 
 ## ❡ Help
 
-If you need help related to this project, open a new issue in its [issues pages](https://github.com/skippyr/libtdk/issues) or send me an [e-mail](mailto:skippyr.developer@gmail.com) describing what is going on.
+If you need help related to this project, open a new issue in its [issues pages](https://github.com/skippyr/libtmk/issues) or send me an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
 
 ## ❡ Contributing
 
-This project is open to review and possibly accept contributions, specially fixes and suggestions. If you are interested, send your contribution to its [pull requests page](https://github.com/skippyr/libtdk/pulls) or to my [e-mail](mailto:skippyr.developer@gmail.com).
+This project is open to review and possibly accept contributions, specially fixes and suggestions. If you are interested, send your contribution to its [pull requests page](https://github.com/skippyr/libtmk/pulls) or to my [e-mail](mailto:skippyr.developer@icloud.com).
 
 By contributing to this project, you agree to license your work under the same license that the project uses.
 

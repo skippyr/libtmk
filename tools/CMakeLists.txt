@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(tmk-tools)
+add_subdirectory("${CMAKE_SOURCE_DIR}/.." "${CMAKE_BINARY_DIR}/libtmk")
+add_executable(tmk-key-logger "${CMAKE_SOURCE_DIR}/tmk-key-logger.c")
+target_link_libraries(tmk-key-logger tmk)
