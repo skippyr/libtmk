@@ -943,7 +943,7 @@ int main(void) {
 
 #### Brief
 
-Reads a terminal key event and remove it from the input buffer. Content typed and pasted into the terminal are considered key events. Under some situations, the terminal may not give enough information for the library to distinguish certain key events and some key sequences may be reserved by the terminal or operating system. During execution, it blocks the receipt of signals. For convenience, it flushes the terminal output buffer upon execution. To avoid reading cached events, use it with the [`tmk_clearInputBuffer`](#tmk_clearinputbuffer-function) function.
+Reads a terminal key event and remove it from the input buffer. Content typed and pasted into the terminal are considered key events. Under some situations, the terminal may not give enough information for the library to distinguish certain key events and some key sequences may be reserved by the terminal or operating system. Modifiers keys may only be identified in keys represented by UTF-8 graphemes. During execution, it blocks the receipt of signals. For convenience, it flushes the terminal output buffer upon execution. To avoid reading cached events, use it with the [`tmk_clearInputBuffer`](#tmk_clearinputbuffer-function) function.
 
 #### Declaration
 

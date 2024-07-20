@@ -620,9 +620,11 @@ void tmk_setCursorVisibility(bool isVisible);
  * Content typed and pasted into the terminal are considered key events. Under
  * some situations, the terminal may not give enough information for the library
  * to distinguish certain key events. Some key sequences may be reserved by the
- * terminal or operating system. During execution, it blocks the receipt of
+ * terminal or operating system. Modifiers keys may only be identified in keys
+ * represented by UTF-8 graphemes. During execution, it blocks the receipt of
  * signals. For convenience, it flushes the terminal output buffer upon
- * execution. To avoid reading cached events, use it with the tmk_clearInputBuffer function.
+ * execution. To avoid reading cached events, use it with the
+ * tmk_clearInputBuffer function.
  * @param waitInMilliseconds The time in milliseconds to wait for an event. If
  * the time is negative, it waits forever; If zero, it returns immediately; Or,
  * if positive, it waits the given time.
