@@ -58,7 +58,7 @@ git submodule add https://github.com/skippyr/libtmk libs/libtmk;
 
 ```cmake
 cmake_minimum_required(VERSION 3.20)
-project(tmk)
+project(tmk-example)
 add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
 add_subdirectory("${CMAKE_SOURCE_DIR}/libs/libtmk" "${CMAKE_BINARY_DIR}/libtmk")
 target_link_libraries(main tmk)
