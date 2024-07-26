@@ -15,7 +15,7 @@
 
 ## ❡ About
 
-A simple C99 terminal manipulation library for C/C++ with features to manipulate terminal properties, styles and key readings targetting UTF-8 encoding. It is available on Windows, Linux and MacOS.
+A simple C99 terminal manipulation library for C/C++ with features to manipulate terminal properties, styles and key readings targetting UTF-8 encoding. It is available for Windows, Linux and MacOS.
 
 Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
 
@@ -48,10 +48,13 @@ The following dependencies must be installed before it:
 
 ### Procedures
 
+On Windows, using the `Developer PowerShell for VS 2022` profile or, on any other operating systems, using any terminal, follow these instructions:
+
+
 - In the root of your project, use `git` to add this library as a submodule:
 
 ```zsh
-git submodule add https://github.com/skippyr/libtmk libs/libtmk;
+git submodule add https://github.com/skippyr/libtmk libs/libtmk
 ```
 
 - In your `CMakeLists.txt` file, add the library as a subdirectory (it will be target `tmk`) and link it against your executable target, in this example, it will be `src/main.c`:
@@ -59,8 +62,8 @@ git submodule add https://github.com/skippyr/libtmk libs/libtmk;
 ```cmake
 cmake_minimum_required(VERSION 3.20)
 project(tmk-example)
-add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
 add_subdirectory("${CMAKE_SOURCE_DIR}/libs/libtmk" "${CMAKE_BINARY_DIR}/libtmk")
+add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
 target_link_libraries(main tmk)
 ```
 
