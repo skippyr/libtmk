@@ -30,6 +30,20 @@ This library has some limitations over its usage. To avoid conflicts and malfunc
 - It does not provide full resets of terminal properties. Avoid manipulating them manually or by using functions from other libraries.
 - It is not prepared for multithreading. Always use only one thread to manipulate the terminal and avoid resources racing.
 
+## ❡ Macros
+
+- `tmk_OPERATING_SYSTEM`: A string that contains the name of the operating system in use. Possible values are: `"Windows"`, `"Linux"`, `"MacOS"` and `"Unknown Operating System"`.
+- `tmk_IS_OPERATING_SYSTEM_WINDOWS`: A boolean that states the operating system in use is Windows.
+- `tmk_IS_OPERATING_SYSTEM_LINUX`: A boolean that states the operating system in use is Linux.
+- `tmk_IS_OPERATING_SYSTEM_MACOS`: A boolean that states the operating system in use is MacOS.
+- `tmk_IS_OPERATING_SYSTEM_UNKNOWN`: A boolean that states the operating system in use is unknown.
+- `tmk_CPU_ARCHITECTURE`: A string that contains the name of the CPU architecture in use. Possible values are: `"ARM32"`, `"ARM64"`, `"x86"`, `"x86_64"` and `"Unknown CPU Architecture"`.
+- `tmk_IS_CPU_ARCHITECTURE_ARM32`: A boolean that states the CPU architecture in use is ARM32.
+- `tmk_IS_CPU_ARCHITECTURE_ARM64`: A boolean that states the CPU architecture in use is ARM64.
+- `tmk_IS_CPU_ARCHITECTURE_X86`: A boolean that states the CPU architecture in use is x86.
+- `tmk_IS_CPU_ARCHITECTURE_X86_64`: A boolean that states the CPU architecture in use is x86_64.
+- `tmk_IS_CPU_ARCHITECTURE_UNKNOWN`: A boolean that states the CPU architecture in use is unknown.
+
 ## ❡ Enums
 
 ### tmk_ANSIColor Enum

@@ -6,6 +6,326 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#if defined(_WIN32)
+/**
+ * @brief A string that contains the name of the operating system in use.
+ */
+#define tmk_OPERATING_SYSTEM "Windows"
+/**
+ * @brief A boolean that states the operating system in use is Windows.
+ */
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS true
+/**
+ * @brief A boolean that states the operating system in use is Linux.
+ */
+#define tmk_IS_OPERATING_SYSTEM_LINUX false
+/**
+ * @brief A boolean that states the operating system in use is MacOS.
+ */
+#define tmk_IS_OPERATING_SYSTEM_MACOS false
+/**
+ * @brief A boolean that states the operating system is unknown.
+ */
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#if defined(_M_ARM)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "ARM32"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 true
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#elif defined(_M_ARM64)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "ARM64"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 true
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#elif defined(_WIN64)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "x86_64"
+/**
+ * @brief The CPU architecture in use. It is an enumerator from the
+ * tmk_CPUArchitecture enum.
+ */
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 true
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#else
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "x86"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 true
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#endif
+#else
+#if defined(__linux__)
+/**
+ * @brief A string that contains the name of the operating system in use.
+ */
+#define tmk_OPERATING_SYSTEM "Linux"
+/**
+ * @brief A boolean that states the operating system in use is Windows.
+ */
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+/**
+ * @brief A boolean that states the operating system in use is Linux.
+ */
+#define tmk_IS_OPERATING_SYSTEM_LINUX true
+/**
+ * @brief A boolean that states the operating system in use is MacOS.
+ */
+#define tmk_IS_OPERATING_SYSTEM_MACOS false
+/**
+ * @brief A boolean that states the operating system is unknown.
+ */
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#elif defined(__APPLE__)
+/**
+ * @brief A string that contains the name of the operating system in use.
+ */
+#define tmk_OPERATING_SYSTEM "MacOS"
+/**
+ * @brief A boolean that states the operating system in use is Windows.
+ */
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+/**
+ * @brief A boolean that states the operating system in use is Linux.
+ */
+#define tmk_IS_OPERATING_SYSTEM_LINUX false
+/**
+ * @brief A boolean that states the operating system in use is MacOS.
+ */
+#define tmk_IS_OPERATING_SYSTEM_MACOS true
+/**
+ * @brief A boolean that states the operating system is unknown.
+ */
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#else
+/**
+ * @brief A string that contains the name of the operating system in use.
+ */
+#define tmk_OPERATING_SYSTEM "Unknown Operating System"
+/**
+ * @brief A boolean that states the operating system in use is Windows.
+ */
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+/**
+ * @brief A boolean that states the operating system in use is Linux.
+ */
+#define tmk_IS_OPERATING_SYSTEM_LINUX false
+/**
+ * @brief A boolean that states the operating system in use is MacOS.
+ */
+#define tmk_IS_OPERATING_SYSTEM_MACOS false
+/**
+ * @brief A boolean that states the operating system is unknown.
+ */
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN true
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "Unknown CPU Architecture"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN true
+#endif
+#if defined(__linux__) || defined(__APPLE__)
+#if defined(__arm__)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "ARM32"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 true
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#elif defined(__aarch64__)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "ARM64"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 true
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#elif defined(__x86_64__)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "x86_64"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 false
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 true
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#elif defined(__i386__)
+/**
+ * @brief A string that contains the name of the CPU architecture in use.
+ */
+#define tmk_CPU_ARCHITECTURE "x86"
+/**
+ * @brief A boolean that states the CPU architecture is ARM32.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+/**
+ * @brief A boolean that states the CPU architecture is ARM64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+/**
+ * @brief A boolean that states the CPU architecture is x86.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86 true
+/**
+ * @brief A boolean that states the CPU architecture is x86_64.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+/**
+ * @brief A boolean that states the CPU architecture is unknown.
+ */
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#endif
+#endif
+#endif
+
 /**
  * @brief Contains the first 16 ANSI colors of the XTerm color palette. They map
  * to the colors of the current terminal theme. A color may be set by using the

@@ -27,21 +27,21 @@ The following dependencies must be installed before it:
 
 #### Dependencies For Windows
 
-- [**Visual Studio 2022**](https://visualstudio.microsoft.com) with the "Desktop development with C++" workload: it provides all the tools required to build this library.
-- [**git**](https://git-scm.com): it will be used to clone this repository.
+- **[Visual Studio 2022](https://visualstudio.microsoft.com) with the "Desktop development with C++" workload:** it provides all the tools required to build this library.
+- **[Git](https://git-scm.com):** it will be used to clone this repository.
 
 #### Dependencies For Linux
 
-- **gcc**, **cmake**: they will be used to build this library.
-- **git**: it will be used to clone this repository.
+- **GCC, CMake:** they will be used to build this library.
+- **Git:** it will be used to clone this repository.
 
 > [!TIP]
 > Use your distro package manager to install these packages.
 
 #### Dependencies For MacOS
 
-- **Apple Command Line Tools**, **cmake**: they will be used to build this library.
-- **git**: it will be used to clone this repository.
+- **Apple Command Line Tools, CMake:** they will be used to build this library.
+- **Git:** it will be used to clone this repository.
 
 > [!TIP]
 > Use `xcode-select --install` to install the Apple command line tools. For the rest, use [HomeBrew](https://brew.sh/).
@@ -75,7 +75,11 @@ After installed, you can learn how to use it by reading its [documentation](DOCS
 
 ## ❡ Help
 
-If you need help related to this project, open a new issue in its [issues pages](https://github.com/skippyr/libtmk/issues) or send me an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
+If you need help related to this project, open a new issue in its [issues page](https://github.com/skippyr/libtmk/issues) or send me an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
+
+## ❡ Privacy
+
+This software does not collect, store or share any user data. It only gathers the minimal information needed for its functionality, and this data is discarded once its execution is over. Its source code is available for reviews. If you have any questions about it, open a new issue in its [issues page](https://github.com/skippyr/libtmk/issues) or send me an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
 
 ## ❡ Contributing
 
@@ -88,4 +92,5 @@ By contributing to this project, you agree to license your work under the same l
 This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;
+<p align="center"><sup><strong>Birth:</strong> November 3rd 2023.</sup></p>
 <p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>
