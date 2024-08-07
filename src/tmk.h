@@ -485,7 +485,7 @@ enum tmk_CursorShape {
  * function.
  */
 enum tmk_Key {
-#ifdef _WIN32
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
    * @brief The left arrow key.
    */
@@ -568,7 +568,7 @@ enum tmk_Key {
    * @brief The F12 function key.
    */
   tmk_Key_F12,
-#ifdef _WIN32
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
    * @brief The PageUp key.
    */
@@ -623,7 +623,7 @@ enum tmk_Key {
    * @brief The Tab key.
    */
   tmk_Key_Tab = 9,
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
    * @brief The Enter key.
    */
@@ -688,7 +688,7 @@ enum tmk_Stream {
  * tmk_getCMDArguments function.
  */
 struct tmk_CMDArguments {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
    * @brief The arguments in UTF-16 encoding. It is only available on Windows.
    */
@@ -780,7 +780,7 @@ struct tmk_KeyEvent {
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
 /**
  * @brief Converts an UTF-16 encoded string to UTF-8 encoding. It is only
  * available on Windows.

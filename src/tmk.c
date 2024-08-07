@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
 #include <Windows.h>
 #include <io.h>
 #else
@@ -16,14 +16,14 @@
 #include <unistd.h>
 #endif
 
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
 #define _tmk_REDIRECTION_CACHE(stream_a) (!_isatty(stream_a) << stream_a)
 #else
 #define _tmk_REDIRECTION_CACHE(stream_a) (!isatty(stream_a) << stream_a)
 #define _tmk_TIMESPEC_TO_MILLISECONDS(timespec_a)                              \
   (timespec_a.tv_sec * 1000 + timespec_a.tv_nsec / 1000000)
 #endif
-#if defined(__APPLE__)
+#if tmk_IS_OPERATING_SYSTEM_MACOS
 #define _tmk_PARSE_OPTION_KEY(value_a, key_a)                                  \
   case value_a:                                                                \
     temporaryEvent.key = key_a;                                                \
@@ -43,13 +43,13 @@
 
 static char _tmk_redirectionCache_g = 0;
 
-#if !defined(_WIN32)
+#if !tmk_IS_OPERATING_SYSTEM_WINDOWS
 static void _tmk_handleSIGWINCH(int signal);
 #endif
 static void _tmk_initRedirectionCache(void);
 static int _tmk_writeANSISequence(const char *format, ...);
 
-#if !defined(_WIN32)
+#if !tmk_IS_OPERATING_SYSTEM_WINDOWS
 static void _tmk_handleSIGWINCH(int signal) {}
 #endif
 
@@ -61,7 +61,7 @@ static void _tmk_initRedirectionCache(void) {
                             _tmk_REDIRECTION_CACHE(tmk_Stream_Output) |
                             _tmk_REDIRECTION_CACHE(tmk_Stream_Error) |
                             _tmk_HAS_REDIRECTION_CACHE_FLAG;
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   SetConsoleOutputCP(CP_UTF8);
   HANDLE handle;
   DWORD mode;
@@ -85,7 +85,7 @@ static int _tmk_writeANSISequence(const char *format, ...) {
   return 0;
 }
 
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
 char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length) {
   int temporaryLength =
       WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL, NULL);
@@ -118,7 +118,7 @@ bool tmk_isStreamRedirected(enum tmk_Stream stream) {
 void tmk_flushOutputBuffer(void) { fflush(stdout); }
 
 void tmk_clearInputBuffer(void) {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
   struct termios attributes;
@@ -141,7 +141,7 @@ void tmk_clearCursorLine(void) { _tmk_writeANSISequence("\x1b[2K\x1b[1G"); }
 
 void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
                          struct tmk_CMDArguments *cmdArguments) {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   cmdArguments->utf16Arguments =
       CommandLineToArgvW(GetCommandLineW(), &cmdArguments->totalArguments);
   cmdArguments->utf8Arguments =
@@ -157,16 +157,16 @@ void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
 }
 
 void tmk_freeCMDArguments(struct tmk_CMDArguments *arguments) {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   LocalFree(arguments->utf16Arguments);
   for (int offset = 0; offset < arguments->totalArguments; ++offset) {
-    free((char *)arguments->utf8Arguments[offset]);
+    free((void *)arguments->utf8Arguments[offset]);
   }
 #endif
 }
 
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
   if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
                                   &bufferInfo) &&
@@ -232,7 +232,7 @@ void tmk_openAlternateWindow(void) {
 void tmk_closeAlternateWindow(void) { _tmk_writeANSISequence("\x1b[?1049l"); }
 
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
   if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
                                   &bufferInfo) &&
@@ -289,7 +289,7 @@ int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
   }
   struct tmk_KeyEvent temporaryEvent;
   tmk_flushOutputBuffer();
-#if defined(_WIN32)
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
   HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
   HANDLE timer = NULL;
   DWORD mode;
@@ -438,7 +438,7 @@ parse_l:
       fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
     }
     memset(&temporaryEvent, 0, sizeof(struct tmk_KeyEvent));
-#if defined(__APPLE__)
+#if tmk_IS_OPERATING_SYSTEM_MACOS
     switch (buffer[0]) {
       _tmk_PARSE_OPTION_KEY(38, 'J');
       _tmk_PARSE_OPTION_KEY(47, 'q');
