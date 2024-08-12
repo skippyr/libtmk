@@ -42,6 +42,13 @@ static void writeHelpPage(void) {
   tmk_write("--help: ");
   tmk_resetFontWeight();
   tmk_writeLine("writes these help instructions.");
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_write("    • ");
+  tmk_resetFontColors();
+  tmk_setFontWeight(tmk_FontWeight_Bold);
+  tmk_write("--version: ");
+  tmk_resetFontWeight();
+  tmk_writeLine("writes its version and platform.");
   tmk_writeLine("");
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_writeLine("❡ Homepage");
