@@ -83,10 +83,6 @@
  */
 #define tmk_CPU_ARCHITECTURE "x86_64"
 /**
- * @brief The CPU architecture in use. It is an enumerator from the
- * tmk_CPUArchitecture enum.
- */
-/**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
 #define tmk_IS_CPU_ARCHITECTURE_ARM32 false
