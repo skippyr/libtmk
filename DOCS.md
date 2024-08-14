@@ -313,7 +313,6 @@ The UTF-8 encoded string.
 #### Example
 
 ```c
-#include <Windows.h>
 #include <tmk.h>
 
 int main(void) {
