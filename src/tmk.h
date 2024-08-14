@@ -2,8 +2,6 @@
 #define _tmk_H
 
 #include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdlib.h>
 
 #if defined(_WIN32)
@@ -14,19 +12,19 @@
 /**
  * @brief A boolean that states the operating system in use is Windows.
  */
-#define tmk_IS_OPERATING_SYSTEM_WINDOWS true
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS 1
 /**
  * @brief A boolean that states the operating system in use is Linux.
  */
-#define tmk_IS_OPERATING_SYSTEM_LINUX false
+#define tmk_IS_OPERATING_SYSTEM_LINUX 0
 /**
  * @brief A boolean that states the operating system in use is MacOS.
  */
-#define tmk_IS_OPERATING_SYSTEM_MACOS false
+#define tmk_IS_OPERATING_SYSTEM_MACOS 0
 /**
  * @brief A boolean that states the operating system is unknown.
  */
-#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
 #if defined(_M_ARM)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -35,23 +33,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 true
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 1
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(_M_ARM64)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -60,23 +58,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 true
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 1
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(_WIN64)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -85,23 +83,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 true
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 1
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #else
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -110,23 +108,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 true
+#define tmk_IS_CPU_ARCHITECTURE_X86 1
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #endif
 #else
 #if defined(__linux__)
@@ -137,19 +135,19 @@
 /**
  * @brief A boolean that states the operating system in use is Windows.
  */
-#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS 0
 /**
  * @brief A boolean that states the operating system in use is Linux.
  */
-#define tmk_IS_OPERATING_SYSTEM_LINUX true
+#define tmk_IS_OPERATING_SYSTEM_LINUX 1
 /**
  * @brief A boolean that states the operating system in use is MacOS.
  */
-#define tmk_IS_OPERATING_SYSTEM_MACOS false
+#define tmk_IS_OPERATING_SYSTEM_MACOS 0
 /**
  * @brief A boolean that states the operating system is unknown.
  */
-#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
 #elif defined(__APPLE__)
 /**
  * @brief A string that contains the name of the operating system in use.
@@ -158,19 +156,19 @@
 /**
  * @brief A boolean that states the operating system in use is Windows.
  */
-#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS 0
 /**
  * @brief A boolean that states the operating system in use is Linux.
  */
-#define tmk_IS_OPERATING_SYSTEM_LINUX false
+#define tmk_IS_OPERATING_SYSTEM_LINUX 0
 /**
  * @brief A boolean that states the operating system in use is MacOS.
  */
-#define tmk_IS_OPERATING_SYSTEM_MACOS true
+#define tmk_IS_OPERATING_SYSTEM_MACOS 1
 /**
  * @brief A boolean that states the operating system is unknown.
  */
-#define tmk_IS_OPERATING_SYSTEM_UNKNOWN false
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
 #else
 /**
  * @brief A string that contains the name of the operating system in use.
@@ -179,19 +177,19 @@
 /**
  * @brief A boolean that states the operating system in use is Windows.
  */
-#define tmk_IS_OPERATING_SYSTEM_WINDOWS false
+#define tmk_IS_OPERATING_SYSTEM_WINDOWS 0
 /**
  * @brief A boolean that states the operating system in use is Linux.
  */
-#define tmk_IS_OPERATING_SYSTEM_LINUX false
+#define tmk_IS_OPERATING_SYSTEM_LINUX 0
 /**
  * @brief A boolean that states the operating system in use is MacOS.
  */
-#define tmk_IS_OPERATING_SYSTEM_MACOS false
+#define tmk_IS_OPERATING_SYSTEM_MACOS 0
 /**
  * @brief A boolean that states the operating system is unknown.
  */
-#define tmk_IS_OPERATING_SYSTEM_UNKNOWN true
+#define tmk_IS_OPERATING_SYSTEM_UNKNOWN 1
 /**
  * @brief A string that contains the name of the CPU architecture in use.
  */
@@ -199,23 +197,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN true
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 1
 #endif
 #if defined(__linux__) || defined(__APPLE__)
 #if defined(__arm__)
@@ -226,23 +224,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 true
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 1
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__aarch64__)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -251,23 +249,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 true
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 1
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__x86_64__)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -276,23 +274,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 false
+#define tmk_IS_CPU_ARCHITECTURE_X86 0
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 true
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 1
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__i386__)
 /**
  * @brief A string that contains the name of the CPU architecture in use.
@@ -301,23 +299,23 @@
 /**
  * @brief A boolean that states the CPU architecture is ARM32.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM32 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM32 0
 /**
  * @brief A boolean that states the CPU architecture is ARM64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_ARM64 false
+#define tmk_IS_CPU_ARCHITECTURE_ARM64 0
 /**
  * @brief A boolean that states the CPU architecture is x86.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86 true
+#define tmk_IS_CPU_ARCHITECTURE_X86 1
 /**
  * @brief A boolean that states the CPU architecture is x86_64.
  */
-#define tmk_IS_CPU_ARCHITECTURE_X86_64 false
+#define tmk_IS_CPU_ARCHITECTURE_X86_64 0
 /**
  * @brief A boolean that states the CPU architecture is unknown.
  */
-#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN false
+#define tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #endif
 #endif
 #endif
@@ -395,18 +393,18 @@ enum tmk_ANSIColor {
 };
 
 /**
- * @brief Contains the terminal font layers. They are used to set colors by
- * using the tmk_setFontANSIColor and tmk_setFontRGBColor functions.
+ * @brief Contains the terminal layers. They are used as reference to set colors
+ * when using the tmk_setFontANSIColor and tmk_setFontRGBColor functions.
  */
-enum tmk_FontLayer {
+enum tmk_Layer {
   /**
-   * @brief Refers to the graphemes.
+   * @brief Refers to the front layer, where the graphemes are.
    */
-  tmk_FontLayer_Foreground = 3,
+  tmk_Layer_Foreground = 3,
   /**
-   * @brief Refers to the background of the graphemes.
+   * @brief Refers to the background layer, behind the graphemes.
    */
-  tmk_FontLayer_Background
+  tmk_Layer_Background
 };
 
 /**
@@ -711,11 +709,11 @@ struct tmk_Coordinate {
   /**
    * @brief The column component of the coordinate.
    */
-  uint16_t column;
+  unsigned short column;
   /**
    * @brief The row component of the coordinate.
    */
-  uint16_t row;
+  unsigned short row;
 };
 
 /**
@@ -726,15 +724,15 @@ struct tmk_Dimensions {
   /**
    * @brief The area of the dimensions.
    */
-  uint32_t area;
+  unsigned int area;
   /**
    * @brief The total columns of the dimensions.
    */
-  uint16_t totalColumns;
+  unsigned short totalColumns;
   /**
    * @brief The total rows of the dimensions.
    */
-  uint16_t totalRows;
+  unsigned short totalRows;
 };
 
 /**
@@ -745,15 +743,15 @@ struct tmk_RGBColor {
   /**
    * @brief The red component of the color.
    */
-  uint8_t red;
+  unsigned char red;
   /**
    * @brief The green component of the color.
    */
-  uint8_t green;
+  unsigned char green;
   /**
    * @brief The blue component of the color.
    */
-  uint8_t blue;
+  unsigned char blue;
 };
 
 /**
@@ -765,12 +763,12 @@ struct tmk_KeyEvent {
    * @brief The key pressed. It may be an UTF-8 grapheme or an enumerator from
    * the tmk_Key enum.
    */
-  int32_t key;
+  int key;
   /**
    * @brief A bitmask containing the modifier keys being hold during the event.
    * It may be composed by enumerators from the tmk_ModifierKey enum.
    */
-  uint8_t modifiers;
+  unsigned char modifiers;
 };
 
 #if defined(__cplusplus)
@@ -807,7 +805,7 @@ wchar_t *tmk_convertUTF8ToUTF16(const char *utf8String, size_t *length);
  * @param stream The stream to be checked.
  * @returns A boolean that states the stream is redirected.
  */
-bool tmk_isStreamRedirected(enum tmk_Stream stream);
+int tmk_isStreamRedirected(enum tmk_Stream stream);
 /**
  * @brief Flushes the bytes cached inside of the terminal output buffer.
  */
@@ -858,14 +856,14 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
  * 255 or an enumerator from the tmk_ANSIColor enum.
  * @param layer The layer to be affected.
  */
-void tmk_setFontANSIColor(uint8_t color, enum tmk_FontLayer layer);
+void tmk_setFontANSIColor(unsigned char color, enum tmk_Layer layer);
 /**
  * @brief Sets an RGB color into the terminal font. The color may be reset by
  * using the tmk_resetFontColors function.
  * @param color The color to be applied.
  * @param layer The layer to be affected.
  */
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_FontLayer layer);
+void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer);
 /**
  * @brief Resets the terminal font foreground and background colors.
  */
@@ -893,7 +891,8 @@ void tmk_setFontEffects(int effectsMask);
 void tmk_resetFontEffects(void);
 /**
  * @brief Opens the alternate window. It may be closed by using the
- * tmk_closeAlternateWindow function.
+ * tmk_closeAlternateWindow function. On Windows, it causes a window resize
+ * event.
  */
 void tmk_openAlternateWindow(void);
 /**
@@ -921,7 +920,7 @@ void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
  * @param shape The shape to be set.
  * @param isBlinking A boolean that states the cursor should blink.
  */
-void tmk_setCursorShape(enum tmk_CursorShape shape, bool isBlinking);
+void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking);
 /**
  * @brief Resets the terminal cursor shape.
  */
@@ -930,7 +929,7 @@ void tmk_resetCursorShape(void);
  * @brief Sets the terminal cursor visibility.
  * @param isVisible A boolean that states the cursor should be visible.
  */
-void tmk_setCursorVisibility(bool isVisible);
+void tmk_setCursorVisible(int isVisible);
 /**
  * @brief Reads a terminal key event and remove it from the input buffer.
  * Content typed and pasted into the terminal are considered key events. Under
@@ -955,8 +954,8 @@ void tmk_setCursorVisibility(bool isVisible);
  * available; -3 if the timer ran out; Or -4 if the terminal window was resized
  * during the reading.
  */
-int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
-                     bool (*filter)(struct tmk_KeyEvent *));
+int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
+                     int (*filter)(struct tmk_KeyEvent *));
 /**
  * @brief Formats and writes a string to the terminal output stream. On Windows,
  * it sets the console output code page to UTF-8.

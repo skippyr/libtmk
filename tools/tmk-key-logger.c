@@ -1,11 +1,8 @@
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
-
 #include <tmk.h>
 
 #define PROGRAM_NAME "tmk-event-logger"
@@ -20,7 +17,7 @@ static void writeHelpPage(void) {
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_writeLine("❡ Usage");
   tmk_resetFontWeight();
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_write("    %s ", PROGRAM_NAME);
   tmk_resetFontWeight();
@@ -35,14 +32,14 @@ static void writeHelpPage(void) {
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_writeLine("❡ Available Options");
   tmk_resetFontWeight();
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • ");
   tmk_resetFontColors();
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_write("--help: ");
   tmk_resetFontWeight();
   tmk_writeLine("writes these help instructions.");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • ");
   tmk_resetFontColors();
   tmk_setFontWeight(tmk_FontWeight_Bold);
@@ -54,16 +51,16 @@ static void writeHelpPage(void) {
   tmk_writeLine("❡ Homepage");
   tmk_resetFontWeight();
   tmk_write("    Its homepage is available on GitHub (");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("*");
   tmk_resetFontColors();
   tmk_writeLine("1).");
   tmk_writeLine("");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • *");
   tmk_resetFontColors();
   tmk_write("1: ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_writeLine("https://github.com/skippyr/libtmk");
   tmk_resetFontEffects();
@@ -75,29 +72,29 @@ static void writeHelpPage(void) {
   tmk_writeLine("    If you need help related to this project, open a new "
                 "issue in its issues");
   tmk_write("    page (");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("*");
   tmk_resetFontColors();
   tmk_write("1) or send me an e-mail (");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("*");
   tmk_resetFontColors();
   tmk_writeLine("2) describing what is going on.");
   tmk_writeLine("");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • *");
   tmk_resetFontColors();
   tmk_write("1: ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_writeLine("https://github.com/skippyr/libtmk/issues");
   tmk_resetFontEffects();
   tmk_resetFontColors();
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • *");
   tmk_resetFontColors();
   tmk_write("2: ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_writeLine("skippyr.developer@icloud.com");
   tmk_resetFontEffects();
@@ -111,11 +108,11 @@ static void writeHelpPage(void) {
   tmk_writeLine("    fixes and suggestions. If you are interested, send your "
                 "contribution to its");
   tmk_write("    pull requests page (");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("*");
   tmk_resetFontColors();
   tmk_write("1) or to my e-mail (");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("*");
   tmk_resetFontColors();
   tmk_writeLine("2).");
@@ -124,20 +121,20 @@ static void writeHelpPage(void) {
                 "your work under the");
   tmk_writeLine("    same license that the project uses.");
   tmk_writeLine("");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • *");
   tmk_resetFontColors();
   tmk_write("1: ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_writeLine("https://github.com/skippyr/libtmk/pulls");
   tmk_resetFontEffects();
   tmk_resetFontColors();
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("    • *");
   tmk_resetFontColors();
   tmk_write("2: ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_writeLine("skippyr.developer@icloud.com");
   tmk_resetFontEffects();
@@ -154,17 +151,17 @@ static void writeHelpPage(void) {
 }
 
 static void writeVersionPage(void) {
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_setFontWeight(tmk_FontWeight_Bold);
   tmk_write("%s ", PROGRAM_NAME);
   tmk_resetFontWeight();
   tmk_resetFontColors();
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkYellow, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkYellow, tmk_Layer_Foreground);
   tmk_write("%s ", PROGRAM_VERSION);
   tmk_resetFontColors();
   tmk_writeLine("compiled for %s %s.", tmk_OPERATING_SYSTEM,
                 tmk_CPU_ARCHITECTURE);
-  tmk_setFontANSIColor(tmk_ANSIColor_LightBlack, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_LightBlack, tmk_Layer_Foreground);
   tmk_write("Copyright (c) 2023, Sherman Rofeman <");
   tmk_setFontEffects(tmk_FontEffect_Underline);
   tmk_write("skippyr.developer@icloud.com");
@@ -173,7 +170,7 @@ static void writeVersionPage(void) {
   tmk_resetFontColors();
   tmk_writeLine("");
   for (int color = 1; color < 16; ++color) {
-    tmk_setFontANSIColor(color, tmk_FontLayer_Background);
+    tmk_setFontANSIColor(color, tmk_Layer_Background);
     tmk_write("   ");
   }
   tmk_resetFontColors();
@@ -193,17 +190,21 @@ int main(int totalArguments, const char **arguments) {
   tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
   tmk_writeLine("Waiting for terminal key events to start logging.");
   tmk_write("For more info, use it with the ");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_write("--help");
   tmk_resetFontColors();
   tmk_writeLine(" option.");
   tmk_writeLine("");
-  tmk_writeLine("Press the \x1b[33mEscape\x1b[39m key to exit.");
+  tmk_write("Press the ");
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkYellow, tmk_Layer_Foreground);
+  tmk_write("Escape");
+  tmk_resetFontColors();
+  tmk_writeLine(" key to exit.");
   tmk_writeLine("");
   int index = 0;
-  while (true) {
+  while (1) {
     tmk_write("[Event #");
-    tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+    tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
     tmk_write("%d", index++);
     tmk_resetFontColors();
     tmk_write("] ");

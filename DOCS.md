@@ -2,7 +2,7 @@
   <img alt="" src="assets/ornament.png" width=1020 />
 </p>
 <h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
-<p align="center">Terminal Manipulation Kit - Documentation - v13.0.0</p>
+<p align="center">Terminal Manipulation Kit - Documentation - v14.0.0</p>
 
 > [!TIP]
 > Use GitHub's Outline feature available at the top right corner of this view and your browser Find feature to navigate throughout this document easily. For offline reading, you can use your browser Print function to download this page as a PDF.
@@ -17,8 +17,6 @@ When included, the following headers are forwarded:
 
 ```c
 #include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <stdlib.h>
 ```
 
@@ -71,16 +69,16 @@ Contains the first 16 ANSI colors of the XTerm color palette. They map to the co
 - `tmk_ANSIColor_LightCyan`: the light variant of the cyan color.
 - `tmk_ANSIColor_LightWhite`: the light variant of the white color.
 
-### tmk_FontLayer Enum
+### tmk_Layer Enum
 
 #### Brief
 
-Contains the terminal font layers. They are used to set colors by using the [`tmk_setFontANSIColor`](#tmk_setfontansicolor-function) and [`tmk_setFontRGBColor`](#tmk_setfontrgbcolor-function) functions.
+Contains the terminal layers. They are used as reference to set colors when using the [`tmk_setFontANSIColor`](#tmk_setfontansicolor-function) and [`tmk_setFontRGBColor`](#tmk_setfontrgbcolor-function) functions.
 
 #### Enumerators
 
-- `tmk_FontLayer_Foreground`: refers to the graphemes.
-- `tmk_FontLayer_Background`: refers to the background of the graphemes.
+- `tmk_Layer_Foreground`: refers to the front layer, where the graphemes are.
+- `tmk_Layer_Background`: refers to the background layer, behind the graphemes.
 
 ### tmk_FontWeight Enum
 
@@ -215,8 +213,8 @@ Represents a terminal coordinate. It uses a coordinate system that considers the
 
 ```c
 struct tmk_Coordinate {
-  uint16_t column;
-  uint16_t row;
+  unsigned short column;
+  unsigned short row;
 };
 ```
 
@@ -235,9 +233,9 @@ Represents terminal dimensions. It is used by the [`tmk_getWindowDimensions`](#t
 
 ```c
 struct tmk_Dimensions {
-  uint32_t area;
-  uint16_t totalColumns;
-  uint16_t totalRows;
+  unsigned int area;
+  unsigned short totalColumns;
+  unsigned short totalRows;
 };
 ```
 
@@ -257,9 +255,9 @@ Represents an RGB color. It may be set by using the [`tmk_setFontRGBColor`](#tmk
 
 ```c
 struct tmk_RGBColor {
-  uint8_t red;
-  uint8_t green;
-  uint8_t blue;
+  unsigned char red;
+  unsigned char green;
+  unsigned char blue;
 };
 ```
 
@@ -279,8 +277,8 @@ Represents a terminal key event. It may be filled by the [`tmk_readKeyEvent`](#t
 
 ```c
 struct tmk_KeyEvent {
-  int32_t key;
-  uint8_t modifiers;
+  int key;
+  unsigned char modifiers;
 };
 ```
 
@@ -372,7 +370,7 @@ int main(void) {
 #### Declaration
 
 ```c
-bool tmk_isStreamRedirected(enum tmk_Stream stream);
+int tmk_isStreamRedirected(enum tmk_Stream stream);
 ```
 
 #### Brief
@@ -587,7 +585,7 @@ Sets an ANSI color into the terminal font. The color may be reset by using the [
 #### Declaration
 
 ```c
-void tmk_setFontANSIColor(uint8_t color, enum tmk_FontLayer layer);
+void tmk_setFontANSIColor(uint8_t color, enum tmk_Layer layer);
 ```
 
 #### Parameters
@@ -602,17 +600,17 @@ void tmk_setFontANSIColor(uint8_t color, enum tmk_FontLayer layer);
 
 int main(void) {
   for (int color = 0; color < 255; ++color) {
-    tmk_setFontANSIColor(color, tmk_FontLayer_Background);
+    tmk_setFontANSIColor(color, tmk_Layer_Background);
     tmk_write("   ");
     tmk_resetFontColors();
   }
   tmk_writeLine("");
   tmk_writeLine("");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
   tmk_writeLine("Here Be Dragons!");
   tmk_resetFontColors();
-  tmk_setFontANSIColor(tmk_ANSIColor_LightYellow, tmk_FontLayer_Background);
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkBlack, tmk_FontLayer_Foreground);
+  tmk_setFontANSIColor(tmk_ANSIColor_LightYellow, tmk_Layer_Background);
+  tmk_setFontANSIColor(tmk_ANSIColor_DarkBlack, tmk_Layer_Foreground);
   tmk_writeLine("Here Be Dragons!");
   tmk_resetFontColors();
   tmk_writeLine("Here Be Dragons!");
@@ -628,7 +626,7 @@ Sets an RGB color into the terminal font. The color may be reset by using the [`
 #### Declaration
 
 ```c
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_FontLayer layer);
+void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer);
 ```
 
 #### Parameters
@@ -642,15 +640,15 @@ void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_FontLayer layer);
 #include <tmk.h>
 
 int main(void) {
-  /* See http://github.com/skippyr/flamerial for the full palette. */
-  struct tmk_RGBColor palette[] = {{179, 29, 19},  {153, 1, 1},   {199, 104, 0},
-                                  {176, 133, 72}, {138, 56, 32}, {156, 57, 0},
+  /* See https://github.com/skippyr/flamerial for the full palette. */
+  struct tmk_RGBColor palette[] = {{179, 28, 19},  {133, 88, 20},   {199, 104, 0},
+                                  {176, 133, 72}, {138, 56, 32}, {156, 62, 0},
                                   {233, 211, 151}};
   for (int offset = 0; offset < sizeof(palette) / sizeof(palette[0]); ++offset) {
-    tmk_setFontRGBColor(palette[offset], tmk_FontLayer_Background);
+    tmk_setFontRGBColor(palette[offset], tmk_Layer_Background);
     tmk_write("   ");
     tmk_resetFontColors();
-    tmk_setFontRGBColor(palette[offset], tmk_FontLayer_Foreground);
+    tmk_setFontRGBColor(palette[offset], tmk_Layer_Foreground);
     tmk_writeLine(" Here Be Dragons!");
     tmk_resetFontColors();
   }
@@ -771,7 +769,7 @@ See the example from the [`tmk_setFontEffects`](#tmk_setfonteffects-function) fu
 
 #### Brief
 
-Opens the alternate window. It may closed by using the [`tmk_closeAlternateWindow`](#tmk_closealternatewindow-function) function.
+Opens the alternate window. It may closed by using the [`tmk_closeAlternateWindow`](#tmk_closealternatewindow-function) function. On Windows, it causes a window resize event.
 
 #### Declaration
 
@@ -883,7 +881,7 @@ Sets the terminal cursor shape. It may be reset by using the [`tmk_resetCursorSh
 #### Declaration
 
 ```c
-void tmk_setCursorShape(enum tmk_CursorShape shape, bool isBlinking);
+void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking);
 ```
 
 #### Parameters
@@ -897,11 +895,11 @@ void tmk_setCursorShape(enum tmk_CursorShape shape, bool isBlinking);
 #include <tmk.h>
 
 int main(void) {
-  tmk_setCursorShape(tmk_CursorShape_Underline, false);
+  tmk_setCursorShape(tmk_CursorShape_Underline, 0);
   tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorShape(tmk_CursorShape_Block, true);
+  tmk_setCursorShape(tmk_CursorShape_Block, 1);
   tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorShape(tmk_CursorShape_Bar, false);
+  tmk_setCursorShape(tmk_CursorShape_Bar, 0);
   tmk_readKeyEvent(-1, NULL, NULL);
   tmk_resetCursorShape();
   return 0;
@@ -924,7 +922,7 @@ void tmk_resetCursorShape(void);
 
 See the example from the [`tmk_setCursorShape`](#tmk_setcursorshape-function) function.
 
-### tmk_setCursorVisibility Function
+### tmk_setCursorVisible Function
 
 #### Brief
 
@@ -933,7 +931,7 @@ Sets the terminal cursor visibility.
 #### Declaration
 
 ```c
-void tmk_setCursorVisibility(bool isVisible);
+void tmk_setCursorVisible(int isVisible);
 ```
 
 #### Parameters
@@ -946,9 +944,9 @@ void tmk_setCursorVisibility(bool isVisible);
 #include <tmk.h>
 
 int main(void) {
-  tmk_setCursorVisibility(false);
+  tmk_setCursorVisible(0);
   tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorVisibility(true);
+  tmk_setCursorVisible(1);
   return 0;
 }
 ```
@@ -962,8 +960,8 @@ Reads a terminal key event and remove it from the input buffer. Content typed an
 #### Declaration
 
 ```c
-int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
-                     bool (*filter)(struct tmk_KeyEvent *));
+int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
+                     int (*filter)(struct tmk_KeyEvent *));
 ```
 
 #### Parameters
@@ -981,7 +979,7 @@ int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
 ```c
 #include <tmk.h>
 
-static bool filter(struct tmk_KeyEvent *event) {
+static int filter(struct tmk_KeyEvent *event) {
   return (event->key == 'a' && !event->modifiers) ||
          (event->key == 'b' && event->modifiers & tmk_ModifierKey_AltOption &&
           !(event->modifiers & tmk_ModifierKey_Ctrl)) ||
@@ -991,7 +989,7 @@ static bool filter(struct tmk_KeyEvent *event) {
 
 int main(void) {
   tmk_write("Waiting for key events");
-  for (int16_t timer = 5; timer; --timer) {
+  for (int timer = 5; timer; --timer) {
     tmk_write(" %d...", timer);
     struct tmk_KeyEvent event;
     int status = tmk_readKeyEvent(1000, &event, filter);

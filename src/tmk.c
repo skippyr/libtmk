@@ -110,7 +110,7 @@ wchar_t *tmk_convertUTF8ToUTF16(const char *utf8String, size_t *length) {
 }
 #endif
 
-bool tmk_isStreamRedirected(enum tmk_Stream stream) {
+int tmk_isStreamRedirected(enum tmk_Stream stream) {
   _tmk_initRedirectionCache();
   return _tmk_IS_REDIRECTED(stream);
 }
@@ -192,11 +192,11 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
   return 0;
 }
 
-void tmk_setFontANSIColor(uint8_t color, enum tmk_FontLayer layer) {
+void tmk_setFontANSIColor(unsigned char color, enum tmk_Layer layer) {
   _tmk_writeANSISequence("\x1b[%d8;5;%dm", layer, color);
 }
 
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_FontLayer layer) {
+void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer) {
   _tmk_writeANSISequence("\x1b[%d8;2;%hu;%hu;%hum", layer, color.red,
                          color.green, color.blue);
 }
@@ -269,18 +269,18 @@ void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
                          coordinate.column + 1);
 }
 
-void tmk_setCursorShape(enum tmk_CursorShape shape, bool isBlinking) {
-  _tmk_writeANSISequence("\x1b[%d q", shape - isBlinking);
+void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking) {
+  _tmk_writeANSISequence("\x1b[%d q", shape - !!isBlinking);
 }
 
 void tmk_resetCursorShape(void) { _tmk_writeANSISequence("\x1b[0 q"); }
 
-void tmk_setCursorVisibility(bool isVisible) {
+void tmk_setCursorVisible(int isVisible) {
   _tmk_writeANSISequence("\x1b[?25%c", isVisible ? 'h' : 'l');
 }
 
-int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
-                     bool (*filter)(struct tmk_KeyEvent *)) {
+int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
+                     int (*filter)(struct tmk_KeyEvent *)) {
   _tmk_initRedirectionCache();
   if (_tmk_IS_REDIRECTED(tmk_Stream_Input) || fwide(stdin, 0) > 0 ||
       (_tmk_IS_REDIRECTED(tmk_Stream_Output) &&
@@ -297,7 +297,7 @@ int tmk_readKeyEvent(int16_t waitInMilliseconds, struct tmk_KeyEvent *event,
   SetConsoleMode(input, mode & ~ENABLE_PROCESSED_INPUT);
 parse_l:
   int returnCode = 0;
-  while (true) {
+  while (1) {
     if (!waitInMilliseconds) {
       DWORD totalEvents;
       GetNumberOfConsoleInputEvents(input, &totalEvents);
@@ -307,13 +307,13 @@ parse_l:
       }
     } else if (waitInMilliseconds > 0) {
       if (!timer) {
-        timer = CreateWaitableTimerW(NULL, true, NULL);
+        timer = CreateWaitableTimerW(NULL, TRUE, NULL);
         LARGE_INTEGER dueTime;
         dueTime.QuadPart = waitInMilliseconds * -10000;
-        SetWaitableTimer(timer, &dueTime, 0, NULL, NULL, false);
+        SetWaitableTimer(timer, &dueTime, 0, NULL, NULL, FALSE);
       }
       HANDLE objects[] = {timer, input};
-      if (WaitForMultipleObjects(2, objects, false, INFINITE) ==
+      if (WaitForMultipleObjects(2, objects, FALSE, INFINITE) ==
           WAIT_OBJECT_0) {
         returnCode = -3;
         break;
@@ -336,7 +336,7 @@ parse_l:
       continue;
     }
     memset(&temporaryEvent, 0, sizeof(struct tmk_KeyEvent));
-    int32_t buffer = record.Event.KeyEvent.uChar.UnicodeChar;
+    int buffer = record.Event.KeyEvent.uChar.UnicodeChar;
     if (buffer) {
       if (buffer <= 26 && buffer != tmk_Key_Tab && buffer != tmk_Key_Enter) {
         temporaryEvent.key = buffer + 96;
@@ -344,7 +344,7 @@ parse_l:
                  buffer <= HIGH_SURROGATE_END) {
         ReadConsoleInputW(input, &record, 1, &totalEventsRead);
         ReadConsoleInputW(input, &record, 1, &totalEventsRead);
-        *((int16_t *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
+        *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
         WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2,
                             (char *)&temporaryEvent.key, 4, NULL, NULL);
       } else {
@@ -407,9 +407,9 @@ parse_l:
   int returnCode;
 parse_l:
   returnCode = 0;
-  while (true) {
+  while (1) {
     struct pollfd stdinPollFd = {STDIN_FILENO, POLLIN, 0};
-    uint8_t buffer[5];
+    unsigned char buffer[5];
     memset(buffer, 0, sizeof(buffer));
     if (!waitInMilliseconds) {
       fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -582,7 +582,7 @@ parse_l:
            ++offset) {
         buffer[offset] = getchar();
       }
-      temporaryEvent.key = *(int32_t *)buffer;
+      temporaryEvent.key = *(int *)buffer;
     } else if ((temporaryEvent.key =
                     (temporaryEvent.modifiers =
                          buffer[0] == 27 && buffer[1] != _tmk_SIGNED_EOF)
