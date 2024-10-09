@@ -44,13 +44,14 @@
 static char _tmk_redirectionCache_g = 0;
 
 #if !tmk_IS_OPERATING_SYSTEM_WINDOWS
-static void _tmk_handleSIGWINCH(int signal);
+static void _tmk_handleSigwinch(int signal);
 #endif
 static void _tmk_initRedirectionCache(void);
-static int _tmk_writeANSISequence(const char *format, ...);
+static int _tmk_writeAnsiSequence(const char *format, ...);
 
 #if !tmk_IS_OPERATING_SYSTEM_WINDOWS
-static void _tmk_handleSIGWINCH(int signal) {}
+static void _tmk_handleSigwinch(int signal) {
+}
 #endif
 
 static void _tmk_initRedirectionCache(void) {
@@ -71,7 +72,7 @@ static void _tmk_initRedirectionCache(void) {
 #endif
 }
 
-static int _tmk_writeANSISequence(const char *format, ...) {
+static int _tmk_writeAnsiSequence(const char *format, ...) {
   _tmk_initRedirectionCache();
   if (_tmk_IS_REDIRECTED(tmk_Stream_Output) &&
       _tmk_IS_REDIRECTED(tmk_Stream_Error)) {
@@ -86,7 +87,7 @@ static int _tmk_writeANSISequence(const char *format, ...) {
 }
 
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
-char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length) {
+char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
   int temporaryLength =
       WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL, NULL);
   char *utf8String = malloc(temporaryLength);
@@ -98,7 +99,7 @@ char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length) {
   return utf8String;
 }
 
-wchar_t *tmk_convertUTF8ToUTF16(const char *utf8String, size_t *length) {
+wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
   int temporaryLength =
       MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, NULL, 0);
   wchar_t *utf16String = malloc(temporaryLength * sizeof(wchar_t));
@@ -115,7 +116,9 @@ int tmk_isStreamRedirected(enum tmk_Stream stream) {
   return _tmk_IS_REDIRECTED(stream);
 }
 
-void tmk_flushOutputBuffer(void) { fflush(stdout); }
+void tmk_flushOutputBuffer(void) {
+  fflush(stdout);
+}
 
 void tmk_clearInputBuffer(void) {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
@@ -135,12 +138,16 @@ void tmk_clearInputBuffer(void) {
 #endif
 }
 
-void tmk_ringBell(void) { _tmk_writeANSISequence("\7"); }
+void tmk_ringBell(void) {
+  _tmk_writeAnsiSequence("\7");
+}
 
-void tmk_clearCursorLine(void) { _tmk_writeANSISequence("\x1b[2K\x1b[1G"); }
+void tmk_clearCursorLine(void) {
+  _tmk_writeAnsiSequence("\x1b[2K\x1b[1G");
+}
 
-void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
-                         struct tmk_CMDArguments *cmdArguments) {
+void tmk_getCmdArguments(int totalRawCmdArguments, const char **rawCmdArguments,
+                         struct tmk_CmdArguments *cmdArguments) {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
   cmdArguments->utf16Arguments =
       CommandLineToArgvW(GetCommandLineW(), &cmdArguments->totalArguments);
@@ -148,15 +155,15 @@ void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
       malloc(cmdArguments->totalArguments * sizeof(const char **));
   for (int offset = 0; offset < cmdArguments->totalArguments; ++offset) {
     cmdArguments->utf8Arguments[offset] =
-        tmk_convertUTF16ToUTF8(cmdArguments->utf16Arguments[offset], NULL);
+        tmk_convertUtf16ToUtf8(cmdArguments->utf16Arguments[offset], NULL);
   }
 #else
-  cmdArguments->utf8Arguments = rawCMDArguments;
-  cmdArguments->totalArguments = totalRawCMDArguments;
+  cmdArguments->utf8Arguments = rawCmdArguments;
+  cmdArguments->totalArguments = totalRawCmdArguments;
 #endif
 }
 
-void tmk_freeCMDArguments(struct tmk_CMDArguments *arguments) {
+void tmk_freeCmdArguments(struct tmk_CmdArguments *arguments) {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
   LocalFree(arguments->utf16Arguments);
   for (int offset = 0; offset < arguments->totalArguments; ++offset) {
@@ -192,27 +199,31 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
   return 0;
 }
 
-void tmk_setFontANSIColor(unsigned char color, enum tmk_Layer layer) {
-  _tmk_writeANSISequence("\x1b[%d8;5;%dm", layer, color);
+void tmk_setFontAnsiColor(unsigned char color, enum tmk_Layer layer) {
+  _tmk_writeAnsiSequence("\x1b[%d8;5;%dm", layer, color);
 }
 
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer) {
-  _tmk_writeANSISequence("\x1b[%d8;2;%hu;%hu;%hum", layer, color.red,
+void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer) {
+  _tmk_writeAnsiSequence("\x1b[%d8;2;%hu;%hu;%hum", layer, color.red,
                          color.green, color.blue);
 }
 
-void tmk_resetFontColors(void) { _tmk_writeANSISequence("\x1b[39;49m"); }
-
-void tmk_setFontWeight(enum tmk_FontWeight weight) {
-  _tmk_writeANSISequence("\x1b[22;%dm", weight);
+void tmk_resetFontColors(void) {
+  _tmk_writeAnsiSequence("\x1b[39;49m");
 }
 
-void tmk_resetFontWeight(void) { _tmk_writeANSISequence("\x1b[22m"); }
+void tmk_setFontWeight(enum tmk_FontWeight weight) {
+  _tmk_writeAnsiSequence("\x1b[22;%dm", weight);
+}
+
+void tmk_resetFontWeight(void) {
+  _tmk_writeAnsiSequence("\x1b[22m");
+}
 
 void tmk_setFontEffects(int effectsMask) {
   for (int effect = 3; effect < 10; ++effect) {
     if (effectsMask & 1 << effect) {
-      _tmk_writeANSISequence("\x1b[%dm", effect);
+      _tmk_writeAnsiSequence("\x1b[%dm", effect);
     }
   }
 }
@@ -220,16 +231,18 @@ void tmk_setFontEffects(int effectsMask) {
 void tmk_resetFontEffects(void) {
   for (int effect = 23; effect < 30; ++effect) {
     if (effect != 26) {
-      _tmk_writeANSISequence("\x1b[%dm", effect);
+      _tmk_writeAnsiSequence("\x1b[%dm", effect);
     }
   }
 }
 
 void tmk_openAlternateWindow(void) {
-  _tmk_writeANSISequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
+  _tmk_writeAnsiSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
 }
 
-void tmk_closeAlternateWindow(void) { _tmk_writeANSISequence("\x1b[?1049l"); }
+void tmk_closeAlternateWindow(void) {
+  _tmk_writeAnsiSequence("\x1b[?1049l");
+}
 
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
@@ -245,7 +258,7 @@ int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
 #else
   tmk_clearInputBuffer();
   struct termios attributes;
-  if (_tmk_writeANSISequence("\x1b[6n") ||
+  if (_tmk_writeAnsiSequence("\x1b[6n") ||
       tcgetattr(STDIN_FILENO, &attributes)) {
     return -1;
   }
@@ -265,18 +278,20 @@ int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
 }
 
 void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
-  _tmk_writeANSISequence("\x1b[%hu;%huH", coordinate.row + 1,
+  _tmk_writeAnsiSequence("\x1b[%hu;%huH", coordinate.row + 1,
                          coordinate.column + 1);
 }
 
-void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking) {
-  _tmk_writeANSISequence("\x1b[%d q", shape - !!isBlinking);
+void tmk_setCursorShape(enum tmk_CursorShape shape, int shouldBlink) {
+  _tmk_writeAnsiSequence("\x1b[%d q", shape - !!shouldBlink);
 }
 
-void tmk_resetCursorShape(void) { _tmk_writeANSISequence("\x1b[0 q"); }
+void tmk_resetCursorShape(void) {
+  _tmk_writeAnsiSequence("\x1b[0 q");
+}
 
 void tmk_setCursorVisible(int isVisible) {
-  _tmk_writeANSISequence("\x1b[?25%c", isVisible ? 'h' : 'l');
+  _tmk_writeAnsiSequence("\x1b[?25%c", isVisible ? 'h' : 'l');
 }
 
 int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
@@ -393,7 +408,7 @@ parse_l:
   sigdelset(&blockedSignals, SIGWINCH);
   pthread_sigmask(SIG_SETMASK, &blockedSignals, &backupSignals);
   struct sigaction sigwinchAction;
-  sigwinchAction.sa_handler = _tmk_handleSIGWINCH;
+  sigwinchAction.sa_handler = _tmk_handleSigwinch;
   sigwinchAction.sa_flags = 0;
   sigemptyset(&sigwinchAction.sa_mask);
   sigaction(SIGWINCH, &sigwinchAction, NULL);

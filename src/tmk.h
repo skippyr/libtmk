@@ -323,78 +323,78 @@
 /**
  * @brief Contains the first 16 ANSI colors of the XTerm color palette. They map
  * to the colors of the current terminal theme. A color may be set by using the
- * tmk_setFontANSIColor function.
+ * tmk_setFontAnsiColor function.
  */
-enum tmk_ANSIColor {
+enum tmk_AnsiColor {
   /**
    * @brief The dark variant of the black color.
    */
-  tmk_ANSIColor_DarkBlack,
+  tmk_AnsiColor_DarkBlack,
   /**
    * @brief The dark variant of the red color.
    */
-  tmk_ANSIColor_DarkRed,
+  tmk_AnsiColor_DarkRed,
   /**
    * @brief The dark variant of the green color.
    */
-  tmk_ANSIColor_DarkGreen,
+  tmk_AnsiColor_DarkGreen,
   /**
    * @brief The dark variant of the yellow color.
    */
-  tmk_ANSIColor_DarkYellow,
+  tmk_AnsiColor_DarkYellow,
   /**
    * @brief The dark variant of the blue color.
    */
-  tmk_ANSIColor_DarkBlue,
+  tmk_AnsiColor_DarkBlue,
   /**
    * @brief The dark variant of the magenta color.
    */
-  tmk_ANSIColor_DarkMagenta,
+  tmk_AnsiColor_DarkMagenta,
   /**
    * @brief The dark variant of the cyan color.
    */
-  tmk_ANSIColor_DarkCyan,
+  tmk_AnsiColor_DarkCyan,
   /**
    * @brief The dark variant of the white color.
    */
-  tmk_ANSIColor_DarkWhite,
+  tmk_AnsiColor_DarkWhite,
   /**
    * @brief The light variant of the black color.
    */
-  tmk_ANSIColor_LightBlack,
+  tmk_AnsiColor_LightBlack,
   /**
    * @brief The light variant of the red color.
    */
-  tmk_ANSIColor_LightRed,
+  tmk_AnsiColor_LightRed,
   /**
    * @brief The light variant of the green color.
    */
-  tmk_ANSIColor_LightGreen,
+  tmk_AnsiColor_LightGreen,
   /**
    * @brief The light variant of the yellow color.
    */
-  tmk_ANSIColor_LightYellow,
+  tmk_AnsiColor_LightYellow,
   /**
    * @brief The light variant of the blue color.
    */
-  tmk_ANSIColor_LightBlue,
+  tmk_AnsiColor_LightBlue,
   /**
    * @brief The light variant of the magenta color.
    */
-  tmk_ANSIColor_LightMagenta,
+  tmk_AnsiColor_LightMagenta,
   /**
    * @brief The light variant of the cyan color.
    */
-  tmk_ANSIColor_LightCyan,
+  tmk_AnsiColor_LightCyan,
   /**
    * @brief The light variant of the white color.
    */
-  tmk_ANSIColor_LightWhite
+  tmk_AnsiColor_LightWhite
 };
 
 /**
  * @brief Contains the terminal layers. They are used as reference to set colors
- * when using the tmk_setFontANSIColor and tmk_setFontRGBColor functions.
+ * when using the tmk_setFontAnsiColor and tmk_setFontRgbColor functions.
  */
 enum tmk_Layer {
   /**
@@ -481,36 +481,36 @@ enum tmk_CursorShape {
 enum tmk_Key {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
-   * @brief The left arrow key.
+   * @brief The Left Arrow key.
    */
   tmk_Key_LeftArrow = -23,
   /**
-   * @brief The up arrow key.
+   * @brief The Up Arrow key.
    */
   tmk_Key_UpArrow,
   /**
-   * @brief The right arrow key.
+   * @brief The Right Arrow key.
    */
   tmk_Key_RightArrow,
   /**
-   * @brief The down arrow key.
+   * @brief The Down Arrow key.
    */
   tmk_Key_DownArrow,
 #else
   /**
-   * @brief The up arrow key.
+   * @brief The Up Arrow key.
    */
   tmk_Key_UpArrow = -23,
   /**
-   * @brief The down arrow key.
+   * @brief The Down Arrow key.
    */
   tmk_Key_DownArrow,
   /**
-   * @brief The right arrow key.
+   * @brief The Right Arrow key.
    */
   tmk_Key_RightArrow,
   /**
-   * @brief The left arrow key.
+   * @brief The Left Arrow key.
    */
   tmk_Key_LeftArrow,
 #endif
@@ -564,11 +564,11 @@ enum tmk_Key {
   tmk_Key_F12,
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
-   * @brief The PageUp key.
+   * @brief The Page Up key.
    */
   tmk_Key_PageUp,
   /**
-   * @brief The PageDown key.
+   * @brief The Page Down key.
    */
   tmk_Key_PageDown,
   /**
@@ -605,11 +605,11 @@ enum tmk_Key {
    */
   tmk_Key_End,
   /**
-   * @brief The PageUp key.
+   * @brief The Page Up key.
    */
   tmk_Key_PageUp,
   /**
-   * @brief The PageDown key.
+   * @brief The Page Down key.
    */
   tmk_Key_PageDown,
 #endif
@@ -637,7 +637,7 @@ enum tmk_Key {
    */
   tmk_Key_Space = 32,
   /**
-   * @brief The backspace key.
+   * @brief The Backspace key.
    */
   tmk_Key_Backspace = 127
 };
@@ -679,9 +679,9 @@ enum tmk_Stream {
 
 /**
  * @brief Represents the command line arguments. It may be filled by using the
- * tmk_getCMDArguments function.
+ * tmk_getCmdArguments function.
  */
-struct tmk_CMDArguments {
+struct tmk_CmdArguments {
 #if tmk_IS_OPERATING_SYSTEM_WINDOWS
   /**
    * @brief The arguments in UTF-16 encoding. It is only available on Windows.
@@ -737,9 +737,9 @@ struct tmk_Dimensions {
 
 /**
  * @brief Represents an RGB color. It may be set by using the
- * tmk_setFontRGBColor function.
+ * tmk_setFontRgbColor function.
  */
-struct tmk_RGBColor {
+struct tmk_RgbColor {
   /**
    * @brief The red component of the color.
    */
@@ -785,7 +785,7 @@ extern "C" {
  * not necessary, set it to NULL.
  * @returns The UTF-8 encoded string.
  */
-char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length);
+char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 /**
  * @brief Converts an UTF-8 encoded string to UTF-16 encoding. It is only
  * available on Windows.
@@ -798,7 +798,7 @@ char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length);
  * free function. If not necessary, set it to NULL.
  * @returns The UTF-16 encoded string.
  */
-wchar_t *tmk_convertUTF8ToUTF16(const char *utf8String, size_t *length);
+wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
 #endif
 /**
  * @brief Checks if a terminal stream is redirected.
@@ -826,22 +826,22 @@ void tmk_ringBell(void);
 void tmk_clearCursorLine(void);
 /**
  * @brief Gets and converts the command line arguments of the terminal process.
- * It fills a tmk_CMDArguments struct which must be freed by using the
- * tmk_freeCMDArguments function.
- * @param totalRawCMDArguments The total command line arguments given as the
+ * It fills a tmk_CmdArguments struct which must be freed by using the
+ * tmk_freeCmdArguments function.
+ * @param totalRawCmdArguments The total command line arguments given as the
  * first parameter of the main function.
- * @param rawCMDArguments The raw command line arguments given as the second
+ * @param rawCmdArguments The raw command line arguments given as the second
  * parameter of the main function.
  * @param cmdArguments The address where the command line arguments will be put
  * into.
  */
-void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
-                         struct tmk_CMDArguments *cmdArguments);
+void tmk_getCmdArguments(int totalRawCmdArguments, const char **rawCmdArguments,
+                         struct tmk_CmdArguments *cmdArguments);
 /**
  * @brief Frees the memory allocated for the command line arguments of the
  * terminal process.
  */
-void tmk_freeCMDArguments(struct tmk_CMDArguments *arguments);
+void tmk_freeCmdArguments(struct tmk_CmdArguments *arguments);
 /**
  * @brief Gets the dimensions of the terminal window.
  * @param dimensions The address where the dimensions information will be put
@@ -853,17 +853,17 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
  * @brief Sets an ANSI color into the terminal font. The color may be reset by
  * using the tmk_resetFontColors function.
  * @param color The color to be applied. It may be a value in range from 0 to
- * 255 or an enumerator from the tmk_ANSIColor enum.
+ * 255 or an enumerator from the tmk_AnsiColor enum.
  * @param layer The layer to be affected.
  */
-void tmk_setFontANSIColor(unsigned char color, enum tmk_Layer layer);
+void tmk_setFontAnsiColor(unsigned char color, enum tmk_Layer layer);
 /**
  * @brief Sets an RGB color into the terminal font. The color may be reset by
  * using the tmk_resetFontColors function.
  * @param color The color to be applied.
  * @param layer The layer to be affected.
  */
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer);
+void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer);
 /**
  * @brief Resets the terminal font foreground and background colors.
  */
@@ -918,9 +918,9 @@ void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
  * @brief Sets the terminal cursor shape. It may be reset by using the
  * tmk_resetCursorShape function.
  * @param shape The shape to be set.
- * @param isBlinking A boolean that states the cursor should blink.
+ * @param shouldBlink A boolean that states the cursor should blink.
  */
-void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking);
+void tmk_setCursorShape(enum tmk_CursorShape shape, int shouldBlink);
 /**
  * @brief Resets the terminal cursor shape.
  */

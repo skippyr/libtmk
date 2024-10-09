@@ -2,7 +2,7 @@
   <img alt="" src="assets/ornament.png" width=1020 />
 </p>
 <h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
-<p align="center">Terminal Manipulation Kit - Documentation - v14.0.0</p>
+<p align="center">Terminal Manipulation Kit - Documentation - 15.0.0</p>
 
 > [!TIP]
 > Use GitHub's Outline feature available at the top right corner of this view and your browser Find feature to navigate throughout this document easily. For offline reading, you can use your browser Print function to download this page as a PDF.
@@ -44,36 +44,36 @@ This library has some limitations over its usage. To avoid conflicts and malfunc
 
 ## ❡ Enums
 
-### tmk_ANSIColor Enum
+### tmk_AnsiColor Enum
 
 #### Brief
 
-Contains the first 16 ANSI colors of the XTerm color palette. They map to the colors of the current terminal theme. A color may be set by using the [`tmk_setFontANSIColor`](#tmk_setfontansicolor-function) function.
+Contains the first 16 ANSI colors of the XTerm color palette. They map to the colors of the current terminal theme. A color may be set by using the [`tmk_setFontAnsiColor`](#tmk_setFontAnsiColor-function) function.
 
 #### Enumerators
 
-- `tmk_ANSIColor_DarkBlack`: the dark variant of the black color.
-- `tmk_ANSIColor_DarkRed`: the dark variant of the red color.
-- `tmk_ANSIColor_DarkGreen`: the dark variant of the green color.
-- `tmk_ANSIColor_DarkYellow`: the dark variant of the yellow color.
-- `tmk_ANSIColor_DarkBlue`: the dark variant of the blue color.
-- `tmk_ANSIColor_DarkMagenta`: the dark variant of the magenta color.
-- `tmk_ANSIColor_DarkCyan`: the dark variant of the cyan color.
-- `tmk_ANSIColor_DarkWhite`: the dark variant of the white color.
-- `tmk_ANSIColor_LightBlack`: the light variant of the black color.
-- `tmk_ANSIColor_LightRed`: the light variant of the red color.
-- `tmk_ANSIColor_LightGreen`: the light variant of the green color.
-- `tmk_ANSIColor_LightYellow`: the light variant of the yellow color.
-- `tmk_ANSIColor_LightBlue`: the light variant of the blue color.
-- `tmk_ANSIColor_LightMagenta`: the light variant of the magenta color.
-- `tmk_ANSIColor_LightCyan`: the light variant of the cyan color.
-- `tmk_ANSIColor_LightWhite`: the light variant of the white color.
+- `tmk_AnsiColor_DarkBlack`: the dark variant of the black color.
+- `tmk_AnsiColor_DarkRed`: the dark variant of the red color.
+- `tmk_AnsiColor_DarkGreen`: the dark variant of the green color.
+- `tmk_AnsiColor_DarkYellow`: the dark variant of the yellow color.
+- `tmk_AnsiColor_DarkBlue`: the dark variant of the blue color.
+- `tmk_AnsiColor_DarkMagenta`: the dark variant of the magenta color.
+- `tmk_AnsiColor_DarkCyan`: the dark variant of the cyan color.
+- `tmk_AnsiColor_DarkWhite`: the dark variant of the white color.
+- `tmk_AnsiColor_LightBlack`: the light variant of the black color.
+- `tmk_AnsiColor_LightRed`: the light variant of the red color.
+- `tmk_AnsiColor_LightGreen`: the light variant of the green color.
+- `tmk_AnsiColor_LightYellow`: the light variant of the yellow color.
+- `tmk_AnsiColor_LightBlue`: the light variant of the blue color.
+- `tmk_AnsiColor_LightMagenta`: the light variant of the magenta color.
+- `tmk_AnsiColor_LightCyan`: the light variant of the cyan color.
+- `tmk_AnsiColor_LightWhite`: the light variant of the white color.
 
 ### tmk_Layer Enum
 
 #### Brief
 
-Contains the terminal layers. They are used as reference to set colors when using the [`tmk_setFontANSIColor`](#tmk_setfontansicolor-function) and [`tmk_setFontRGBColor`](#tmk_setfontrgbcolor-function) functions.
+Contains the terminal layers. They are used as reference to set colors when using the [`tmk_setFontAnsiColor`](#tmk_setFontAnsiColor-function) and [`tmk_setFontRgbColor`](#tmk_setFontRgbColor-function) functions.
 
 #### Enumerators
 
@@ -126,10 +126,10 @@ Contains the keyboard keys that are not represented by UTF-8 graphemes. They may
 
 #### Enumerators
 
-- `tmk_Key_UpArrow`: the up arrow key.
-- `tmk_Key_DownArrow`: the down arrow key.
-- `tmk_Key_RightArrow`: the right arrow key.
-- `tmk_Key_LeftArrow`: the left arrow key.
+- `tmk_Key_UpArrow`: the Up Arrow key.
+- `tmk_Key_DownArrow`: the Down Arrow key.
+- `tmk_Key_RightArrow`: the Right Arrow key.
+- `tmk_Key_LeftArrow`: the Left Arrow key.
 - `tmk_Key_F1`: the F1 function key.
 - `tmk_Key_F2`: the F2 function key.
 - `tmk_Key_F3`: the F3 function key.
@@ -146,8 +146,8 @@ Contains the keyboard keys that are not represented by UTF-8 graphemes. They may
 - `tmk_Key_Insert`: the Insert key.
 - `tmk_Key_Delete`: the Delete key.
 - `tmk_Key_End`: the End key.
-- `tmk_Key_PageUp`: the PageUp key.
-- `tmk_Key_PageDown`: the PageDown key.
+- `tmk_Key_PageUp`: the Page Up key.
+- `tmk_Key_PageDown`: the Page Down key.
 - `tmk_Key_Tab`: the Tab key.
 - `tmk_Key_Enter`: the Enter key.
 - `tmk_Key_Escape`: the Escape key.
@@ -179,16 +179,16 @@ Contains the standard terminal streams. Their statuses may be checked by using t
 
 ## ❡ Structs
 
-### tmk_CMDArguments Struct
+### tmk_CmdArguments Struct
 
 #### Brief
 
-Represents the command line arguments. It may be filled by using the [`tmk_getCMDArguments`](#tmk_getcmdarguments-function) function.
+Represents the command line arguments. It may be filled by using the [`tmk_getCmdArguments`](#tmk_getCmdArguments-function) function.
 
 #### Declaration
 
 ```c
-struct tmk_CMDArguments {
+struct tmk_CmdArguments {
 #if defined(_WIN32)
   const wchar_t **utf16Arguments;
 #endif
@@ -245,16 +245,16 @@ struct tmk_Dimensions {
 - `totalColumns`: the total of columns of the dimensions.
 - `totalRows`: the total of rows of the dimensions.
 
-### tmk_RGBColor Struct
+### tmk_RgbColor Struct
 
 #### Brief
 
-Represents an RGB color. It may be set by using the [`tmk_setFontRGBColor`](#tmk_setfontrgbcolor-function) function.
+Represents an RGB color. It may be set by using the [`tmk_setFontRgbColor`](#tmk_setFontRgbColor-function) function.
 
 #### Declaration
 
 ```c
-struct tmk_RGBColor {
+struct tmk_RgbColor {
   unsigned char red;
   unsigned char green;
   unsigned char blue;
@@ -289,12 +289,12 @@ struct tmk_KeyEvent {
 
 ## ❡ Functions
 
-### tmk_convertUTF16ToUTF8 Function
+### tmk_convertUtf16ToUtf8 Function
 
 #### Declaration
 
 ```c
-char *tmk_convertUTF16ToUTF8(const wchar_t *utf16String, size_t *length);
+char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 ```
 
 #### Brief
@@ -317,7 +317,7 @@ The UTF-8 encoded string.
 
 int main(void) {
   size_t length;
-  char *message = tmk_convertUTF16ToUTF8(L"Here Be Dragons!", &length);
+  char *message = tmk_convertUtf16ToUtf8(L"Here Be Dragons!", &length);
   tmk_writeLine(":: String: %s", message);
   tmk_writeLine(":: Length: %zu.", length);
   free(message);
@@ -325,12 +325,12 @@ int main(void) {
 }
 ```
 
-### tmk_convertUTF8ToUTF16 Function
+### tmk_convertUtf8ToUtf16 Function
 
 #### Declaration
 
 ```c
-wchar_t *tmk_convertUTF8ToUTF16(const char *utf8String, size_t *length);
+wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
 ```
 
 #### Brief
@@ -354,7 +354,7 @@ The UTF-16 encoded string.
 
 int main(void) {
   size_t length;
-  wchar_t *message = tmk_convertUTF8ToUTF16("Here Be Dragons!", &length);
+  wchar_t *message = tmk_convertUtf8ToUtf16("Here Be Dragons!", &length);
   tmk_write(":: String: ");
   WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), message, length, NULL, NULL);
   tmk_writeLine("");
@@ -489,23 +489,23 @@ int main(void) {
 }
 ```
 
-### tmk_getCMDArguments Function
+### tmk_getCmdArguments Function
 
 #### Declaration
 
 ```c
-void tmk_getCMDArguments(int totalRawCMDArguments, const char **rawCMDArguments,
-                         struct tmk_CMDArguments *cmdArguments);
+void tmk_getCmdArguments(int totalRawCmdArguments, const char **rawCmdArguments,
+                         struct tmk_CmdArguments *cmdArguments);
 ```
 
 #### Brief
 
-Gets and converts the command line arguments of the terminal process. It fills a [`tmk_CMDArguments`](#tmk_cmdarguments-struct) struct which must be freed by using the [`tmk_freeCMDArguments`](#tmk_freecmdarguments-function) function.
+Gets and converts the command line arguments of the terminal process. It fills a [`tmk_CmdArguments`](#tmk_CmdArguments-struct) struct which must be freed by using the [`tmk_freeCmdArguments`](#tmk_freeCmdArguments-function) function.
 
 #### Parameters
 
-- `totalRawCMDArguments`: the total command line arguments given as the first parameter of the main function.
-- `rawCMDArguments`: the raw command line arguments given as the second parameter of the main function.
+- `totalRawCmdArguments`: the total command line arguments given as the first parameter of the main function.
+- `rawCmdArguments`: the raw command line arguments given as the second parameter of the main function.
 - `cmdArguments`: the address where the command line arguments will be put into.
 
 #### Example
@@ -513,18 +513,18 @@ Gets and converts the command line arguments of the terminal process. It fills a
 ```c
 #include <tmk.h>
 
-int main(int totalRawCMDArguments, const char **rawCMDArguments) {
-  struct tmk_CMDArguments cmdArguments;
-  tmk_getCMDArguments(totalRawCMDArguments, rawCMDArguments, &cmdArguments);
+int main(int totalRawCmdArguments, const char **rawCmdArguments) {
+  struct tmk_CmdArguments cmdArguments;
+  tmk_getCmdArguments(totalRawCmdArguments, rawCmdArguments, &cmdArguments);
   for (int offset = 0; offset < cmdArguments.totalArguments; ++offset) {
     tmk_writeLine("Argument %d: %s.", offset,
                   cmdArguments.utf8Arguments[offset]);
   }
-  tmk_freeCMDArguments(&cmdArguments);
+  tmk_freeCmdArguments(&cmdArguments);
 }
 ```
 
-### tmk_freeCMDArguments Function
+### tmk_freeCmdArguments Function
 
 #### Brief
 
@@ -533,12 +533,12 @@ Frees the memory allocated for the command line arguments of the terminal proces
 #### Declaration
 
 ```c
-void tmk_freeCMDArguments(struct tmk_CMDArguments *arguments);
+void tmk_freeCmdArguments(struct tmk_CmdArguments *arguments);
 ```
 
 #### Example
 
-See the example from the [`tmk_getCMDArguments`](#tmk_getcmdarguments-function) function.
+See the example from the [`tmk_getCmdArguments`](#tmk_getCmdArguments-function) function.
 
 ### tmk_getWindowDimensions Function
 
@@ -575,7 +575,7 @@ int main(void) {
 }
 ```
 
-### tmk_setFontANSIColor Function
+### tmk_setFontAnsiColor Function
 
 #### Brief
 
@@ -584,12 +584,12 @@ Sets an ANSI color into the terminal font. The color may be reset by using the [
 #### Declaration
 
 ```c
-void tmk_setFontANSIColor(uint8_t color, enum tmk_Layer layer);
+void tmk_setFontAnsiColor(uint8_t color, enum tmk_Layer layer);
 ```
 
 #### Parameters
 
-- `color`: the color to be applied. It may be a value in range from 0 to 255 or an enumerator from the [`tmk_ANSIColor`](#tmk_ansicolor-enum) enum.
+- `color`: the color to be applied. It may be a value in range from 0 to 255 or an enumerator from the [`tmk_AnsiColor`](#tmk_AnsiColor-enum) enum.
 - `layer`: the layer to be affected.
 
 #### Example
@@ -599,24 +599,24 @@ void tmk_setFontANSIColor(uint8_t color, enum tmk_Layer layer);
 
 int main(void) {
   for (int color = 0; color < 255; ++color) {
-    tmk_setFontANSIColor(color, tmk_Layer_Background);
+    tmk_setFontAnsiColor(color, tmk_Layer_Background);
     tmk_write("   ");
     tmk_resetFontColors();
   }
   tmk_writeLine("");
   tmk_writeLine("");
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkRed, tmk_Layer_Foreground);
+  tmk_setFontAnsiColor(tmk_AnsiColor_DarkRed, tmk_Layer_Foreground);
   tmk_writeLine("Here Be Dragons!");
   tmk_resetFontColors();
-  tmk_setFontANSIColor(tmk_ANSIColor_LightYellow, tmk_Layer_Background);
-  tmk_setFontANSIColor(tmk_ANSIColor_DarkBlack, tmk_Layer_Foreground);
+  tmk_setFontAnsiColor(tmk_AnsiColor_LightYellow, tmk_Layer_Background);
+  tmk_setFontAnsiColor(tmk_AnsiColor_DarkBlack, tmk_Layer_Foreground);
   tmk_writeLine("Here Be Dragons!");
   tmk_resetFontColors();
   tmk_writeLine("Here Be Dragons!");
 }
 ```
 
-### tmk_setFontRGBColor Function
+### tmk_setFontRgbColor Function
 
 #### Brief
 
@@ -625,7 +625,7 @@ Sets an RGB color into the terminal font. The color may be reset by using the [`
 #### Declaration
 
 ```c
-void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer);
+void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer);
 ```
 
 #### Parameters
@@ -640,14 +640,14 @@ void tmk_setFontRGBColor(struct tmk_RGBColor color, enum tmk_Layer layer);
 
 int main(void) {
   /* See https://github.com/skippyr/flamerial for the full palette. */
-  struct tmk_RGBColor palette[] = {{179, 28, 19},  {133, 88, 20},   {199, 104, 0},
+  struct tmk_RgbColor palette[] = {{179, 28, 19},  {133, 88, 20},   {199, 104, 0},
                                   {176, 133, 72}, {138, 56, 32}, {156, 62, 0},
                                   {233, 211, 151}};
   for (int offset = 0; offset < sizeof(palette) / sizeof(palette[0]); ++offset) {
-    tmk_setFontRGBColor(palette[offset], tmk_Layer_Background);
+    tmk_setFontRgbColor(palette[offset], tmk_Layer_Background);
     tmk_write("   ");
     tmk_resetFontColors();
-    tmk_setFontRGBColor(palette[offset], tmk_Layer_Foreground);
+    tmk_setFontRgbColor(palette[offset], tmk_Layer_Foreground);
     tmk_writeLine(" Here Be Dragons!");
     tmk_resetFontColors();
   }
@@ -668,7 +668,7 @@ void tmk_resetFontColors(void);
 
 #### Example
 
-See the examples from the [`tmk_setFontANSIColor`](#tmk_setfontansicolor-function) and [`tmk_setFontRGBColor`](#tmk_setfontrgbcolor-function) functions.
+See the examples from the [`tmk_setFontAnsiColor`](#tmk_setFontAnsiColor-function) and [`tmk_setFontRgbColor`](#tmk_setFontRgbColor-function) functions.
 
 ### tmk_setFontWeight Function
 
