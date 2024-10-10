@@ -14,19 +14,24 @@
 </p>
 
 ## ❡ About
+
 A simple C99 terminal manipulation library for C/C++ with features to manipulate terminal properties, styles and key readings targetting UTF-8 encoding. It is available for Windows, Linux and MacOS.
 
 Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
 
 ## ❡ Install
+
 ### Dependencies
+
 The following dependencies must be installed before it:
 
 #### Dependencies For Windows
+
 - **[Visual Studio 2022](https://visualstudio.microsoft.com) with the "Desktop development with C++" workload:** it provides all the tools required to build this library.
 - **[Git](https://git-scm.com):** it will be used to clone this repository.
 
 #### Dependencies For Linux
+
 - **GCC, CMake:** they will be used to build this library.
 - **Git:** it will be used to clone this repository.
 
@@ -34,6 +39,7 @@ The following dependencies must be installed before it:
 > Use your distro package manager to install these packages.
 
 #### Dependencies For MacOS
+
 - **Apple Command Line Tools, CMake:** they will be used to build this library.
 - **Git:** it will be used to clone this repository.
 
@@ -41,6 +47,7 @@ The following dependencies must be installed before it:
 > Use `xcode-select --install` to install the Apple command line tools. For the rest, use [HomeBrew](https://brew.sh/).
 
 ### Procedures
+
 On Windows, using the `Developer PowerShell for VS 2022` profile or, on any other operating systems, using any terminal, follow these instructions:
 
 
@@ -63,17 +70,21 @@ target_link_libraries(main tmk)
 - The next time you build your project, the library will be automatically linked into your executable.
 
 ## ❡ Documentation
+
 After installed, you can learn how to use it by reading its [documentation](DOCS.md) or by hovering your mouse pointer over any of its identifiers in your IDE.
 
 ## ❡ Help
+
 If you need help related to this project, open a new issue in its [issues pages](https://github.com/skippyr/libtmk/issues) or send me an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
 
 ## ❡ Contributing
+
 This project is open to review and possibly accept contributions, specially fixes and suggestions. If you are interested, send your contribution to its [pull requests page](https://github.com/skippyr/libtmk/pulls) or to my [e-mail](mailto:skippyr.developer@icloud.com).
 
 In order to keep it open-source, by contributing to this project, you must agree to license your work under the same license that the project uses. For other intentions, prefer to create a fork.
 
 ## ❡ License
+
 This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;

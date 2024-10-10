@@ -462,8 +462,7 @@ parse_l:
       _tmk_PARSE_OPTION_KEY(63, 'w');
       _tmk_PARSE_OPTION_KEY(92, 'Q');
     case 194:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
         _tmk_PARSE_OPTION_KEY(167, 'S');
         _tmk_PARSE_OPTION_KEY(169, 'C');
         _tmk_PARSE_OPTION_KEY(174, 'r');
@@ -471,8 +470,7 @@ parse_l:
         _tmk_PARSE_OPTION_KEY(191, 'W');
       }
     case 195:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
         _tmk_PARSE_OPTION_KEY(134, 'A');
         _tmk_PARSE_OPTION_KEY(144, 'D');
         _tmk_PARSE_OPTION_KEY(152, 'O');
@@ -484,8 +482,7 @@ parse_l:
         _tmk_PARSE_OPTION_KEY(190, 'p');
       }
     case 196:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
         _tmk_PARSE_OPTION_KEY(145, 'f');
         _tmk_PARSE_OPTION_KEY(166, 'H');
         _tmk_PARSE_OPTION_KEY(167, 'h');
@@ -493,8 +490,7 @@ parse_l:
         _tmk_PARSE_OPTION_KEY(184, 'k');
       }
     case 197:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
         _tmk_PARSE_OPTION_KEY(129, 'L');
         _tmk_PARSE_OPTION_KEY(130, 'l');
         _tmk_PARSE_OPTION_KEY(138, 'N');
@@ -503,63 +499,50 @@ parse_l:
         _tmk_PARSE_OPTION_KEY(167, 't');
       }
     case 198:
-      buffer[1] = getchar();
-      switch (buffer[1]) { _tmk_PARSE_OPTION_KEY(178, 'V'); }
+      switch (buffer[1] = getchar()) { _tmk_PARSE_OPTION_KEY(178, 'V'); }
     case 202:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
         _tmk_PARSE_OPTION_KEY(139, 'v');
         _tmk_PARSE_OPTION_KEY(157, 'j');
       }
     case 203:
-      buffer[1] = getchar();
-      switch (buffer[1]) { _tmk_PARSE_OPTION_KEY(157, 'G'); }
+      switch (buffer[1] = getchar()) { _tmk_PARSE_OPTION_KEY(157, 'G'); }
     case 206:
-      buffer[1] = getchar();
-      switch (buffer[1]) { _tmk_PARSE_OPTION_KEY(169, 'z'); }
+      switch (buffer[1] = getchar()) { _tmk_PARSE_OPTION_KEY(169, 'z'); }
     case 226:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
       case 130:
-        buffer[2] = getchar();
-        switch (buffer[2]) {
+        switch (buffer[2] = getchar()) {
           _tmk_PARSE_OPTION_KEY(162, 'c');
           _tmk_PARSE_OPTION_KEY(172, 'e');
         }
       case 132:
-        buffer[2] = getchar();
-        switch (buffer[2]) { _tmk_PARSE_OPTION_KEY(162, 'B'); }
+        switch (buffer[2] = getchar()) { _tmk_PARSE_OPTION_KEY(162, 'B'); }
       case 134:
-        buffer[2] = getchar();
-        switch (buffer[2]) {
+        switch (buffer[2] = getchar()) {
           _tmk_PARSE_OPTION_KEY(144, 'y');
           _tmk_PARSE_OPTION_KEY(145, 'U');
           _tmk_PARSE_OPTION_KEY(146, 'i');
           _tmk_PARSE_OPTION_KEY(147, 'u');
         }
       case 136:
-        buffer[2] = getchar();
-        switch (buffer[2]) {
+        switch (buffer[2] = getchar()) {
           _tmk_PARSE_OPTION_KEY(134, 'g');
           _tmk_PARSE_OPTION_KEY(171, 'b');
         }
       case 137:
-        buffer[2] = getchar();
-        switch (buffer[2]) { _tmk_PARSE_OPTION_KEY(136, 'x'); }
+        switch (buffer[2] = getchar()) { _tmk_PARSE_OPTION_KEY(136, 'x'); }
       case 151:
         buffer[2] = getchar();
-        switch (buffer[2]) { _tmk_PARSE_OPTION_KEY(138, 'F'); }
+        switch (buffer[2] = getchar()) { _tmk_PARSE_OPTION_KEY(138, 'F'); }
       }
     case 239:
-      buffer[1] = getchar();
-      switch (buffer[1]) {
+      switch (buffer[1] = getchar()) {
       case 163:
-        buffer[2] = getchar();
-        switch (buffer[2]) { _tmk_PARSE_OPTION_KEY(191, 'K'); }
+        switch (buffer[2] = getchar()) { _tmk_PARSE_OPTION_KEY(191, 'K'); }
       case 157:
-        buffer[2] = getchar();
-        if (buffer[2] == 134) {
-          event->key = tmk_Key_Insert;
+        if ((buffer[2] = getchar()) == 134) {
+          temporaryEvent.key = tmk_Key_Insert;
           goto reset_l;
         }
       }
@@ -590,7 +573,8 @@ parse_l:
                                            : buffer[3] - 51 + tmk_Key_F11);
       fcntl(STDIN_FILENO, F_SETFL, flags);
       continue;
-    } else if (buffer[0] & 1 << 7) {
+    }
+    if (buffer[0] & 1 << 7) {
       for (int offset = 1;
            offset < 1 + !!(buffer[0] & 1 << 6) + !!(buffer[0] & 1 << 5) +
                         !!(buffer[0] & 1 << 4);
