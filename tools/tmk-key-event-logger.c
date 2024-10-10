@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #define SOFTWARE_NAME "tmk-key-event-logger"
-#define SOFTWARE_VERSION "v1.0.2"
+#define SOFTWARE_VERSION "1.0.2"
 #define SOFTWARE_AUTHOR_NAME "Sherman Rofeman"
 #define SOFTWARE_AUTHOR_EMAIL "skippyr.developer@icloud.com"
 #define SOFTWARE_REPOSITORY_URL "https://github.com/skippyr/libtmk"
