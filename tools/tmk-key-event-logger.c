@@ -11,7 +11,7 @@
 #define SOFTWARE_AUTHOR_EMAIL "skippyr.developer@icloud.com"
 #define SOFTWARE_REPOSITORY_URL "https://github.com/skippyr/libtmk"
 #define SOFTWARE_LICENSE "BSD-3-Clause License"
-#define SOFTWARE_CREATION_YEAR "2024"
+#define SOFTWARE_CREATION_YEAR "2023"
 #define PARSE_OPTION(option_a, action_a)                                       \
   if (!strcmp(arguments[offset], "--" option_a)) {                             \
     action_a;                                                                  \
