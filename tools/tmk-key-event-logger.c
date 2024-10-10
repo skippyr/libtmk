@@ -11,7 +11,7 @@
 #define SOFTWARE_AUTHOR_EMAIL "skippyr.developer@icloud.com"
 #define SOFTWARE_REPOSITORY_URL "https://github.com/skippyr/libtmk"
 #define SOFTWARE_LICENSE "BSD-3-Clause License"
-#define SOFTWARE_CREATION_YEAR "2023"
+#define SOFTWARE_CREATION_YEAR 2023
 #define PARSE_OPTION(option_a, action_a)                                       \
   if (!strcmp(arguments[offset], "--" option_a)) {                             \
     action_a;                                                                  \
@@ -30,7 +30,7 @@ static void writeHelpPage(void) {
 static void writeVersionPage(void) {
   tmk_writeLine("%s %s (running on %s %s)", SOFTWARE_NAME, SOFTWARE_VERSION,
                 tmk_OPERATING_SYSTEM, tmk_CPU_ARCHITECTURE);
-  tmk_writeLine("%s. Copyright © %s %s <%s>.", SOFTWARE_LICENSE,
+  tmk_writeLine("%s. Copyright © %d %s <%s>.", SOFTWARE_LICENSE,
                 SOFTWARE_CREATION_YEAR, SOFTWARE_AUTHOR_NAME,
                 SOFTWARE_AUTHOR_EMAIL);
   tmk_writeLine("");
