@@ -1,5 +1,4 @@
-#ifndef _tmk_H
-#define _tmk_H
+#pragma once
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -1032,5 +1031,4 @@ void tmk_writeError(const char *format, ...);
 void tmk_writeErrorLine(const char *format, ...);
 #if defined(__cplusplus)
 }
-#endif
 #endif
