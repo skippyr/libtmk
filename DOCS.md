@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="" src="assets/ornament.png" width=1020 />
+    <img alt="" src="assets/ornament.png" width=1020>
 </p>
 <h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
 <p align="center">Terminal Manipulation Kit - Documentation - 15.0.0</p>
@@ -9,7 +9,7 @@
 
 ## ❡ Reserved Names
 
-This library reserves all names starting with `tmk` and `_tmk`. The underscore at the start indicates that that name is reserved for the library implementation.
+This library reserves all names starting with `tmk`.
 
 ## ❡ Included Headers
 
@@ -41,6 +41,8 @@ This library has some limitations over its usage. To avoid conflicts and malfunc
 - `tmk_IS_CPU_ARCHITECTURE_X86`: A boolean that states the CPU architecture in use is x86.
 - `tmk_IS_CPU_ARCHITECTURE_X86_64`: A boolean that states the CPU architecture in use is x86_64.
 - `tmk_IS_CPU_ARCHITECTURE_UNKNOWN`: A boolean that states the CPU architecture in use is unknown.
+- `tmk_MINIMUM_EXIT_CODE`: The minimum exit code accepted by the operating system.
+- `tmk_MAXIMUM_EXIT_CODe`: The maximum exit code accepted by the operating system.
 
 ## ❡ Enums
 
@@ -151,7 +153,7 @@ Contains the keyboard keys that are not represented by UTF-8 graphemes. They may
 - `tmk_Key_Tab`: the Tab key.
 - `tmk_Key_Enter`: the Enter key.
 - `tmk_Key_Escape`: the Escape key.
-- `tmk_Key_Space`: the Space key.
+- `tmk_Key_Spacebar`: the Space key.
 - `tmk_Key_Backspace`: the Backspace key.
 
 ### tmk_ModifierKey Enum
@@ -162,7 +164,7 @@ Contains the keyboard modifier keys. The Shift key may be identified by checking
 
 #### Enumerators
 
-- `tmk_ModifierKey_AltOption`: On Windows and Linux, it is the Alt key. On MacOS, the Option key.
+- `tmk_ModifierKey_AltOrOption`: On Windows and Linux, it is the Alt key. On MacOS, the Option key.
 - `tmk_ModifierKey_Ctrl`: The Ctrl key.
 
 ### tmk_Stream Enum
@@ -179,29 +181,30 @@ Contains the standard terminal streams. Their statuses may be checked by using t
 
 ## ❡ Structs
 
-### tmk_CmdArguments Struct
+### tmk_CommandLineArguments Struct
 
 #### Brief
 
-Represents the command line arguments. It may be filled by using the [`tmk_getCmdArguments`](#tmk_getCmdArguments-function) function.
+Represents the command line arguments. It may be filled by using the [`tmk_getCommandLineArguments`](#tmk_getcommandlinearguments-function) function.
 
 #### Declaration
 
 ```c
-struct tmk_CmdArguments {
-#if defined(_WIN32)
-  const wchar_t **utf16Arguments;
+struct tmk_CommandLineArguments
+{
+    int totalArguments;
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+    const wchar_t ** utf16Arguments;
 #endif
-  const char **utf8Arguments;
-  int totalArguments;
+    const char ** utf8Arguments;
 };
 ```
 
 #### Fields
 
+- `totalArguments`: the total arguments.
 - `utf16Arguments`: The arguments in UTF-16 encoding. It is only available on Windows.
 - `utf8Arguments`: the arguments in UTF-8 encoding.
-- `totalArguments`: the total arguments.
 
 ### tmk_Coordinate Struct
 
@@ -212,9 +215,10 @@ Represents a terminal coordinate. It uses a coordinate system that considers the
 #### Declaration
 
 ```c
-struct tmk_Coordinate {
-  unsigned short column;
-  unsigned short row;
+struct tmk_Coordinate
+{
+    unsigned short column;
+    unsigned short row;
 };
 ```
 
@@ -223,7 +227,7 @@ struct tmk_Coordinate {
 - `column`: the column component of the coordinate.
 - `row`: the row component of the coordinate.
 
-### tmk_Dimensions Struct
+### tmk_WindowDimensions Struct
 
 #### Brief
 
@@ -232,32 +236,34 @@ Represents terminal dimensions. It is used by the [`tmk_getWindowDimensions`](#t
 #### Declaration
 
 ```c
-struct tmk_Dimensions {
-  unsigned int area;
-  unsigned short totalColumns;
-  unsigned short totalRows;
+struct tmk_WindowDimensions
+{
+    unsigned short totalColumns;
+    unsigned short totalRows;
+    unsigned int area;
 };
 ```
 
 #### Fields
 
-- `area`: the area of the dimensions.
 - `totalColumns`: the total of columns of the dimensions.
 - `totalRows`: the total of rows of the dimensions.
+- `area`: the area of the dimensions.
 
 ### tmk_RgbColor Struct
 
 #### Brief
 
-Represents an RGB color. It may be set by using the [`tmk_setFontRgbColor`](#tmk_setFontRgbColor-function) function.
+Represents an RGB color. It may be set by using the [`tmk_setFontRgbColor`](#tmk_setfontrgbcolor-function) function.
 
 #### Declaration
 
 ```c
-struct tmk_RgbColor {
-  unsigned char red;
-  unsigned char green;
-  unsigned char blue;
+struct tmk_RgbColor
+{
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
 };
 ```
 
@@ -276,16 +282,17 @@ Represents a terminal key event. It may be filled by the [`tmk_readKeyEvent`](#t
 #### Declaration
 
 ```c
-struct tmk_KeyEvent {
-  int key;
-  unsigned char modifiers;
+struct tmk_KeyEvent
+{
+    unsigned char modifiers;
+    int key;
 };
 ```
 
 #### Fields
 
-- `key`: the key pressed. It may be an UTF-8 grapheme or an enumerator from the [`tmk_Key`](#tmk_key-enum) enum.
 - `modifiers`: A bitmask containing the modifier keys being hold during the event. It may be composed by enumerators from the [`tmk_ModifierKey`](#tmk_modifierkey-enum) enum.
+- `key`: the key pressed. It may be an UTF-8 grapheme or an enumerator from the [`tmk_Key`](#tmk_key-enum) enum.
 
 ## ❡ Functions
 
@@ -294,7 +301,7 @@ struct tmk_KeyEvent {
 #### Declaration
 
 ```c
-char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
+extern char * tmk_convertUtf16ToUtf8(const wchar_t * utf16String, size_t * length);
 ```
 
 #### Brief
@@ -315,13 +322,14 @@ The UTF-8 encoded string.
 ```c
 #include <tmk.h>
 
-int main(void) {
-  size_t length;
-  char *message = tmk_convertUtf16ToUtf8(L"Here Be Dragons!", &length);
-  tmk_writeLine(":: String: %s", message);
-  tmk_writeLine(":: Length: %zu.", length);
-  free(message);
-  return 0;
+extern int main(void)
+{
+    size_t length;
+    char * message = tmk_convertUtf16ToUtf8(L"Here Be Dragons!", &length);
+    tmk_writeLine("String: %s", message);
+    tmk_writeLine("Length: %zu", length);
+    free(message);
+    return 0;
 }
 ```
 
@@ -330,7 +338,7 @@ int main(void) {
 #### Declaration
 
 ```c
-wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
+extern wchar_t * tmk_convertUtf8ToUtf16(const char * utf8String, size_t * length);
 ```
 
 #### Brief
@@ -352,15 +360,16 @@ The UTF-16 encoded string.
 #include <Windows.h>
 #include <tmk.h>
 
-int main(void) {
-  size_t length;
-  wchar_t *message = tmk_convertUtf8ToUtf16("Here Be Dragons!", &length);
-  tmk_write(":: String: ");
-  WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), message, length, NULL, NULL);
-  tmk_writeLine("");
-  tmk_writeLine(":: Length: %zu.", length);
-  free(message);
-  return 0;
+extern int main(void)
+{
+    size_t length;
+    wchar_t * message = tmk_convertUtf8ToUtf16("Here Be Dragons!", &length);
+    tmk_write("String: ");
+    WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), message, length, NULL, NULL);
+    tmk_writeLine("");
+    tmk_writeLine("Length: %zu", length);
+    free(message);
+    return 0;
 }
 ```
 
@@ -369,7 +378,7 @@ int main(void) {
 #### Declaration
 
 ```c
-int tmk_isStreamRedirected(enum tmk_Stream stream);
+extern int tmk_isStreamRedirected(enum tmk_Stream stream);
 ```
 
 #### Brief
@@ -389,17 +398,12 @@ A boolean that states the stream is redirected.
 ```c
 #include <tmk.h>
 
-#define BOOLEAN_STRING(value_a) (value_a ? "True" : "False")
-
-int main(void) {
-  tmk_writeLine("Stream Redirection Statuses");
-  tmk_writeLine("::  Input: %s.",
-                BOOLEAN_STRING(tmk_isStreamRedirected(tmk_Stream_Input)));
-  tmk_writeLine(":: Output: %s.",
-                BOOLEAN_STRING(tmk_isStreamRedirected(tmk_Stream_Output)));
-  tmk_writeLine("::  Error: %s.",
-                BOOLEAN_STRING(tmk_isStreamRedirected(tmk_Stream_Error)));
-  return 0;
+extern int main(void)
+{
+    tmk_writeLine("Is Input Redirected: %d", tmk_isStreamRedirected(tmk_Stream_Input));
+    tmk_writeLine("Is Output Redirected: %d", tmk_isStreamRedirected(tmk_Stream_Output));
+    tmk_writeLine("Is Error Redirected: %d", tmk_isStreamRedirected(tmk_Stream_Error));
+    return 0;
 }
 ```
 
@@ -412,22 +416,21 @@ Flushes the bytes cached inside of the terminal output buffer.
 #### Declaration
 
 ```c
-void tmk_flushOutputBuffer(void);
+extern void tmk_flushOutputBuffer(void);
 ```
 
 #### Example
 
 ```c
-/* Example only for Linux and MacOS. */
-
 #include <tmk.h>
 #include <unistd.h>
 
-int main(void) {
-  tmk_write("Here Be Dragons!");
-  tmk_flushOutputBuffer();
-  sleep(1);
-  return 0;
+extern int main(void)
+{
+    tmk_write("Here Be Dragons!");
+    tmk_flushOutputBuffer();
+    sleep(1);
+    return 0;
 }
 ```
 
@@ -440,7 +443,7 @@ Clears the events cached inside the terminal input buffer.
 #### Declaration
 
 ```c
-void tmk_clearInputBuffer(void);
+extern void tmk_clearInputBuffer(void);
 ```
 
 #### Example
@@ -456,7 +459,7 @@ Rings the terminal bell, possibly emitting a bell indicator in the title bar, wi
 #### Declaration
 
 ```c
-int tmk_ringBell(int stream);
+extern int tmk_ringBell(int stream);
 ```
 
 #### Example
@@ -464,9 +467,10 @@ int tmk_ringBell(int stream);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_ringBell();
-  return 0;
+extern int main(void)
+{
+    tmk_ringBell();
+    return 0;
 }
 ```
 
@@ -481,50 +485,52 @@ Clears the line the terminal is on.
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_write("Hello, world!");
-  tmk_clearCursorLine();
-  tmk_writeLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_write("Hello, world!");
+    tmk_clearCursorLine();
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
-### tmk_getCmdArguments Function
+### tmk_getCommandLineArguments Function
 
 #### Declaration
 
 ```c
-void tmk_getCmdArguments(int totalRawCmdArguments, const char **rawCmdArguments,
-                         struct tmk_CmdArguments *cmdArguments);
+extern void tmk_getCommandLineArguments(int totalMainArguments, const char ** mainArguments, struct tmk_CommandLineArguments * arguments);
 ```
 
 #### Brief
 
-Gets and converts the command line arguments of the terminal process. It fills a [`tmk_CmdArguments`](#tmk_CmdArguments-struct) struct which must be freed by using the [`tmk_freeCmdArguments`](#tmk_freeCmdArguments-function) function.
+Gets and converts the command line arguments of the terminal process. It fills a [`tmk_CommandLineArguments`](#tmk_commandlinearguments-struct) struct which must be freed by using the [`tmk_freeCommandLineArguments`](#tmk_freecommandlinearguments-function) function.
 
 #### Parameters
 
-- `totalRawCmdArguments`: the total command line arguments given as the first parameter of the main function.
-- `rawCmdArguments`: the raw command line arguments given as the second parameter of the main function.
-- `cmdArguments`: the address where the command line arguments will be put into.
+- `totalMainArguments`: the total command line arguments given as the first parameter of the main function.
+- `mainArguments`: the raw command line arguments given as the second parameter of the main function.
+- `arguments`: the address where the command line arguments will be put into.
 
 #### Example
 
 ```c
 #include <tmk.h>
 
-int main(int totalRawCmdArguments, const char **rawCmdArguments) {
-  struct tmk_CmdArguments cmdArguments;
-  tmk_getCmdArguments(totalRawCmdArguments, rawCmdArguments, &cmdArguments);
-  for (int offset = 0; offset < cmdArguments.totalArguments; ++offset) {
-    tmk_writeLine("Argument %d: %s.", offset,
-                  cmdArguments.utf8Arguments[offset]);
-  }
-  tmk_freeCmdArguments(&cmdArguments);
+extern int main(int totalMainArguments, const char ** mainArguments)
+{
+    struct tmk_CommandLineArguments arguments;
+    tmk_getCommandLineArguments(totalMainArguments, mainArguments, &arguments);
+    for (int offset = 0; offset < arguments.totalArguments; ++offset)
+    {
+        tmk_writeLine("Argument %d: %s.", offset, arguments.utf8Arguments[offset]);
+    }
+    tmk_freeCommandLineArguments(&cmdArguments);
+    return 0;
 }
 ```
 
-### tmk_freeCmdArguments Function
+### tmk_freeCommandLineArguments Function
 
 #### Brief
 
@@ -533,12 +539,12 @@ Frees the memory allocated for the command line arguments of the terminal proces
 #### Declaration
 
 ```c
-void tmk_freeCmdArguments(struct tmk_CmdArguments *arguments);
+extern void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments * arguments);
 ```
 
 #### Example
 
-See the example from the [`tmk_getCmdArguments`](#tmk_getCmdArguments-function) function.
+See the example from the [`tmk_getCommandLineArguments`](#tmk_getcommandlinearguments-function) function.
 
 ### tmk_getWindowDimensions Function
 
@@ -549,7 +555,7 @@ Gets the dimensions of the terminal window.
 #### Declaration
 
 ```c
-int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
+extern int tmk_getWindowDimensions(struct tmk_WindowDimensions * dimensions);
 ```
 
 #### Parameters
@@ -565,13 +571,14 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  struct tmk_Dimensions windowDimensions;
-  tmk_getWindowDimensions(&windowDimensions);
-  tmk_writeLine(":: Total Columns: %hu.", windowDimensions.totalColumns);
-  tmk_writeLine("::    Total Rows: %hu.", windowDimensions.totalRows);
-  tmk_writeLine("::          Area: %u.", windowDimensions.area);
-  return 0;
+extern int main(void)
+{
+    struct tmk_WindowDimensions windowDimensions;
+    tmk_getWindowDimensions(&windowDimensions);
+    tmk_writeLine("Total Columns: %hu.", windowDimensions.totalColumns);
+    tmk_writeLine("Total Rows: %hu.", windowDimensions.totalRows);
+    tmk_writeLine("Area: %u.", windowDimensions.area);
+    return 0;
 }
 ```
 
@@ -584,12 +591,12 @@ Sets an ANSI color into the terminal font. The color may be reset by using the [
 #### Declaration
 
 ```c
-void tmk_setFontAnsiColor(uint8_t color, enum tmk_Layer layer);
+extern void tmk_setFontAnsiColor(unsigned char color, enum tmk_Layer layer);
 ```
 
 #### Parameters
 
-- `color`: the color to be applied. It may be a value in range from 0 to 255 or an enumerator from the [`tmk_AnsiColor`](#tmk_AnsiColor-enum) enum.
+- `color`: the color to be applied. It may be a value in range from 0 to 255 or an enumerator from the [`tmk_AnsiColor`](#tmk_ansicolor-enum) enum.
 - `layer`: the layer to be affected.
 
 #### Example
@@ -597,22 +604,25 @@ void tmk_setFontAnsiColor(uint8_t color, enum tmk_Layer layer);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  for (int color = 0; color < 255; ++color) {
-    tmk_setFontAnsiColor(color, tmk_Layer_Background);
-    tmk_write("   ");
+extern int main(void)
+{
+    for (int color = 0; color < 255; ++color)
+    {
+        tmk_setFontAnsiColor(color, tmk_Layer_Background);
+        tmk_write("   ");
+        tmk_resetFontColors();
+    }
+    tmk_writeLine("");
+    tmk_writeLine("");
+    tmk_setFontAnsiColor(tmk_AnsiColor_DarkRed, tmk_Layer_Foreground);
+    tmk_writeLine("Here Be Dragons!");
     tmk_resetFontColors();
-  }
-  tmk_writeLine("");
-  tmk_writeLine("");
-  tmk_setFontAnsiColor(tmk_AnsiColor_DarkRed, tmk_Layer_Foreground);
-  tmk_writeLine("Here Be Dragons!");
-  tmk_resetFontColors();
-  tmk_setFontAnsiColor(tmk_AnsiColor_LightYellow, tmk_Layer_Background);
-  tmk_setFontAnsiColor(tmk_AnsiColor_DarkBlack, tmk_Layer_Foreground);
-  tmk_writeLine("Here Be Dragons!");
-  tmk_resetFontColors();
-  tmk_writeLine("Here Be Dragons!");
+    tmk_setFontAnsiColor(tmk_AnsiColor_LightYellow, tmk_Layer_Background);
+    tmk_setFontAnsiColor(tmk_AnsiColor_DarkBlack, tmk_Layer_Foreground);
+    tmk_writeLine("Here Be Dragons!");
+    tmk_resetFontColors();
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -625,7 +635,7 @@ Sets an RGB color into the terminal font. The color may be reset by using the [`
 #### Declaration
 
 ```c
-void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer);
+extern void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer);
 ```
 
 #### Parameters
@@ -638,19 +648,20 @@ void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  /* See https://github.com/skippyr/flamerial for the full palette. */
-  struct tmk_RgbColor palette[] = {{179, 28, 19},  {133, 88, 20},   {199, 104, 0},
-                                  {176, 133, 72}, {138, 56, 32}, {156, 62, 0},
-                                  {233, 211, 151}};
-  for (int offset = 0; offset < sizeof(palette) / sizeof(palette[0]); ++offset) {
-    tmk_setFontRgbColor(palette[offset], tmk_Layer_Background);
-    tmk_write("   ");
-    tmk_resetFontColors();
-    tmk_setFontRgbColor(palette[offset], tmk_Layer_Foreground);
-    tmk_writeLine(" Here Be Dragons!");
-    tmk_resetFontColors();
-  }
+extern int main(void)
+{
+    /* See https://github.com/skippyr/flamerial for the full palette. */
+    struct tmk_RgbColor palette[] = {{21,13,6}, {179,28,19}, {133,88,20}, {199,104,0}, {176,133,72}, {138,56,32}, {168,62,0}, {233,211,151}, {95,68,41}};
+    for (int offset = 0; offset < sizeof(palette) / sizeof(palette[0]); ++offset)
+    {
+        tmk_setFontRgbColor(palette[offset], tmk_Layer_Background);
+        tmk_write("   ");
+        tmk_resetFontColors();
+        tmk_setFontRgbColor(palette[offset], tmk_Layer_Foreground);
+        tmk_writeLine(" Here Be Dragons!");
+        tmk_resetFontColors();
+    }
+    return 0;
 }
 ```
 
@@ -663,12 +674,12 @@ Resets the terminal font foreground and background colors.
 #### Declaration
 
 ```c
-void tmk_resetFontColors(void);
+extern void tmk_resetFontColors(void);
 ```
 
 #### Example
 
-See the examples from the [`tmk_setFontAnsiColor`](#tmk_setFontAnsiColor-function) and [`tmk_setFontRgbColor`](#tmk_setFontRgbColor-function) functions.
+See the examples from the [`tmk_setFontAnsiColor`](#tmk_setfontansicolor-function) and [`tmk_setFontRgbColor`](#tmk_setfontrgbcolor-function) functions.
 
 ### tmk_setFontWeight Function
 
@@ -679,7 +690,7 @@ Sets the terminal font weight. The weight may be reset by using the [`tmk_resetF
 #### Declaration
 
 ```c
-void tmk_setFontWeight(enum tmk_FontWeight weight);
+extern void tmk_setFontWeight(enum tmk_FontWeight weight);
 ```
 
 #### Parameters
@@ -691,14 +702,15 @@ void tmk_setFontWeight(enum tmk_FontWeight weight);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_setFontWeight(tmk_FontWeight_Bold);
-  tmk_writeLine("Here Be Dragons!");
-  tmk_setFontWeight(tmk_FontWeight_Light);
-  tmk_writeLine("Here Be Dragons!");
-  tmk_resetFontWeight();
-  tmk_writeLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_setFontWeight(tmk_FontWeight_Bold);
+    tmk_writeLine("Here Be Dragons!");
+    tmk_setFontWeight(tmk_FontWeight_Light);
+    tmk_writeLine("Here Be Dragons!");
+    tmk_resetFontWeight();
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -711,7 +723,7 @@ Resets the terminal font weight.
 #### Declaration
 
 ```c
-void tmk_resetFontWeight(void);
+extern void tmk_resetFontWeight(void);
 ```
 
 #### Example
@@ -727,7 +739,7 @@ Sets terminal font effects. Effects may be reset by using the [`tmk_resetFontEff
 #### Declaration
 
 ```c
-void tmk_setFontEffects(int effectsMask);
+extern void tmk_setFontEffects(int effectsMask);
 ```
 
 #### Parameters
@@ -739,12 +751,13 @@ void tmk_setFontEffects(int effectsMask);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_setFontEffects(tmk_FontEffect_Underline | tmk_FontEffect_ReverseVideo);
-  tmk_writeLine("Here Be Dragons!");
-  tmk_resetFontEffects();
-  tmk_writeLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_setFontEffects(tmk_FontEffect_Underline | tmk_FontEffect_ReverseVideo);
+    tmk_writeLine("Here Be Dragons!");
+    tmk_resetFontEffects();
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -757,7 +770,7 @@ Resets all terminal font effects.
 #### Declaration
 
 ```c
-void tmk_resetFontEffects(void);
+extern void tmk_resetFontEffects(void);
 ```
 
 #### Example
@@ -773,7 +786,7 @@ Opens the alternate window. It may closed by using the [`tmk_closeAlternateWindo
 #### Declaration
 
 ```c
-void tmk_openAlternateWindow(void);
+extern void tmk_openAlternateWindow(void);
 ```
 
 #### Example
@@ -781,12 +794,13 @@ void tmk_openAlternateWindow(void);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_openAlternateWindow();
-  tmk_writeLine("Here Be Dragons!");
-  tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_closeAlternateWindow();
-  return 0;
+extern int main(void)
+{
+    tmk_openAlternateWindow();
+    tmk_writeLine("Here Be Dragons!");
+    tmk_readKeyEvent(-1, NULL, NULL);
+    tmk_closeAlternateWindow();
+    return 0;
 }
 ```
 
@@ -799,7 +813,7 @@ Closes the alternate window.
 #### Declaration
 
 ```c
-void tmk_closeAlternateWindow(void);
+extern void tmk_closeAlternateWindow(void);
 ```
 
 #### Example
@@ -815,7 +829,7 @@ Gets the terminal cursor coordinate. On Linux and MacOS, as it parses a terminal
 #### Declaration
 
 ```c
-int tmk_getCursorCoordinate(struct tmk_Coordinate* coordinate);
+extern int tmk_getCursorCoordinate(struct tmk_Coordinate * coordinate);
 ```
 
 #### Parameters
@@ -831,12 +845,13 @@ int tmk_getCursorCoordinate(struct tmk_Coordinate* coordinate);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  struct tmk_Coordinate cursorCoordinate;
-  tmk_getCursorCoordinate(&cursorCoordinate);
-  tmk_writeLine(":: Cursor Column: %hu.", cursorCoordinate.column);
-  tmk_writeLine(":: Cursor Row   : %hu.", cursorCoordinate.row);
-  return 0;
+extern int main(void)
+{
+    struct tmk_Coordinate cursorCoordinate;
+    tmk_getCursorCoordinate(&cursorCoordinate);
+    tmk_writeLine("Cursor Column: %hu", cursorCoordinate.column);
+    tmk_writeLine("Cursor Row: %hu", cursorCoordinate.row);
+    return 0;
 }
 ```
 
@@ -849,7 +864,7 @@ Sets the terminal cursor coordinate.
 #### Declaration
 
 ```c
-void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
+extern void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 ```
 
 #### Parameters
@@ -861,13 +876,14 @@ void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  struct tmk_Coordinate cursorCoordinate;
-  tmk_getCursorCoordinate(&cursorCoordinate);
-  cursorCoordinate.column = 5;
-  tmk_setCursorCoordinate(cursorCoordinate);
-  tmk_writeLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    struct tmk_Coordinate cursorCoordinate;
+    tmk_getCursorCoordinate(&cursorCoordinate);
+    cursorCoordinate.column = 5;
+    tmk_setCursorCoordinate(cursorCoordinate);
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -880,28 +896,29 @@ Sets the terminal cursor shape. It may be reset by using the [`tmk_resetCursorSh
 #### Declaration
 
 ```c
-void tmk_setCursorShape(enum tmk_CursorShape shape, int isBlinking);
+extern void tmk_setCursorShape(enum tmk_CursorShape shape, int shouldBlink);
 ```
 
 #### Parameters
 
 - `shape`: the shape to be set.
-- `isBlinking`: a boolean that states the cursor should blink.
+- `shouldBlink`: a boolean that states the cursor should blink.
 
 #### Example
 
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_setCursorShape(tmk_CursorShape_Underline, 0);
-  tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorShape(tmk_CursorShape_Block, 1);
-  tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorShape(tmk_CursorShape_Bar, 0);
-  tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_resetCursorShape();
-  return 0;
+extern int main(void)
+{
+    tmk_setCursorShape(tmk_CursorShape_Underline, 0);
+    tmk_readKeyEvent(-1, NULL, NULL);
+    tmk_setCursorShape(tmk_CursorShape_Block, 1);
+    tmk_readKeyEvent(-1, NULL, NULL);
+    tmk_setCursorShape(tmk_CursorShape_Bar, 0);
+    tmk_readKeyEvent(-1, NULL, NULL);
+    tmk_resetCursorShape();
+    return 0;
 }
 ```
 
@@ -914,7 +931,7 @@ Resets the terminal cursor shape.
 #### Declaration
 
 ```c
-void tmk_resetCursorShape(void);
+extern void tmk_resetCursorShape(void);
 ```
 
 #### Example
@@ -930,7 +947,7 @@ Sets the terminal cursor visibility.
 #### Declaration
 
 ```c
-void tmk_setCursorVisible(int isVisible);
+extern void tmk_setCursorVisible(int isVisible);
 ```
 
 #### Parameters
@@ -942,11 +959,12 @@ void tmk_setCursorVisible(int isVisible);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_setCursorVisible(0);
-  tmk_readKeyEvent(-1, NULL, NULL);
-  tmk_setCursorVisible(1);
-  return 0;
+extern int main(void)
+{
+    tmk_setCursorVisible(0);
+    tmk_readKeyEvent(-1, NULL, NULL);
+    tmk_setCursorVisible(1);
+    return 0;
 }
 ```
 
@@ -959,8 +977,7 @@ Reads a terminal key event and remove it from the input buffer. Content typed an
 #### Declaration
 
 ```c
-int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
-                     int (*filter)(struct tmk_KeyEvent *));
+extern int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent * event, int (*filter)(struct tmk_KeyEvent *));
 ```
 
 #### Parameters
@@ -978,38 +995,35 @@ int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
 ```c
 #include <tmk.h>
 
-static int filter(struct tmk_KeyEvent *event) {
-  return (event->key == 'a' && !event->modifiers) ||
-         (event->key == 'b' && event->modifiers & tmk_ModifierKey_AltOption &&
-          !(event->modifiers & tmk_ModifierKey_Ctrl)) ||
-         (event->key == 'C' && !event->modifiers) ||
-         event->key == tmk_Key_DownArrow || event->key == *(int *)"🐉";
+static int filter(struct tmk_KeyEvent * event)
+{
+    return (event->key == 'a' && !event->modifiers) || (event->key == 'b' && event->modifiers & tmk_ModifierKey_AltOrOption && !(event->modifiers & tmk_ModifierKey_Ctrl)) ||
+           (event->key == 'C' && !event->modifiers) || event->key == tmk_Key_DownArrow || event->key == *(int *)"🐉";
 }
 
-int main(void) {
-  tmk_write("Waiting for key events");
-  for (int timer = 5; timer; --timer) {
-    tmk_write(" %d...", timer);
-    struct tmk_KeyEvent event;
-    int status = tmk_readKeyEvent(1000, &event, filter);
-    if (!status || status == -4) {
-      tmk_writeLine("");
-      tmk_write(
-          status == -4 ? "Interrupted by window resize action."
-                       : "Pressed/Typed %s.",
-          event.key == 'a' && !event.modifiers ? "the A key"
-          : event.key == 'b' && event.modifiers & tmk_ModifierKey_AltOption &&
-                  !(event.modifiers & tmk_ModifierKey_Ctrl)
-              ? "the Alt/Option + B sequence"
-          : (event.key == 'C' && !event.modifiers) ? "the Shift + C sequence"
-          : event.key == tmk_Key_DownArrow         ? "the Down Arrow key"
-          : event.key == *(int *)"🐉"              ? "the Dragon emoji"
-                                                   : "");
-      break;
+extern int main(void)
+{
+    tmk_write("Waiting for key events");
+    for (int timer = 5; timer; --timer)
+    {
+        tmk_write(" %d...", timer);
+        struct tmk_KeyEvent event;
+        int status = tmk_readKeyEvent(1000, &event, filter);
+        if (!status || status == -4)
+        {
+            tmk_writeLine("");
+            tmk_write(status == -4 ? "Interrupted by window resize action." : "Pressed/Typed %s.",
+                      event.key == 'a' && !event.modifiers                                                                             ? "the A key"
+                      : event.key == 'b' && event.modifiers & tmk_ModifierKey_AltOrOption && !(event.modifiers & tmk_ModifierKey_Ctrl) ? "the Alt/Option + B sequence"
+                      : (event.key == 'C' && !event.modifiers)                                                                         ? "the Shift + C sequence"
+                      : event.key == tmk_Key_DownArrow                                                                                 ? "the Down Arrow key"
+                      : event.key == *(int *)"🐉"                                                                                      ? "the Dragon emoji"
+                                                                                                                                       : "");
+            break;
+        }
     }
-  }
-  tmk_writeLine("");
-  return 0;
+    tmk_writeLine("");
+    return 0;
 }
 ```
 
@@ -1022,7 +1036,7 @@ Formats and writes a string to the terminal output stream. On Windows, it sets t
 #### Declaration
 
 ```c
-void tmk_writeArguments(const char *format, va_list arguments);
+extern void tmk_writeArguments(const char * format, va_list arguments);
 ```
 
 #### Parameters
@@ -1035,17 +1049,19 @@ void tmk_writeArguments(const char *format, va_list arguments);
 ```c
 #include <tmk.h>
 
-static void writeInfo(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_write("INFO: ");
-  tmk_writeArguments(format, arguments);
-  va_end(arguments);
+static void writeInfo(const char * format, ...)
+{
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_write("INFO: ");
+    tmk_writeArguments(format, arguments);
+    va_end(arguments);
 }
 
-int main(void) {
-  writeInfo("Here Be Dragons! %s", "skippyr");
-  return 0;
+extern int main(void)
+{
+    writeInfo("Here Be Dragons! %s", "skippyr");
+    return 0;
 }
 ```
 
@@ -1058,7 +1074,7 @@ Formats and writes a string to the terminal output stream with a newline graphem
 #### Declaration
 
 ```c
-void tmk_writeArgumentsLine(const char *format, va_list arguments);
+extern void tmk_writeArgumentsLine(const char * format, va_list arguments);
 ```
 
 #### Parameters
@@ -1069,17 +1085,19 @@ void tmk_writeArgumentsLine(const char *format, va_list arguments);
 ```c
 #include <tmk.h>
 
-static void writeInfo(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_write("INFO: ");
-  tmk_writeArgumentsLine(format, arguments);
-  va_end(arguments);
+static void writeInfo(const char * format, ...)
+{
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_write("INFO: ");
+    tmk_writeArgumentsLine(format, arguments);
+    va_end(arguments);
 }
 
-int main(void) {
-  writeInfo("Here Be Dragons! %s", "skippyr");
-  return 0;
+extern int main(void)
+{
+    writeInfo("Here Be Dragons! %s", "skippyr");
+    return 0;
 }
 ```
 
@@ -1092,7 +1110,7 @@ Formats and writes a string to the terminal error stream. On Windows, it sets th
 #### Declaration
 
 ```c
-void tmk_writeErrorArguments(const char *format, va_list arguments);
+extern void tmk_writeErrorArguments(const char * format, va_list arguments);
 ```
 
 #### Parameters
@@ -1105,17 +1123,19 @@ void tmk_writeErrorArguments(const char *format, va_list arguments);
 ```c
 #include <tmk.h>
 
-static void writeError(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeError("ERROR: ");
-  tmk_writeErrorArguments(format, arguments);
-  va_end(arguments);
+static void writeError(const char * format, ...)
+{
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_writeError("ERROR: ");
+    tmk_writeErrorArguments(format, arguments);
+    va_end(arguments);
 }
 
-int main(void) {
-  writeError("Here Be Dragons! %s", "skippyr");
-  return 0;
+extern int main(void)
+{
+    writeError("Here Be Dragons! %s", "skippyr");
+    return 0;
 }
 ```
 
@@ -1128,7 +1148,7 @@ Formats and writes a string to the terminal error stream with a newline grapheme
 #### Declaration
 
 ```c
-void tmk_writeErrorArgumentsLine(const char *format, va_list arguments);
+extern void tmk_writeErrorArgumentsLine(const char * format, va_list arguments);
 ```
 
 #### Parameters
@@ -1141,17 +1161,19 @@ void tmk_writeErrorArgumentsLine(const char *format, va_list arguments);
 ```c
 #include <tmk.h>
 
-static void writeError(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeError("ERROR: ");
-  tmk_writeErrorArgumentsLine(format, arguments);
-  va_end(arguments);
+static void writeError(const char * format, ...)
+{
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_writeError("ERROR: ");
+    tmk_writeErrorArgumentsLine(format, arguments);
+    va_end(arguments);
 }
 
-int main(void) {
-  writeError("Here Be Dragons! %s", "skippyr");
-  return 0;
+extern int main(void)
+{
+    writeError("Here Be Dragons! %s", "skippyr");
+    return 0;
 }
 ```
 
@@ -1164,7 +1186,7 @@ Formats and writes a string to the terminal output stream. On Windows, it sets t
 #### Declaration
 
 ```c
-void tmk_write(const char *format, ...);
+extern void tmk_write(const char * format, ...);
 ```
 
 #### Parameters
@@ -1177,9 +1199,10 @@ void tmk_write(const char *format, ...);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_write("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_write("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -1192,7 +1215,7 @@ Formats and writes a string to the terminal output stream with a newline graphem
 #### Declaration
 
 ```c
-void tmk_writeLine(const char *format, ...);
+extern void tmk_writeLine(const char * format, ...);
 ```
 
 #### Parameters
@@ -1205,9 +1228,10 @@ void tmk_writeLine(const char *format, ...);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_writeLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_writeLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -1220,7 +1244,7 @@ Formats and writes a string to the terminal error stream. On Windows, it sets th
 #### Declaration
 
 ```c
-void tmk_writeError(const char *format, ...);
+extern void tmk_writeError(const char * format, ...);
 ```
 
 #### Parameters
@@ -1233,9 +1257,10 @@ void tmk_writeError(const char *format, ...);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_writeError("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_writeError("Here Be Dragons!");
+    return 0;
 }
 ```
 
@@ -1248,7 +1273,7 @@ Formats and writes a string to the terminal error stream with a newline grapheme
 #### Declaration
 
 ```c
-void tmk_writeErrorLine(const char *format, ...);
+extern void tmk_writeErrorLine(const char * format, ...);
 ```
 
 #### Parameters
@@ -1261,11 +1286,12 @@ void tmk_writeErrorLine(const char *format, ...);
 ```c
 #include <tmk.h>
 
-int main(void) {
-  tmk_writeErrorLine("Here Be Dragons!");
-  return 0;
+extern int main(void)
+{
+    tmk_writeErrorLine("Here Be Dragons!");
+    return 0;
 }
 ```
 
 &ensp;
-<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>
+<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br>Made with love by skippyr <3</sup></p>

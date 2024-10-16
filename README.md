@@ -1,16 +1,16 @@
 <p align="center">
-  <img alt="" src="assets/ornament.png" width=1020 />
+    <img alt="" src="assets/ornament.png" width=1020>
 </p>
 <h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
 <p align="center">Terminal Manipulation Kit</p>
 <p align="center">
-  <img alt="" src="https://img.shields.io/github/license/skippyr/libtmk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
-  &nbsp;
-  <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtmk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d" />
-  &nbsp;
-  <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtmk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d" />
-  &nbsp;
-  <img alt="" src="https://img.shields.io/github/stars/skippyr/libtmk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
+    <img alt="" src="https://img.shields.io/github/license/skippyr/libtmk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d">
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/v/tag/skippyr/libtmk?style=plastic&label=%E2%89%A5%20tag&labelColor=%2324130e&color=%23b8150d">
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/commit-activity/t/skippyr/libtmk?style=plastic&label=%E2%89%A5%20commits&labelColor=%2324130e&color=%23b8150d">
+    &nbsp;
+    <img alt="" src="https://img.shields.io/github/stars/skippyr/libtmk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d">
 </p>
 
 ## ❡ About
@@ -88,4 +88,4 @@ In order to keep it open-source, by contributing to this project, you must agree
 This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;
-<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made with love by skippyr <3</sup></p>
+<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br>Made with love by skippyr <3</sup></p>
