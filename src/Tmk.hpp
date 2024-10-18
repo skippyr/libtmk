@@ -181,6 +181,12 @@
 
 namespace Tmk
 {
+    enum class FontWeight
+    {
+        Bold = 1,
+        Dim
+    };
+
     class Terminal final
     {
     private:
@@ -214,6 +220,20 @@ namespace Tmk
 
         public:
             static void EnableFeatures();
+
+            template <typename... Args>
+            static void SendAnsiSequence(std::string_view sequence, Args... arguments)
+            {
+                if (!Output::IsRedirected())
+                {
+                    Output::Write(sequence, arguments...);
+                }
+                else if (!Error::IsRedirected())
+                {
+                    Error::Write(sequence, arguments...);
+                }
+            }
+
             static StreamRedirectionCache& GetStreamRedirectionCache();
         };
 
@@ -274,6 +294,16 @@ namespace Tmk
 
         class Error final : public WritableStream<2>
         {
+        };
+
+        class Font final
+        {
+        private:
+            Font() = delete;
+
+        public:
+            static void SetWeight(FontWeight weight);
+            static void ResetWeight();
         };
     };
 }

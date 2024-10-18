@@ -65,4 +65,14 @@ namespace Tmk
     {
         return m_redirectionCache;
     }
+
+    void Terminal::Font::SetWeight(FontWeight weight)
+    {
+        Driver::SendAnsiSequence("\x1b[22;{}m", (int)weight);
+    }
+
+    void Terminal::Font::ResetWeight()
+    {
+        Driver::SendAnsiSequence("\x1b[22m");
+    }
 }
