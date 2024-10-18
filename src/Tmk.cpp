@@ -4,6 +4,7 @@
 #include <io.h>
 #else
 #include <unistd.h>
+#include <sys/ioctl.h>
 #endif
 
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
@@ -47,6 +48,26 @@ namespace Tmk
     void RgbColor::SetBlue(std::uint8_t blue)
     {
         m_blue = blue;
+    }
+
+    Dimensions::Dimensions(std::uint16_t width, std::uint16_t height)
+        : m_width(width), m_height(height)
+    {
+    }
+
+    std::uint16_t Dimensions::GetWidth() const
+    {
+        return m_width;
+    }
+
+    std::uint16_t Dimensions::GetHeight() const
+    {
+        return m_height;
+    }
+
+    std::uint32_t Dimensions::GetArea() const
+    {
+        return m_width * m_height;
     }
 
     Terminal::StreamRedirectionCache::StreamRedirectionCache()
@@ -125,5 +146,24 @@ namespace Tmk
     void Terminal::Font::ResetColors()
     {
         Driver::SendAnsiSequence("\x1b[39;49m");
+    }
+
+    Dimensions Terminal::Window::GetDimensions()
+    {
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+        if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+        {
+            throw StreamRedirectionException();
+        }
+        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
+#else
+        struct winsize ioctlSize;
+        if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize))
+        {
+            throw StreamRedirectionException();
+        }
+        return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
+#endif
     }
 }

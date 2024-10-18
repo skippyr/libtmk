@@ -213,6 +213,10 @@ namespace Tmk
         LightWhite
     };
 
+    class StreamRedirectionException final : std::exception
+    {
+    };
+
     class RgbColor final
     {
     private:
@@ -228,6 +232,20 @@ namespace Tmk
         void SetGreen(std::uint8_t green);
         std::uint8_t GetBlue() const;
         void SetBlue(std::uint8_t blue);
+    };
+
+    class Dimensions final
+    {
+    private:
+        std::uint16_t m_width;
+        std::uint16_t m_height;
+        std::uint32_t m_area;
+
+    public:
+        Dimensions(std::uint16_t width, std::uint16_t height);
+        std::uint16_t GetWidth() const;
+        std::uint16_t GetHeight() const;
+        std::uint32_t GetArea() const;
     };
 
     class Terminal final
@@ -356,6 +374,15 @@ namespace Tmk
             static void SetColor(AnsiColor color, Layer layer);
             static void SetColor(RgbColor color, Layer layer);
             static void ResetColors();
+        };
+
+        class Window final
+        {
+        private:
+            Window() = delete;
+
+        public:
+            static Dimensions GetDimensions();
         };
     };
 }
