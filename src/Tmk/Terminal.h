@@ -67,7 +67,7 @@ namespace Tmk
         /// <return>A boolean that states the stream is redirected.</summary>
         static bool IsErrorRedirected();
 
-        /// <summary>Flushes the output buffer, writing all data it contains.</summary>
+        /// <summary>Flushes the output buffer.</summary>
         static void FlushOutputBuffer();
 
         /// <summary>Formats and writes a string to the standard output stream.</summary>
@@ -148,6 +148,10 @@ namespace Tmk
         /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
         /// <return>The dimensions.</return>
         static Dimensions GetWindowDimensions();
+        /// <summary>Opens the alternate window.</summary>
+        static void OpenAlternateWindow();
+        /// <summary>Closes the alternate window.</summary>
+        static void CloseAlternateWindow();
     };
 
     /// <summary>Concatenates the two terminal font effects into a bitmask.</summary>

@@ -164,6 +164,16 @@ namespace Tmk
         }
     }
 
+    void Terminal::OpenAlternateWindow()
+    {
+        WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
+    }
+
+    void Terminal::CloseAlternateWindow()
+    {
+        WriteAnsiEscapeSequence("\x1b[?1049l");
+    }
+
     int operator|(FontEffect effectI, FontEffect effectII)
     {
         return static_cast<int>(effectI) | static_cast<int>(effectII);
