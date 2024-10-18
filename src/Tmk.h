@@ -232,19 +232,17 @@ namespace Tmk
     class CommandLineArguments final
     {
     private:
-        int m_totalArguments;
-        const char** m_utf8Arguments;
+        std::vector<std::string> m_utf8Arguments;
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
-        const char* utf16Arguments[];
+        std::vector<std::wstring> m_utf16Arguments;
 #endif
 
     public:
         CommandLineArguments(int totalMainArguments, const char** mainArguments);
-        ~CommandLineArguments();
         int GetTotalArguments() const;
-        std::vector<std::string> GetUtf8Arguments() const;
+        const std::vector<std::string>& GetUtf8Arguments() const;
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
-        std::vector<std::wstring> GetUtf16Arguments() const;
+        const std::vector<std::wstring>& GetUtf16Arguments() const;
 #endif
     };
 
