@@ -217,6 +217,37 @@ namespace Tmk
     {
     };
 
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+    class EncodingConverter final
+    {
+    private:
+        EncodingConverter() = delete;
+
+    public:
+        static std::string ConvertUtf16ToUtf8(const std::wstring& utf16String);
+        static std::wstring ConvertUtf8ToUtf16(const std::string& utf8String);
+    };
+#endif
+
+    class CommandLineArguments final
+    {
+    private:
+        int m_totalArguments;
+        const char** m_utf8Arguments;
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+        const char* utf16Arguments[];
+#endif
+
+    public:
+        CommandLineArguments(int totalMainArguments, const char** mainArguments);
+        ~CommandLineArguments();
+        int GetTotalArguments() const;
+        std::vector<std::string> GetUtf8Arguments() const;
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+        std::vector<std::wstring> GetUtf16Arguments() const;
+#endif
+    };
+
     class RgbColor final
     {
     private:
@@ -323,12 +354,12 @@ namespace Tmk
         private:
             WritableStream() = delete;
 
-        public:
             static std::ostream& GetCppOStream()
             {
                 return N == 1 ? std::cout : std::cerr;
             }
 
+        public:
             template <typename... Args>
             static void Write(std::string_view format, Args... arguments)
             {
