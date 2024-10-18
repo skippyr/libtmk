@@ -13,6 +13,41 @@
 
 namespace Tmk
 {
+    RgbColor::RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+        : m_red(red), m_green(green), m_blue(blue)
+    {
+    }
+
+    std::uint8_t RgbColor::GetRed() const
+    {
+        return m_red;
+    }
+
+    void RgbColor::SetRed(std::uint8_t red)
+    {
+        m_red = red;
+    }
+
+    std::uint8_t RgbColor::GetGreen() const
+    {
+        return m_green;
+    }
+
+    void RgbColor::SetGreen(std::uint8_t green)
+    {
+        m_green = green;
+    }
+
+    std::uint8_t RgbColor::GetBlue() const
+    {
+        return m_blue;
+    }
+
+    void RgbColor::SetBlue(std::uint8_t blue)
+    {
+        m_blue = blue;
+    }
+
     Terminal::StreamRedirectionCache::StreamRedirectionCache()
         : m_isInputRedirected(false), m_isOutputRedirected(false), m_isErrorRedirected(false)
     {
@@ -74,5 +109,20 @@ namespace Tmk
     void Terminal::Font::ResetWeight()
     {
         Driver::SendAnsiSequence("\x1b[22m");
+    }
+
+    void Terminal::Font::SetColor(AnsiColor color, Layer layer)
+    {
+        Driver::SendAnsiSequence("\x1b[{}8;5;{}m", (int)layer, (int)color);
+    }
+
+    void Terminal::Font::SetColor(RgbColor color, Layer layer)
+    {
+        Driver::SendAnsiSequence("\x1b[{}8;2;{};{};{}m", (int)layer, color.GetRed(), color.GetGreen(), color.GetBlue());
+    }
+
+    void Terminal::Font::ResetColors()
+    {
+        Driver::SendAnsiSequence("\x1b[39;49m");
     }
 }

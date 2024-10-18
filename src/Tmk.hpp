@@ -181,10 +181,53 @@
 
 namespace Tmk
 {
+    enum class Layer
+    {
+        Foreground = 3,
+        Background
+    };
+
     enum class FontWeight
     {
         Bold = 1,
         Dim
+    };
+
+    enum class AnsiColor
+    {
+        DarkBlack,
+        DarkRed,
+        DarkGreen,
+        DarkYellow,
+        DarkBlue,
+        DarkMagenta,
+        DarkCyan,
+        DarkWhite,
+        LightBlack,
+        LightRed,
+        LightGreen,
+        LightYellow,
+        LightBlue,
+        LightMagenta,
+        LightCyan,
+        LightWhite
+    };
+
+    class RgbColor final
+    {
+    private:
+        std::uint8_t m_red;
+        std::uint8_t m_green;
+        std::uint8_t m_blue;
+
+    public:
+        RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+        std::uint8_t GetRed() const;
+        void SetRed(std::uint8_t red);
+        std::uint8_t GetGreen() const;
+        void SetGreen(std::uint8_t green);
+        std::uint8_t GetBlue() const;
+        void SetBlue(std::uint8_t blue);
     };
 
     class Terminal final
@@ -304,6 +347,9 @@ namespace Tmk
         public:
             static void SetWeight(FontWeight weight);
             static void ResetWeight();
+            static void SetColor(AnsiColor color, Layer layer);
+            static void SetColor(RgbColor color, Layer layer);
+            static void ResetColors();
         };
     };
 }
