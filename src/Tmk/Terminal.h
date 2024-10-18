@@ -145,6 +145,9 @@ namespace Tmk
         static void SetFontEffects(int effects);
         /// <summary>Resets the font effects.</summary>
         static void ResetFontEffects();
+        /// <summary>Sets the visibility of the cursor.</summary>
+        /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
+        static void SetCursorVisible(bool isVisible);
         /// <summary>Sets the cursor shape.</summary>
         /// <param name="shape">The shape to be set.</param>
         /// <param name="shouldBlink">A boolean that states the cursor should blink.</param>
