@@ -89,12 +89,12 @@ namespace Tmk
 
     void Terminal::SetFontColor(AnsiColor color, Layer layer)
     {
-        WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", (int)layer, (int)color);
+        WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
     }
 
     void Terminal::SetFontColor(RgbColor color, Layer layer)
     {
-        WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", (int)layer, color.GetRed(), color.GetGreen(), color.GetBlue());
+        WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
     void Terminal::ResetFontColors()
@@ -104,7 +104,7 @@ namespace Tmk
 
     void Terminal::SetFontWeight(FontWeight weight)
     {
-        WriteAnsiEscapeSequence("\x1b[22;{}m", (int)weight);
+        WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
     }
 
     void Terminal::ResetFontWeight()
@@ -129,5 +129,37 @@ namespace Tmk
         }
         return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
 #endif
+    }
+
+    void Terminal::SetFontEffects(FontEffect effect)
+    {
+        SetFontEffects(static_cast<int>(effect));
+    }
+
+    void Terminal::SetFontEffects(int effects)
+    {
+        for (int offset = 3; offset < 10; ++offset)
+        {
+            if (effects & 1 << offset)
+            {
+                WriteAnsiEscapeSequence("\x1b[{}m", offset);
+            }
+        }
+    }
+
+    void Terminal::ResetFontEffects()
+    {
+        for (int offset = 23; offset < 30; ++offset)
+        {
+            if (offset != 26)
+            {
+                WriteAnsiEscapeSequence("\x1b[{}m", offset);
+            }
+        }
+    }
+
+    int operator|(FontEffect effectI, FontEffect effectII)
+    {
+        return static_cast<int>(effectI) | static_cast<int>(effectII);
     }
 }

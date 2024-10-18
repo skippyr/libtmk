@@ -2,6 +2,7 @@
 
 #include "AnsiColor.h"
 #include "Dimensions.h"
+#include "FontEffect.h"
 #include "FontWeight.h"
 #include "Layer.h"
 #include "RgbColor.h"
@@ -131,9 +132,23 @@ namespace Tmk
         static void SetFontWeight(FontWeight weight);
         /// <summary>Resets the font weight.</summary>
         static void ResetFontWeight();
+        /// <summary>Sets a font effect.</summary>
+        /// <param name="effect">The effect to be set.</param>
+        static void SetFontEffects(FontEffect effect);
+        /// <summary>Sets the font effect flagged in a bitmask.</summary>
+        /// <param name="effects">The effects to be set.</param>
+        static void SetFontEffects(int effects);
+        /// <summary>Resets the font effects.</summary>
+        static void ResetFontEffects();
         /// <summary>Gets the window dimensions.</summary>
         /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
         /// <return>The dimensions.</return>
         static Dimensions GetWindowDimensions();
     };
+
+    /// <summary>Concatenates the two terminal font effects into a bitmask.</summary>
+    /// <param name="effectI">The first effect.</param>
+    /// <param name="effectII">The second effect.</param>
+    /// <return>A bitmask containing the effects.</return>
+    int operator|(FontEffect effectI, FontEffect effectII);
 }
