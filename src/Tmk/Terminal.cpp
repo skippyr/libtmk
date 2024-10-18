@@ -4,7 +4,9 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <fcntl.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -78,6 +80,26 @@ namespace Tmk
     void Terminal::FlushOutputBuffer()
     {
         std::fflush(stdout);
+    }
+
+    void Terminal::ClearInputBuffer()
+    {
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+        struct termios attributes;
+        int flags = fcntl(STDIN_FILENO, F_GETFL);
+        tcgetattr(STDIN_FILENO, &attributes);
+        attributes.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+        while (std::getchar() != EOF)
+        {
+        }
+        attributes.c_lflag |= ICANON | ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        fcntl(STDIN_FILENO, F_SETFL, flags);
+#endif
     }
 
     void Terminal::WriteLine()
@@ -179,6 +201,11 @@ namespace Tmk
         WriteAnsiEscapeSequence("\x1b[0 q");
     }
 
+    void Terminal::ClearCursorLine()
+    {
+        WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
+    }
+
     void Terminal::OpenAlternateWindow()
     {
         WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
@@ -187,6 +214,11 @@ namespace Tmk
     void Terminal::CloseAlternateWindow()
     {
         WriteAnsiEscapeSequence("\x1b[?1049l");
+    }
+
+    void Terminal::RingBell()
+    {
+        WriteAnsiEscapeSequence("\7");
     }
 
     int operator|(FontEffect effectI, FontEffect effectII)

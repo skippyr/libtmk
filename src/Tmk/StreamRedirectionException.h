@@ -1,10 +1,10 @@
 #pragma once
 
-#include <exception>
+#include "Exception.h"
 
 namespace Tmk
 {
-    class StreamRedirectionException final : std::exception
+    class StreamRedirectionException final : public Exception
     {
     };
 }

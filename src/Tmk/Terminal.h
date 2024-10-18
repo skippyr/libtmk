@@ -70,6 +70,8 @@ namespace Tmk
 
         /// <summary>Flushes the output buffer.</summary>
         static void FlushOutputBuffer();
+        /// <summary>Clears the input buffer.</summary>
+        static void ClearInputBuffer();
 
         /// <summary>Formats and writes a string to the standard output stream.</summary>
         /// <tparam name="Args">A parameter pack containing the arguments to be formatted.</tparam>
@@ -154,6 +156,8 @@ namespace Tmk
         static void SetCursorShape(CursorShape shape, bool shouldBlink);
         /// <summary>Resets the cursor shape.</summary>
         static void ResetCursorShape();
+        /// <summary>Clears the cursor line.</summary>
+        static void ClearCursorLine();
         /// <summary>Gets the window dimensions.</summary>
         /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
         /// <return>The dimensions.</return>
@@ -162,6 +166,8 @@ namespace Tmk
         static void OpenAlternateWindow();
         /// <summary>Closes the alternate window.</summary>
         static void CloseAlternateWindow();
+        /// <summary>Rings the terminal bell.</summary>
+        static void RingBell();
     };
 
     /// <summary>Concatenates the two terminal font effects into a bitmask.</summary>

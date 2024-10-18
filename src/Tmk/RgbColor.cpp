@@ -6,6 +6,9 @@ namespace Tmk
     {
     }
 
+    RgbColor::RgbColor(std::uint32_t hex) {
+    }
+
     std::uint8_t RgbColor::GetRed() const
     {
         return m_red;

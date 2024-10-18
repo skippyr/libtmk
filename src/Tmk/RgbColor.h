@@ -21,6 +21,9 @@ namespace Tmk
         /// <param name="green">The green component of the color.</param>
         /// <param name="blue">The blue component of the color.</param>
         RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+        /// <summary>Creates an instance of the RGB class from a given hex color.</summary>
+        /// <param name="hex">The hex color</param>
+        RgbColor(std::uint32_t hex);
         /// <summary>Gets the red component of the color.</summary>
         /// <return>The component.</return>
         std::uint8_t GetRed() const;
