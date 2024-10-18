@@ -1,8 +1,8 @@
 #include "EncodingConverter.h"
 
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <memory>
 
-#if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <Windows.h>
 #endif
 

@@ -2,7 +2,9 @@
 
 #include "System.h"
 
+#if TMK_IS_OPERATING_SYSTEM_WINDOWs
 #include <string>
+#endif
 
 namespace Tmk
 {
