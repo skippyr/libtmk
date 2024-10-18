@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <Windows.h>
 #endif
 
