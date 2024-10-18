@@ -67,6 +67,9 @@ namespace Tmk
         /// <return>A boolean that states the stream is redirected.</summary>
         static bool IsErrorRedirected();
 
+        /// <summary>Flushes the output buffer, writing all data it contains.</summary>
+        static void FlushOutputBuffer();
+
         /// <summary>Formats and writes a string to the standard output stream.</summary>
         /// <tparam name="Args">A parameter pack containing the arguments to be formatted.</tparam>
         /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
@@ -100,6 +103,7 @@ namespace Tmk
         static void WriteError(std::string_view format, Args... arguments)
         {
             EnableFeatures();
+            FlushOutputBuffer();
             std::cerr << std::vformat(format, std::make_format_args(arguments...));
         }
 
@@ -124,7 +128,7 @@ namespace Tmk
         /// <summary>Sets an RGB color into a layer.</summary>
         /// <param name="color">The color to be applied.</param>
         /// <param name="layer">The layer to be applied.</param>
-        static void SetFontColor(RgbColor color, Layer layer);
+        static void SetFontColor(const RgbColor& color, Layer layer);
         /// <summary>Resets the font colors.</summary>
         static void ResetFontColors();
         /// <summary>Sets a font weight.</summary>

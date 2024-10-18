@@ -75,6 +75,11 @@ namespace Tmk
         return s_isErrorRedirected;
     }
 
+    void Terminal::FlushOutputBuffer()
+    {
+        std::fflush(stdout);
+    }
+
     void Terminal::WriteLine()
     {
         EnableFeatures();
@@ -84,6 +89,7 @@ namespace Tmk
     void Terminal::WriteErrorLine()
     {
         EnableFeatures();
+        FlushOutputBuffer();
         std::cerr << std::endl;
     }
 
@@ -92,7 +98,7 @@ namespace Tmk
         WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
     }
 
-    void Terminal::SetFontColor(RgbColor color, Layer layer)
+    void Terminal::SetFontColor(const RgbColor& color, Layer layer)
     {
         WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
     }

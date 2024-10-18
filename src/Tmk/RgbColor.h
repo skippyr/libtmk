@@ -9,26 +9,26 @@ namespace Tmk
     {
     private:
         /// <summary>The red component of the color.</summary>
-        uint8_t m_red;
+        std::uint8_t m_red;
         /// <summary>The green component of the color.</summary>
-        uint8_t m_green;
+        std::uint8_t m_green;
         /// <summary>The blue component of the color.</summary>
-        uint8_t m_blue;
+        std::uint8_t m_blue;
 
     public:
         /// <summary>Creates an instance of the RGB class with the given color components.</summary>
         /// <param name="name">The red component of the color.</param>
         /// <param name="green">The green component of the color.</param>
         /// <param name="blue">The blue component of the color.</param>
-        RgbColor(uint8_t red, uint8_t green, uint8_t blue);
+        RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
         /// <summary>Gets the red component of the color.</summary>
         /// <return>The component.</return>
-        uint8_t GetRed() const;
+        std::uint8_t GetRed() const;
         /// <summary>Gets the green component of the color.</summary>
         /// <return>The component.</return>
-        uint8_t GetGreen() const;
+        std::uint8_t GetGreen() const;
         /// <summary>Gets the blue component of the color.</summary>
         /// <return>The component.</return>
-        uint8_t GetBlue() const;
+        std::uint8_t GetBlue() const;
     };
 }
