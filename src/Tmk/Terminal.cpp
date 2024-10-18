@@ -84,4 +84,19 @@ namespace Tmk
         EnableFeatures();
         std::cerr << std::endl;
     }
+
+    void Terminal::SetFontColor(AnsiColor color, Layer layer)
+    {
+        WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", (int)layer, (int)color);
+    }
+
+    void Terminal::SetFontColor(RgbColor color, Layer layer)
+    {
+        WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", (int)layer, color.GetRed(), color.GetGreen(), color.GetBlue());
+    }
+
+    void Terminal::ResetFontColors()
+    {
+        WriteAnsiEscapeSequence("\x1b[39;49m");
+    }
 }

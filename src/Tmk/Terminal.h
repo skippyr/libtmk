@@ -1,5 +1,8 @@
 #pragma once
 
+#include "AnsiColor.h"
+#include "Layer.h"
+#include "RgbColor.h"
 #include "System.h"
 
 #include <iostream>
@@ -7,7 +10,7 @@
 namespace Tmk
 {
     /// <summary>Represents the terminal emulator.</summary>
-    class Terminal
+    class Terminal final
     {
     private:
         /// <summary>A boolean that states the terminal features have been enabled.</summary>
@@ -109,5 +112,16 @@ namespace Tmk
             WriteError(format, arguments...);
             std::cerr << std::endl;
         }
+
+        /// <summary>Sets an ANSI color into a layer.</summary>
+        /// <param name="color">The color to be applied.</param>
+        /// <param name="layer">The layer to be affected.</param>
+        static void SetFontColor(AnsiColor color, Layer layer);
+        /// <summary>Sets an RGB color into a layer.</summary>
+        /// <param name="color">The color to be applied.</param>
+        /// <param name="layer">The layer to be applied.</param>
+        static void SetFontColor(RgbColor color, Layer layer);
+        /// <summary>Resets the font colors.</summary>
+        static void ResetFontColors();
     };
 }
