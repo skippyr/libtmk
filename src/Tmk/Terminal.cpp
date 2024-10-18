@@ -102,6 +102,16 @@ namespace Tmk
         WriteAnsiEscapeSequence("\x1b[39;49m");
     }
 
+    void Terminal::SetFontWeight(FontWeight weight)
+    {
+        WriteAnsiEscapeSequence("\x1b[22;{}m", (int)weight);
+    }
+
+    void Terminal::ResetFontWeight()
+    {
+        WriteAnsiEscapeSequence("\x1b[22m");
+    }
+
     Dimensions Terminal::GetWindowDimensions()
     {
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS

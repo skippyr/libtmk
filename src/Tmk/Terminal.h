@@ -2,6 +2,7 @@
 
 #include "AnsiColor.h"
 #include "Dimensions.h"
+#include "FontWeight.h"
 #include "Layer.h"
 #include "RgbColor.h"
 #include "StreamRedirectionException.h"
@@ -125,6 +126,14 @@ namespace Tmk
         static void SetFontColor(RgbColor color, Layer layer);
         /// <summary>Resets the font colors.</summary>
         static void ResetFontColors();
+        /// <summary>Sets a font weight.</summary>
+        /// <param name="weight">The weight to be set.</param>
+        static void SetFontWeight(FontWeight weight);
+        /// <summary>Resets the font weight.</summary>
+        static void ResetFontWeight();
+        /// <summary>Gets the window dimensions.</summary>
+        /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
+        /// <return>The dimensions.</return>
         static Dimensions GetWindowDimensions();
     };
 }

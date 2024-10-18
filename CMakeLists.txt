@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 23)
 add_library(Tmk "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/AnsiColor.h"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/Dimensions.cpp"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/Dimensions.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/FontWeight.h"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/Layer.h"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/RgbColor.cpp"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/RgbColor.h"
