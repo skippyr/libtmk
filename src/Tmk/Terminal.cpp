@@ -72,4 +72,16 @@ namespace Tmk
         EnableFeatures();
         return s_isErrorRedirected;
     }
+
+    void Terminal::WriteLine()
+    {
+        EnableFeatures();
+        std::cout << std::endl;
+    }
+
+    void Terminal::WriteErrorLine()
+    {
+        EnableFeatures();
+        std::cerr << std::endl;
+    }
 }
