@@ -1,8 +1,10 @@
+AccessModifierOffset: -4
 AlwaysBreakTemplateDeclarations: true
 BasedOnStyle: Microsoft
 BreakAfterJavaFieldAnnotations: true
 ColumnLimit: 180
 FixNamespaceComments: false
 JavaScriptQuotes: Single
+NamespaceIndentation: All
 PointerAlignment: Left
 SpacesInContainerLiterals: false
