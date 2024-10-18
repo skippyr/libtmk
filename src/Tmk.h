@@ -324,6 +324,12 @@ namespace Tmk
                 Write(format, arguments...);
                 GetCppOStream() << std::endl;
             }
+
+            static void WriteLine()
+            {
+                Driver::EnableFeatures();
+                GetCppOStream() << std::endl;
+            }
         };
 
     public:
