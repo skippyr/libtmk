@@ -43,6 +43,7 @@ namespace Tmk
 
         /// <summary>Writes an ANSI escape sequence to the standard output or error streams.</summary>
         /// <tparam name="Args">A parameter pack containing the arguments to be formatted.</tparam>
+        /// <exception cref="StreamRedirectionException">Thrown when the standard output and error streams are redirected.</exception>
         /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
         /// <param name="...">The arguments to be formatted.</param>
         template <typename... Args>
@@ -55,6 +56,10 @@ namespace Tmk
             else if (!IsErrorRedirected())
             {
                 WriteError(format, arguments...);
+            }
+            else
+            {
+                throw StreamRedirectionException();
             }
         }
 
@@ -157,6 +162,10 @@ namespace Tmk
         static void SetCursorShape(CursorShape shape, bool isBlinking);
         /// <summary>Resets the cursor shape.</summary>
         static void ResetCursorShape();
+        /// <summary>Gets the cursor coordinate.</summary>
+        /// <exception cref="StreamRedirectionException">Thrown when all standard streams that could possible provide this data are redirected.</exception>
+        /// <return>The cursor coordinate.</return>
+        static Coordinate GetCursorCoordinate();
         /// <summary>Clears the cursor line.</summary>
         static void ClearCursorLine();
         /// <summary>Gets the window dimensions.</summary>

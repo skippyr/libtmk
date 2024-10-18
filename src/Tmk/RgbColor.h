@@ -22,6 +22,7 @@ namespace Tmk
         /// <param name="blue">The blue component of the color.</param>
         RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
         /// <summary>Creates an instance of the RGB class from a given hex color.</summary>
+        /// <exception cref="OutOfRangeException">Thrown when the color value exceeds 0xffffff.</exception>
         /// <param name="hex">The hex color</param>
         RgbColor(std::uint32_t hex);
         /// <summary>Gets the red component of the color.</summary>

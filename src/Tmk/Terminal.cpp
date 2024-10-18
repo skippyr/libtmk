@@ -117,27 +117,57 @@ namespace Tmk
 
     void Terminal::SetFontColor(AnsiColor color, Layer layer)
     {
-        WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::SetFontColor(const RgbColor& color, Layer layer)
     {
-        WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::ResetFontColors()
     {
-        WriteAnsiEscapeSequence("\x1b[39;49m");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[39;49m");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::SetFontWeight(FontWeight weight)
     {
-        WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::ResetFontWeight()
     {
-        WriteAnsiEscapeSequence("\x1b[22m");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[22m");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     Dimensions Terminal::GetWindowDimensions()
@@ -166,59 +196,145 @@ namespace Tmk
 
     void Terminal::SetFontEffects(int effects)
     {
-        for (int offset = 3; offset < 10; ++offset)
+        try
         {
-            if (effects & 1 << offset)
+            for (int offset = 3; offset < 10; ++offset)
             {
-                WriteAnsiEscapeSequence("\x1b[{}m", offset);
+                if (effects & 1 << offset)
+                {
+                    WriteAnsiEscapeSequence("\x1b[{}m", offset);
+                }
             }
+        }
+        catch (const StreamRedirectionException&)
+        {
         }
     }
 
     void Terminal::ResetFontEffects()
     {
-        for (int offset = 23; offset < 30; ++offset)
+        try
         {
-            if (offset != 26)
+            for (int offset = 23; offset < 30; ++offset)
             {
-                WriteAnsiEscapeSequence("\x1b[{}m", offset);
+                if (offset != 26)
+                {
+                    WriteAnsiEscapeSequence("\x1b[{}m", offset);
+                }
             }
+        }
+        catch (const StreamRedirectionException&)
+        {
         }
     }
 
     void Terminal::SetCursorVisible(bool isVisible)
     {
-        WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::SetCursorShape(CursorShape shape, bool isBlinking)
     {
-        WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::ResetCursorShape()
     {
-        WriteAnsiEscapeSequence("\x1b[0 q");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[0 q");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
+    }
+
+    Coordinate Terminal::GetCursorCoordinate()
+    {
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+        if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+        {
+            throw StreamRedirectionException();
+        }
+        return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left, bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Right);
+#else
+        ClearInputBuffer();
+        struct termios attributes;
+        WriteAnsiEscapeSequence("\x1b[6n");
+        if (tcgetattr(STDIN_FILENO, &attributes))
+        {
+            throw StreamRedirectionException();
+        }
+        unsigned short column;
+        unsigned short row;
+        attributes.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        int totalMatches = std::scanf("\x1b[%hu;%huR", &row, &column);
+        attributes.c_lflag |= ICANON | ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        if (totalMatches != 2)
+        {
+            throw StreamRedirectionException();
+        }
+        return Coordinate(column - 1, row - 1);
+#endif
     }
 
     void Terminal::ClearCursorLine()
     {
-        WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::OpenAlternateWindow()
     {
-        WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::CloseAlternateWindow()
     {
-        WriteAnsiEscapeSequence("\x1b[?1049l");
+        try
+        {
+            WriteAnsiEscapeSequence("\x1b[?1049l");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::RingBell()
     {
-        WriteAnsiEscapeSequence("\7");
+        try
+        {
+            WriteAnsiEscapeSequence("\7");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     int operator|(FontEffect effectI, FontEffect effectII)
