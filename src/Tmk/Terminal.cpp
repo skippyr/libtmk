@@ -2,7 +2,9 @@
 
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <Windows.h>
+#include <io.h>
 #else
+#include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
@@ -98,5 +100,24 @@ namespace Tmk
     void Terminal::ResetFontColors()
     {
         WriteAnsiEscapeSequence("\x1b[39;49m");
+    }
+
+    Dimensions Terminal::GetWindowDimensions()
+    {
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+        if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+        {
+            throw StreamRedirectionException();
+        }
+        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
+#else
+        struct winsize ioctlSize;
+        if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize))
+        {
+            throw StreamRedirectionException();
+        }
+        return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
+#endif
     }
 }

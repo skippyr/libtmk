@@ -1,8 +1,10 @@
 #pragma once
 
 #include "AnsiColor.h"
+#include "Dimensions.h"
 #include "Layer.h"
 #include "RgbColor.h"
+#include "StreamRedirectionException.h"
 #include "System.h"
 
 #include <iostream>
@@ -123,5 +125,6 @@ namespace Tmk
         static void SetFontColor(RgbColor color, Layer layer);
         /// <summary>Resets the font colors.</summary>
         static void ResetFontColors();
+        static Dimensions GetWindowDimensions();
     };
 }
