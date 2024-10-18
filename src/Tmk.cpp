@@ -1,6 +1,7 @@
 #include "Tmk.hpp"
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <Windows.h>
+#include <io.h>
 #else
 #include <unistd.h>
 #endif
@@ -58,7 +59,7 @@ namespace Tmk
     {
     }
 
-    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo)
+    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo) const
     {
         return !fileNo ? m_isInputRedirected : fileNo == 1 ? m_isOutputRedirected : m_isErrorRedirected;
     }

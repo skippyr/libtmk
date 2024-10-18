@@ -245,7 +245,7 @@ namespace Tmk
         public:
             StreamRedirectionCache();
             StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected);
-            bool IsRedirected(int fileNo);
+            bool IsRedirected(int fileNo) const;
         };
 
         class Driver final

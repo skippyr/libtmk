@@ -4,5 +4,5 @@ BreakAfterJavaFieldAnnotations: true
 ColumnLimit: 180
 FixNamespaceComments: false
 JavaScriptQuotes: Single
-PointerAlignment: Middle
+PointerAlignment: Left
 SpacesInContainerLiterals: false
