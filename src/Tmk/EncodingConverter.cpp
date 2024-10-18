@@ -1,5 +1,11 @@
 #include "EncodingConverter.h"
 
+#include <memory>
+
+#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+#include <Windows.h>
+#endif
+
 namespace Tmk
 {
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
