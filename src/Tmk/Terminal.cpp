@@ -164,6 +164,16 @@ namespace Tmk
         }
     }
 
+    void Terminal::SetCursorShape(CursorShape shape, bool shouldBlink)
+    {
+        WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(shouldBlink));
+    }
+
+    void Terminal::ResetCursorShape()
+    {
+        WriteAnsiEscapeSequence("\x1b[0 q");
+    }
+
     void Terminal::OpenAlternateWindow()
     {
         WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");

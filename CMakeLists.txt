@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(Tmk)
 set(CMAKE_CXX_STANDARD 23)
 add_library(Tmk "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/AnsiColor.h"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/CursorShape.h"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/Dimensions.cpp"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/Dimensions.h"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmk/FontEffect.h"

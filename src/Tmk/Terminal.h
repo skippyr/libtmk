@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AnsiColor.h"
+#include "CursorShape.h"
 #include "Dimensions.h"
 #include "FontEffect.h"
 #include "FontWeight.h"
@@ -144,6 +145,12 @@ namespace Tmk
         static void SetFontEffects(int effects);
         /// <summary>Resets the font effects.</summary>
         static void ResetFontEffects();
+        /// <summary>Sets the cursor shape.</summary>
+        /// <param name="shape">The shape to be set.</param>
+        /// <param name="shouldBlink">A boolean that states the cursor should blink.</param>
+        static void SetCursorShape(CursorShape shape, bool shouldBlink);
+        /// <summary>Resets the cursor shape.</summary>
+        static void ResetCursorShape();
         /// <summary>Gets the window dimensions.</summary>
         /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
         /// <return>The dimensions.</return>
