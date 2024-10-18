@@ -25,13 +25,13 @@ namespace Tmk
         /// <param name="hex">The hex color</param>
         RgbColor(std::uint32_t hex);
         /// <summary>Gets the red component of the color.</summary>
-        /// <return>The component.</return>
+        /// <return>The red component of the color.</return>
         std::uint8_t GetRed() const;
         /// <summary>Gets the green component of the color.</summary>
-        /// <return>The component.</return>
+        /// <return>The green component of the color.</return>
         std::uint8_t GetGreen() const;
         /// <summary>Gets the blue component of the color.</summary>
-        /// <return>The component.</return>
+        /// <return>The blue component of the color.</return>
         std::uint8_t GetBlue() const;
     };
 }

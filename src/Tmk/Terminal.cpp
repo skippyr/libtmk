@@ -191,9 +191,9 @@ namespace Tmk
         WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
     }
 
-    void Terminal::SetCursorShape(CursorShape shape, bool shouldBlink)
+    void Terminal::SetCursorShape(CursorShape shape, bool isBlinking)
     {
-        WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(shouldBlink));
+        WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
     }
 
     void Terminal::ResetCursorShape()

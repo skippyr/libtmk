@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AnsiColor.h"
+#include "Coordinate.h"
 #include "CursorShape.h"
 #include "Dimensions.h"
 #include "FontEffect.h"
@@ -40,8 +41,8 @@ namespace Tmk
         /// <summary>Enables the required terminal features.</summary>
         static void EnableFeatures();
 
-        /// <summary>Writes an ANSI escape sequence to the standard output or error streams.
-        /// <tparam name="Args">A parameter pack containing the arguments to be formatted.</param>
+        /// <summary>Writes an ANSI escape sequence to the standard output or error streams.</summary>
+        /// <tparam name="Args">A parameter pack containing the arguments to be formatted.</tparam>
         /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
         /// <param name="...">The arguments to be formatted.</param>
         template <typename... Args>
@@ -59,13 +60,13 @@ namespace Tmk
 
     public:
         /// <summary>Checks if the standard input stream is redirected.</summary>
-        /// <return>A boolean that states the stream is redirected.</summary>
+        /// <return>A boolean that states the standard input stream is redirected.</summary>
         static bool IsInputRedirected();
         /// <summary>Checks if the standard output stream is redirected.</summary>
-        /// <return>A boolean that states the stream is redirected.</summary>
+        /// <return>A boolean that states the standard output stream is redirected.</summary>
         static bool IsOutputRedirected();
         /// <summary>Checks if the standard error stream is redirected.</summary>
-        /// <return>A boolean that states the stream is redirected.</summary>
+        /// <return>A boolean that states the standard error stream is redirected.</summary>
         static bool IsErrorRedirected();
 
         /// <summary>Flushes the output buffer.</summary>
@@ -143,7 +144,7 @@ namespace Tmk
         /// <param name="effect">The effect to be set.</param>
         static void SetFontEffects(FontEffect effect);
         /// <summary>Sets the font effect flagged in a bitmask.</summary>
-        /// <param name="effects">The effects to be set.</param>
+        /// <param name="effects">A bitmask containing the effects to be set.</param>
         static void SetFontEffects(int effects);
         /// <summary>Resets the font effects.</summary>
         static void ResetFontEffects();
@@ -152,21 +153,21 @@ namespace Tmk
         static void SetCursorVisible(bool isVisible);
         /// <summary>Sets the cursor shape.</summary>
         /// <param name="shape">The shape to be set.</param>
-        /// <param name="shouldBlink">A boolean that states the cursor should blink.</param>
-        static void SetCursorShape(CursorShape shape, bool shouldBlink);
+        /// <param name="isBlinking">A boolean that states the cursor should blink.</param>
+        static void SetCursorShape(CursorShape shape, bool isBlinking);
         /// <summary>Resets the cursor shape.</summary>
         static void ResetCursorShape();
         /// <summary>Clears the cursor line.</summary>
         static void ClearCursorLine();
         /// <summary>Gets the window dimensions.</summary>
-        /// <exception cref="StreamRedirectionException">Thrown when the standard streams are redirected.</exception>
-        /// <return>The dimensions.</return>
+        /// <exception cref="StreamRedirectionException">Thrown when all standard streams that could possible provide this data are redirected.</exception>
+        /// <return>The window dimensions.</return>
         static Dimensions GetWindowDimensions();
         /// <summary>Opens the alternate window.</summary>
         static void OpenAlternateWindow();
         /// <summary>Closes the alternate window.</summary>
         static void CloseAlternateWindow();
-        /// <summary>Rings the terminal bell.</summary>
+        /// <summary>Rings the bell.</summary>
         static void RingBell();
     };
 
