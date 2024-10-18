@@ -10,7 +10,6 @@ namespace Tmk
     class CommandLineArguments final
     {
     private:
-        int totalArguments;
         std::vector<std::string> m_utf8Arguments;
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
         std::vector<std::wstring> m_utf16Arguments;
@@ -20,7 +19,7 @@ namespace Tmk
 
     public:
         CommandLineArguments(int totalMainArguments, const char** mainArguments);
-        int GetTotalArguments() const;
+        size_t GetTotalArguments() const;
         const std::vector<std::string>& GetUtf8Arguments() const;
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
         const std::vector<std::wstring>& GetUtf16Arguments() const;

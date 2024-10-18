@@ -2,7 +2,7 @@
 
 #include "System.h"
 
-#if TMK_IS_OPERATING_SYSTEM_WINDOWs
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
 #include <string>
 #endif
 
