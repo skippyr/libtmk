@@ -1,7 +1,7 @@
 <p align="center">
   <img alt="" src="assets/ornament.png" width=1020 />
 </p>
-<h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
+<h1 align="center">≥v≥v&ensp;Tmk&ensp;≥v≥v</h1>
 <p align="center">Terminal Manipulation Kit</p>
 <p align="center">
   <img alt="" src="https://img.shields.io/github/license/skippyr/libtmk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
@@ -15,9 +15,7 @@
 
 ## ❡ About
 
-A simple C99 terminal manipulation library for C/C++ with features to manipulate terminal properties, styles and key readings targetting UTF-8 encoding. It is available for Windows, Linux and MacOS.
-
-Designed to be an alternative to curses-like libraries, it offers a solid base for creating general purpose terminal based softwares, while leaving room to full-feature libraries to be built upon for more specific use cases.
+A bundle containing a C++23 terminal manipulation library and some applications to debug terminal features.
 
 ## ❡ Install
 

@@ -1,183 +1,182 @@
 #include <iostream>
-#include <format>
 
 #if defined(_WIN32)
 /// <summary>A string that contains the name of the operating system in use.</summary>
-#define Tmk_OPERATING_SYSTEM "Windows"
+#define TMK_OPERATING_SYSTEM_NAME "Windows"
 /// <summary>A boolean that states the operating system in use is Windows.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_WINDOWS 1
+#define TMK_IS_OPERATING_SYSTEM_WINDOWS 1
 /// <summary>A boolean that states the operating system in use is Linux.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_LINUX 0
+#define TMK_IS_OPERATING_SYSTEM_LINUX 0
 /// <summary>A boolean that states the operating system in use is MacOS.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_MACOS 0
+#define TMK_IS_OPERATING_SYSTEM_MACOS 0
 /// <summary>A boolean that states the operating system is unknown.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
+#define TMK_IS_OPERATING_SYSTEM_UNKNOWN 0
 #if defined(_M_ARM)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "ARM32"
+#define TMK_CPU_ARCHITECTURE_NAME "ARM32"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 1
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 1
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(_M_ARM64)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "ARM64"
+#define TMK_CPU_ARCHITECTURE_NAME "ARM64"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 1
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 1
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(_WIN64)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "x86_64"
+#define TMK_CPU_ARCHITECTURE_NAME "x86_64"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 1
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 1
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #else
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "x86"
+#define TMK_CPU_ARCHITECTURE_NAME "x86"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 1
+#define TMK_IS_CPU_ARCHITECTURE_X86 1
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #endif
 #else
 #if defined(__linux__)
 /// <summary>A string that contains the name of the operating system in use.</summary>
-#define Tmk_OPERATING_SYSTEM "Linux"
+#define TMK_OPERATING_SYSTEM_NAME "Linux"
 /// <summary>A boolean that states the operating system in use is Windows.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_WINDOWS 0
+#define TMK_IS_OPERATING_SYSTEM_WINDOWS 0
 /// <summary>A boolean that states the operating system in use is Linux.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_LINUX 1
+#define TMK_IS_OPERATING_SYSTEM_LINUX 1
 /// <summary>A boolean that states the operating system in use is MacOS.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_MACOS 0
+#define TMK_IS_OPERATING_SYSTEM_MACOS 0
 /// <summary>A boolean that states the operating system is unknown.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
+#define TMK_IS_OPERATING_SYSTEM_UNKNOWN 0
 #elif defined(__APPLE__)
 /// <summary>A string that contains the name of the operating system in use.</summary>
-#define Tmk_OPERATING_SYSTEM "MacOS"
+#define TMK_OPERATING_SYSTEM_NAME "MacOS"
 /// <summary>A boolean that states the operating system in use is Windows.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_WINDOWS 0
+#define TMK_IS_OPERATING_SYSTEM_WINDOWS 0
 /// <summary>A boolean that states the operating system in use is Linux.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_LINUX 0
+#define TMK_IS_OPERATING_SYSTEM_LINUX 0
 /// <summary>A boolean that states the operating system in use is MacOS.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_MACOS 1
+#define TMK_IS_OPERATING_SYSTEM_MACOS 1
 /// <summary>A boolean that states the operating system is unknown.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_UNKNOWN 0
+#define TMK_IS_OPERATING_SYSTEM_UNKNOWN 0
 #else
 /// <summary>A string that contains the name of the operating system in use.</summary>
-#define Tmk_OPERATING_SYSTEM "Unknown Operating System"
+#define TMK_OPERATING_SYSTEM_NAME "Unknown Operating System"
 /// <summary>A boolean that states the operating system in use is Windows.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_WINDOWS 0
+#define TMK_IS_OPERATING_SYSTEM_WINDOWS 0
 /// <summary>A boolean that states the operating system in use is Linux.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_LINUX 0
+#define TMK_IS_OPERATING_SYSTEM_LINUX 0
 /// <summary>A boolean that states the operating system in use is MacOS.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_MACOS 0
+#define TMK_IS_OPERATING_SYSTEM_MACOS 0
 /// <summary>A boolean that states the operating system is unknown.</summary>
-#define Tmk_IS_OPERATING_SYSTEM_UNKNOWN 1
+#define TMK_IS_OPERATING_SYSTEM_UNKNOWN 1
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "Unknown CPU Architecture"
+#define TMK_CPU_ARCHITECTURE_NAME "Unknown CPU Architecture"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 1
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 1
 #endif
 #if defined(__linux__) || defined(__APPLE__)
 #if defined(__arm__)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "ARM32"
+#define TMK_CPU_ARCHITECTURE_NAME "ARM32"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 1
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 1
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__aarch64__)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "ARM64"
+#define TMK_CPU_ARCHITECTURE_NAME "ARM64"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 1
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 1
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__x86_64__)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "x86_64"
+#define TMK_CPU_ARCHITECTURE_NAME "x86_64"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 0
+#define TMK_IS_CPU_ARCHITECTURE_X86 0
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 1
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 1
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #elif defined(__i386__)
 /// <summary>A string that contains the name of the CPU architecture in use.</summary>
-#define Tmk_CPU_ARCHITECTURE "x86"
+#define TMK_CPU_ARCHITECTURE_NAME "x86"
 /// <summary>A boolean that states the CPU architecture is ARM32.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM32 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM32 0
 /// <summary>A boolean that states the CPU architecture is ARM64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_ARM64 0
+#define TMK_IS_CPU_ARCHITECTURE_ARM64 0
 /// <summary>A boolean that states the CPU architecture is x86.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86 1
+#define TMK_IS_CPU_ARCHITECTURE_X86 1
 /// <summary>A boolean that states the CPU architecture is x86_64.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_X86_64 0
+#define TMK_IS_CPU_ARCHITECTURE_X86_64 0
 /// <summary>A boolean that states the CPU architecture is unknown.</summary>
-#define Tmk_IS_CPU_ARCHITECTURE_UNKNOWN 0
+#define TMK_IS_CPU_ARCHITECTURE_UNKNOWN 0
 #endif
 #endif
 #endif
 #if Tmk_IS_OPERATING_SYSTEM_WINDOWS
 /// <summary>The minimum exit code accepted by the operating system.</summary>
-#define Tmk_MINIMUM_EXIT_CODE -2147483647
+#define TMK_MINIMUM_EXIT_CODE -2147483647
 /// <summary>The minimum exit code accepted by the operating system.</summary>
-#define Tmk_MAXIMUM_EXIT_CODE 2147483647
+#define TMK_MAXIMUM_EXIT_CODE 2147483647
 #else
 /// <summary>The minimum exit code accepted by the operating system.</summary>
-#define Tmk_MINIMUM_EXIT_CODE 0
+#define TMK_MINIMUM_EXIT_CODE 0
 /// <summary>The minimum exit code accepted by the operating system.</summary>
-#define Tmk_MAXIMUM_EXIT_CODE 255
+#define TMK_MAXIMUM_EXIT_CODE 255
 #endif
 
 namespace Tmk
@@ -195,20 +194,27 @@ namespace Tmk
             bool m_isErrorRedirected;
 
         public:
+            StreamRedirectionCache();
             StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected);
-            bool IsRedirected(int fileNo) const;
+            bool IsRedirected(int fileNo);
         };
 
-        class EnvironmentManager final
+        class Driver final
         {
         private:
-            static StreamRedirectionCache s_redirectionCache;
+            Driver() = delete;
 
-            EnvironmentManager() = delete;
-        
+            static bool m_hasEnabledFeatures;
+            static StreamRedirectionCache m_redirectionCache;
+
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+            static void SetUtf8Encoding();
+            static void EnableVirtualTerminalProcessing();
+#endif
+
         public:
-            static void InitRedirectionCache();
-            static void Prepare();
+            static void EnableFeatures();
+            static StreamRedirectionCache& GetStreamRedirectionCache();
         };
 
         template <int N>
@@ -221,6 +227,12 @@ namespace Tmk
             static int GetFileNo()
             {
                 return N;
+            }
+
+            static bool IsRedirected()
+            {
+                Driver::EnableFeatures();
+                return Driver::GetStreamRedirectionCache().IsRedirected(GetFileNo());
             }
         };
 
@@ -236,13 +248,10 @@ namespace Tmk
                 return N == 1 ? std::cout : std::cerr;
             }
 
-            static void IsRedirected()
-            {
-            }
-
             template <typename... Args>
             static void Write(std::string_view format, Args... arguments)
             {
+                Driver::EnableFeatures();
                 GetCppOStream() << std::vformat(format, std::make_format_args(arguments...));
             }
 
@@ -255,6 +264,10 @@ namespace Tmk
         };
 
     public:
+        class Input final : public Stream<0>
+        {
+        };
+
         class Output final : public WritableStream<1>
         {
         };
