@@ -1,8 +1,8 @@
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
 AlwaysBreakTemplateDeclarations: true
-BasedOnStyle: Microsoft
+BasedOnStyle: LLVM
 BreakAfterJavaFieldAnnotations: true
-ColumnLimit: 180
 FixNamespaceComments: false
 JavaScriptQuotes: Single
-PointerAlignment: Middle
 SpacesInContainerLiterals: false
