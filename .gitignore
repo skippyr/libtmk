@@ -5,9 +5,11 @@
 *.tmp
 *.log
 
-# Build Directories
+# Project Related Directories
 build
 cmake-build-*
+docs
+libs
 out
 
 # MacOS Files
