@@ -212,6 +212,10 @@ namespace Tmk
         /// </summary>
         class Input final : public Stream<0>
         {
+            /// <summary>
+            /// Clears cached key events that are inside the input buffer.
+            /// </summary>
+            static void ClearCachedEvents();
         };
 
         /// <summary>
@@ -219,6 +223,11 @@ namespace Tmk
         /// </summary>
         class Output final : public WritableStream<1>
         {
+            public:
+            /// <summary>
+            /// Flushes the contents that are inside of the output buffer.
+            /// </summary>
+            static void FlushBuffer();
         };
 
         /// <summary>
@@ -326,6 +335,10 @@ namespace Tmk
             /// </summary>
             /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
             static void SetVisible(bool isVisible);
+            /// <summary>
+            /// Clears the line the cursor is on.
+            /// </summary>
+            static void ClearLine();
         };
 
         /// <summary>

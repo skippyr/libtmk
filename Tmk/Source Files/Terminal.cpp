@@ -4,7 +4,9 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <fcntl.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -66,6 +68,31 @@ namespace Tmk
         EnableVirtualTerminalProcessing();
 #endif
         s_streamRedirectionCache = StreamRedirectionCache(!TMK_ISATTY(0), !TMK_ISATTY(1), !TMK_ISATTY(2));
+    }
+
+    void Terminal::Input::ClearCachedEvents()
+    {
+#if defined(_WIN32)
+        FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+        struct termios attributes;
+        int flags = fcntl(STDIN_FILENO, F_GETFL);
+        tcgetattr(STDIN_FILENO, &attributes);
+        attributes.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+        while (std::getchar() != EOF)
+        {
+        }
+        attributes.c_lflag |= ICANON | ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+        fcntl(STDIN_FILENO, F_SETFL, flags);
+#endif
+    }
+
+    void Terminal::Output::FlushBuffer()
+    {
+        std::fflush(stdout);
     }
 
     void Terminal::Font::SetColor(AnsiColor color, Layer layer)
@@ -234,6 +261,11 @@ namespace Tmk
         catch (const StreamRedirectionException&)
         {
         }
+    }
+
+    void Terminal::Cursor::ClearLine()
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
     }
 
     void Terminal::Bell::Ring()
