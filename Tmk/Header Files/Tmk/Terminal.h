@@ -276,6 +276,14 @@ namespace Tmk
             /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
             /// <return>The dimensions of the window.</return>
             static Dimensions GetDimensions();
+            /// <summary>
+            /// Opens the alternate window.
+            /// </summary>
+            static void OpenAlternate();
+            /// <summary>
+            /// Closes the alternate window.
+            /// </summary>
+            static void CloseAlternate();
         };
     };
 }

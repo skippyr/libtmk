@@ -141,4 +141,26 @@ namespace Tmk
         return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
 #endif
     }
+
+    void Terminal::Window::OpenAlternate()
+    {
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
+    }
+
+    void Terminal::Window::CloseAlternate()
+    {
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[?1049l");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
+    }
 }
