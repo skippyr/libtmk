@@ -27,7 +27,7 @@ namespace Tmk
 #endif
 
 #if defined(_WIN32)
-    MultiEncodedString::MultiEncodedString(const std::string& utf8String) : m_utf8String(utf8String), m_utf16String(ConvertUtf8ToUtf16(utf16String))
+    MultiEncodedString::MultiEncodedString(const std::string& utf8String) : m_utf8String(utf8String), m_utf16String(ConvertUtf8ToUtf16(utf8String))
 #else
     MultiEncodedString::MultiEncodedString(const std::string& utf8String) : m_utf8String(utf8String)
 #endif
@@ -44,7 +44,7 @@ namespace Tmk
     {
         return m_utf8String;
     }
-    
+
 #if defined(_WIN32)
     const std::wstring& MultiEncodedString::GetUtf16String()
     {
