@@ -166,16 +166,34 @@ namespace Tmk
 
     void Terminal::Cursor::SetShape(CursorShape shape, bool isBlinking)
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Cursor::ResetShape()
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[0 q");
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[0 q");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Cursor::SetVisible(bool isVisible)
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 }
