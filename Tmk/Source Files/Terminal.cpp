@@ -130,23 +130,35 @@ namespace Tmk
 
     void Terminal::Font::SetEffects(int effects)
     {
-        for (int effect = 3; effect < 10; ++effect)
+        try
         {
-            if (effects & 1 << effect)
+            for (int effect = 3; effect < 10; ++effect)
             {
-                Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+                if (effects & 1 << effect)
+                {
+                    Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+                }
             }
+        }
+        catch (const StreamRedirectionException&)
+        {
         }
     }
 
     void Terminal::Font::ResetEffects()
     {
-        for (int effect = 23; effect < 30; ++effect)
+        try
         {
-            if (effect != 26)
+            for (int effect = 23; effect < 30; ++effect)
             {
-                Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+                if (effect != 26)
+                {
+                    Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+                }
             }
+        }
+        catch (const StreamRedirectionException&)
+        {
         }
     }
 
