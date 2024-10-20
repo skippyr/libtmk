@@ -70,27 +70,57 @@ namespace Tmk
 
     void Terminal::Font::SetColor(AnsiColor color, Layer layer)
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Font::SetColor(RgbColor color, Layer layer)
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Font::ResetColors()
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Font::SetWeight(FontWeight weight)
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Font::ResetWeight()
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[22m");
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[22m");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     Tmk::Dimensions Terminal::Window::GetDimensions()
