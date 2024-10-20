@@ -6,12 +6,6 @@ project (Tmk VERSION 17.0.0
 
 set (CMAKE_CXX_STANDARD 20)
 file (GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Source Files/*.cpp")
-message ("Adding source files to Tmk:")
-
-foreach (file ${SOURCE_FILES})
-    message("    - ${file}")
-endforeach ()
 
 add_library (Tmk ${SOURCE_FILES})
-message ("Adding header files directory to Tmk: \"${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Header Files\"")
 target_include_directories (Tmk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Header Files")

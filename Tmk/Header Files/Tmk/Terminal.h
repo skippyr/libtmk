@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Tmk/System.h>
+
 #include <iostream>
 
 namespace Tmk
@@ -11,6 +13,80 @@ namespace Tmk
     {
     private:
         Terminal() = delete;
+
+        /// <summary>
+        /// Represents a cache of the stream redirection statuses.
+        /// </summary>
+        class StreamRedirectionCache final
+        {
+        private:
+            /// <summary>
+            /// A boolean that states the input stream is being redirected.
+            /// </summary>
+            bool m_isInputRedirected;
+            /// <summary>
+            /// A boolean that states the output stream is being redirected.
+            /// </summary>
+            bool m_isOutputRedirected;
+            /// <summary>
+            /// A boolean that states the error stream is being redirected.
+            /// </summary>
+            bool m_isErrorRedirected;
+
+        public:
+            /// <summary>
+            /// Creates a new instance of the StreamRedirectionCache class with all streams being considered directed.
+            /// </summary>
+            StreamRedirectionCache();
+            /// <summary>
+            /// Creates a new instance of the StreamRedirectionCache class with the given statuses.
+            /// </summary>
+            /// <param name="isInputRedirected">A boolean that states the input stream is being redirected.</param>
+            /// <param name="isOutputRedirected">A boolean that states the output stream is being redirected.</param>
+            /// <param name="isErrorRedirected">A boolean that states the error stream is being redirected.</param>
+            StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected);
+            /// <summary>
+            /// Checks if a stream is being redirected.
+            /// </summary>
+            /// <param name="fileNo">The file number related to the stream.</param>
+            /// <return>A boolean that states the stream is being redirected.</return>
+            bool IsRedirected(int fileNo);
+        };
+
+        /// <summary>
+        /// Represents the terminal driver.
+        /// </summary>
+        class Driver final
+        {
+        private:
+            /// <summary>
+            /// A cache of the stream redirection statuses.
+            /// </summary>
+            static StreamRedirectionCache s_streamRedirectionCache;
+            /// <summary>
+            /// A boolean that states the driver has enabled the terminal features.
+            /// </summary>
+            static bool s_hasEnabledFeatures;
+
+            Driver() = delete;
+
+#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+            /// <summary>
+            /// Sets UTF-8 as the terminal output encoding.
+            /// </summary>
+            static void SetUtf8Encoding();
+            /// <summary>
+            /// Enables the parse of ANSI escape sequences by setting the ENABLE_VIRTUAL_TERMINAL_PROCESSING flag.
+            /// </summary>
+            static void EnableVirtualTerminalProcessing();
+#endif
+
+        public:
+            /// <summary>
+            /// Enables the terminal features.
+            /// </summary>
+            static void EnableFeatures();
+        };
 
         /// <summary>
         /// Represents a terminal stream.
@@ -58,7 +134,17 @@ namespace Tmk
             template <typename... Args>
             static void Write(std::string_view format, Args... arguments)
             {
+                Driver::EnableFeatures();
                 GetCppStream() << std::vformat(format, std::make_format_args(arguments...));
+            }
+
+            /// <summary>
+            /// Writes a newline to the stream.
+            /// </summary>
+            static void WriteLine()
+            {
+                Driver::EnableFeatures();
+                GetCppStream() << std::endl;
             }
 
             /// <summary>
