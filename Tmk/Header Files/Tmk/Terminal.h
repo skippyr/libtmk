@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Tmk/AnsiColor.h>
+#include <Tmk/Layer.h>
+#include <Tmk/StreamRedirectionException.h>
 #include <Tmk/System.h>
 
 #include <iostream>
@@ -50,7 +53,7 @@ namespace Tmk
             /// </summary>
             /// <param name="fileNo">The file number related to the stream.</param>
             /// <return>A boolean that states the stream is being redirected.</return>
-            bool IsRedirected(int fileNo);
+            bool IsRedirected(int fileNo) const;
         };
 
         /// <summary>
@@ -83,9 +86,37 @@ namespace Tmk
 
         public:
             /// <summary>
+            /// Gets the stream redirection cache.
+            /// </summary>
+            /// <return>The stream redirection cache.</return>
+            static const StreamRedirectionCache& GetStreamRedirectionCache();
+            /// <summary>
             /// Enables the terminal features.
             /// </summary>
             static void EnableFeatures();
+            /// <summary>
+            /// Formats and writes an ANSI escape sequence to the terminal output or error streams.
+            /// </summary>
+            /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
+            /// <param name="arguments">The arguments to be formatted.</param>
+            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
+            /// <exception cref="StreamRedirectionException">Thrown when both streams are redirected.</exception>
+            template <typename... Args>
+            static void WriteAnsiEscapeSequence(std::string_view format, Args... arguments)
+            {
+                if (!Output::IsRedirected())
+                {
+                    Output::Write(format, arguments...);
+                }
+                else if (!Error::IsRedirected())
+                {
+                    Error::Write(format, arguments...);
+                }
+                else
+                {
+                    throw new StreamRedirectionException("could not write ANSI escape sequence due to the terminal output and error streams being redirected.");
+                }
+            }
         };
 
         /// <summary>
@@ -106,6 +137,15 @@ namespace Tmk
             {
                 return N;
             }
+
+            /// <summary>
+            /// Checks if the stream is redirected.
+            /// </summary>
+            /// <return>A boolean that states the stream is redirected.</return>
+            static bool IsRedirected()
+            {
+                return Driver::GetStreamRedirectionCache().IsRedirected(GetFileNo());
+            }
         };
 
         /// <summary>
@@ -113,7 +153,7 @@ namespace Tmk
         /// </summary>
         /// <typeparam name="N">The file number related to the stream.</typeparam>
         template <int N>
-        class WritableStream
+        class WritableStream : public Stream<N>
         {
         private:
             /// <summary>
@@ -181,6 +221,27 @@ namespace Tmk
         /// </summary>
         class Error final : public WritableStream<2>
         {
+        };
+
+        /// <summary>
+        /// Represents the terminal font.
+        /// </summary>
+        class Font final
+        {
+        private:
+            Font() = delete;
+
+        public:
+            /// <summary>
+            /// Sets an ANSI color to a terminal layer.
+            /// </summary>
+            /// <param name="color">The color to be applied.</param>
+            /// <param name="layer">The layer to be affected.</param>
+            static void SetColor(AnsiColor color, Layer layer);
+            /// <summary>
+            /// Resets the terminal font colors.
+            /// </summary>
+            static void ResetColors();
         };
     };
 }

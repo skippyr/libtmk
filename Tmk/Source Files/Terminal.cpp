@@ -24,7 +24,7 @@ namespace Tmk
     {
     }
 
-    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo)
+    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo) const
     {
         return !fileNo ? m_isInputRedirected : fileNo == 1 ? m_isOutputRedirected : m_isErrorRedirected;
     }
@@ -47,6 +47,12 @@ namespace Tmk
     }
 #endif
 
+    const Terminal::StreamRedirectionCache& Terminal::Driver::GetStreamRedirectionCache()
+    {
+        EnableFeatures();
+        return s_streamRedirectionCache;
+    }
+
     void Terminal::Driver::EnableFeatures()
     {
         if (s_hasEnabledFeatures)
@@ -59,5 +65,15 @@ namespace Tmk
         EnableVirtualTerminalProcessing();
 #endif
         s_streamRedirectionCache = StreamRedirectionCache(!TMK_ISATTY(0), !TMK_ISATTY(1), !TMK_ISATTY(2));
+    }
+
+    void Terminal::Font::SetColor(AnsiColor color, Layer layer)
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+    }
+
+    void Terminal::Font::ResetColors()
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
     }
 }
