@@ -81,4 +81,14 @@ namespace Tmk
     {
         Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
     }
+    
+    void Terminal::Font::SetWeight(FontWeight weight)
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
+    }
+    
+    void Terminal::Font::ResetWeight()
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[22m");
+    }
 }

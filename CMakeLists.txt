@@ -7,6 +7,7 @@ project (Tmk VERSION 17.0.0
 
 set (CMAKE_CXX_STANDARD 20)
 file (GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Source Files/*.cpp")
+file (GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Header Files/*.h")
 
-add_library (Tmk ${SOURCE_FILES})
+add_library (Tmk ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories (Tmk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/Header Files")

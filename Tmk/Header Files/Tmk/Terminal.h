@@ -4,6 +4,7 @@
 #include <Tmk/Layer.h>
 #include <Tmk/RgbColor.h>
 #include <Tmk/StreamRedirectionException.h>
+#include <Tmk/FontWeight.h>
 
 #include <iostream>
 
@@ -248,6 +249,15 @@ namespace Tmk
             /// Resets the terminal font colors.
             /// </summary>
             static void ResetColors();
+            /// <summary>
+            /// Sets the terminal font weight.
+            /// </summary>
+            /// <param name="weight">The weight to be set.</param>
+            static void SetWeight(FontWeight weight);
+            /// <summary>
+            /// Resets the terminal font weight.
+            /// </summary>
+            static void ResetWeight();
         };
     };
 }
