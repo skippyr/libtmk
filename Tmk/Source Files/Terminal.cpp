@@ -235,4 +235,15 @@ namespace Tmk
         {
         }
     }
+
+    void Terminal::Bell::Ring()
+    {
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\7");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
+    }
 }

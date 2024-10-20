@@ -327,5 +327,20 @@ namespace Tmk
             /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
             static void SetVisible(bool isVisible);
         };
+
+        /// <summary>
+        /// Represents the terminal bell.
+        /// </summary>
+        class Bell final
+        {
+        private:
+            Bell() = delete;
+
+        public:
+            /// <summary>
+            /// Rings the bell.
+            /// </summary>
+            static void Ring();
+        };
     };
 }
