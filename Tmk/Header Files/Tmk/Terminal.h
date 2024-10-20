@@ -8,6 +8,7 @@
 #include <Tmk/RgbColor.h>
 #include <Tmk/StreamRedirectionException.h>
 
+#include <format>
 #include <iostream>
 
 namespace Tmk
