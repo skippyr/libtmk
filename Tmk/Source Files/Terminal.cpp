@@ -72,6 +72,11 @@ namespace Tmk
         Driver::WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
     }
 
+    void Terminal::Font::SetColor(RgbColor color, Layer layer)
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+    }
+
     void Terminal::Font::ResetColors()
     {
         Driver::WriteAnsiEscapeSequence("\x1b[39;49m");

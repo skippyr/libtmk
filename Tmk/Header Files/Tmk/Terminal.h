@@ -2,6 +2,7 @@
 
 #include <Tmk/AnsiColor.h>
 #include <Tmk/Layer.h>
+#include <Tmk/RgbColor.h>
 #include <Tmk/StreamRedirectionException.h>
 
 #include <iostream>
@@ -237,6 +238,12 @@ namespace Tmk
             /// <param name="color">The color to be applied.</param>
             /// <param name="layer">The layer to be affected.</param>
             static void SetColor(AnsiColor color, Layer layer);
+            /// <summary>
+            /// Sets an RGB color to a terminal layer.
+            /// </summary>
+            /// <param name="color">The color to be applied.</param>
+            /// <param name="layer">The layer to be affected.</param>
+            static void SetColor(RgbColor color, Layer layer);
             /// <summary>
             /// Resets the terminal font colors.
             /// </summary>
