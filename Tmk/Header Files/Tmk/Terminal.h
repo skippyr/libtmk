@@ -3,6 +3,7 @@
 #include <Tmk/AnsiColor.h>
 #include <Tmk/CursorShape.h>
 #include <Tmk/Dimensions.h>
+#include <Tmk/FontEffect.h>
 #include <Tmk/FontWeight.h>
 #include <Tmk/Layer.h>
 #include <Tmk/RgbColor.h>
@@ -237,30 +238,44 @@ namespace Tmk
 
         public:
             /// <summary>
-            /// Sets an ANSI color to a terminal layer.
+            /// Sets an ANSI color to a layer.
             /// </summary>
             /// <param name="color">The color to be applied.</param>
             /// <param name="layer">The layer to be affected.</param>
             static void SetColor(AnsiColor color, Layer layer);
             /// <summary>
-            /// Sets an RGB color to a terminal layer.
+            /// Sets an RGB color to a layer.
             /// </summary>
             /// <param name="color">The color to be applied.</param>
             /// <param name="layer">The layer to be affected.</param>
             static void SetColor(RgbColor color, Layer layer);
             /// <summary>
-            /// Resets the terminal font colors.
+            /// Resets the font colors.
             /// </summary>
             static void ResetColors();
             /// <summary>
-            /// Sets the terminal font weight.
+            /// Sets the font weight.
             /// </summary>
             /// <param name="weight">The weight to be set.</param>
             static void SetWeight(FontWeight weight);
             /// <summary>
-            /// Resets the terminal font weight.
+            /// Resets the font weight.
             /// </summary>
             static void ResetWeight();
+            /// <summary>
+            /// Sets a font effect.
+            /// </summary>
+            /// <param name="effect">The effect to be set.</param>
+            static void SetEffects(FontEffect effect);
+            /// <summary>
+            /// Sets the font effects flagged in a bitmask.
+            /// </summary>
+            /// <param name="effects">A bitmask containing the effects to be set.</param>
+            static void SetEffects(int effects);
+            /// <summary>
+            /// Resets the font effects.
+            /// </summary>
+            static void ResetEffects();
         };
 
         /// <summary>

@@ -123,6 +123,33 @@ namespace Tmk
         }
     }
 
+    void Terminal::Font::SetEffects(FontEffect effect)
+    {
+        SetEffects(static_cast<int>(effect));
+    }
+
+    void Terminal::Font::SetEffects(int effects)
+    {
+        for (int effect = 3; effect < 10; ++effect)
+        {
+            if (effects & 1 << effect)
+            {
+                Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+            }
+        }
+    }
+
+    void Terminal::Font::ResetEffects()
+    {
+        for (int effect = 23; effect < 30; ++effect)
+        {
+            if (effect != 26)
+            {
+                Driver::WriteAnsiEscapeSequence("\x1b[{}m", effect);
+            }
+        }
+    }
+
     Tmk::Dimensions Terminal::Window::GetDimensions()
     {
 #if defined(_WIN32)
