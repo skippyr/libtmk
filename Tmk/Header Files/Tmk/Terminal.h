@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Tmk/AnsiColor.h>
+#include <Tmk/CursorShape.h>
 #include <Tmk/Dimensions.h>
 #include <Tmk/FontWeight.h>
 #include <Tmk/Layer.h>
@@ -271,7 +272,7 @@ namespace Tmk
 
         public:
             /// <summary>
-            /// Gets the dimensions of the terminal window.
+            /// Gets the dimensions of the window.
             /// </summary>
             /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
             /// <return>The dimensions of the window.</return>
@@ -284,6 +285,31 @@ namespace Tmk
             /// Closes the alternate window.
             /// </summary>
             static void CloseAlternate();
+        };
+
+        /// <summary>
+        /// Represents the terminal cursor.
+        /// </summary>
+        class Cursor final
+        {
+        private:
+            Cursor() = delete;
+
+        public:
+            /// <summary>
+            /// Sets the cursor shape.
+            /// </summary>
+            /// <param name="shape">The shape to be set.</param>
+            /// <param name="isBlinking">A boolean that states the cursor should blink.</param>
+            static void SetShape(CursorShape shape, bool isBlinking);
+            /// <summary>
+            /// Resets the cursor shape.
+            static void ResetShape();
+            /// <summary>
+            /// Sets the cursor visibility.
+            /// </summary>
+            /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
+            static void SetVisible(bool isVisible);
         };
     };
 }

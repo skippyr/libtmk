@@ -163,4 +163,19 @@ namespace Tmk
         {
         }
     }
+
+    void Terminal::Cursor::SetShape(CursorShape shape, bool isBlinking)
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
+    }
+
+    void Terminal::Cursor::ResetShape()
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[0 q");
+    }
+
+    void Terminal::Cursor::SetVisible(bool isVisible)
+    {
+        Driver::WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
+    }
 }
