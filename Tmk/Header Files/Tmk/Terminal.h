@@ -3,7 +3,6 @@
 #include <Tmk/AnsiColor.h>
 #include <Tmk/Layer.h>
 #include <Tmk/StreamRedirectionException.h>
-#include <Tmk/System.h>
 
 #include <iostream>
 
@@ -73,7 +72,7 @@ namespace Tmk
 
             Driver() = delete;
 
-#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+#if defined(_WIN32)
             /// <summary>
             /// Sets UTF-8 as the terminal output encoding.
             /// </summary>

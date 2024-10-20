@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 3.20)
+
 project (Tmk VERSION 17.0.0
              DESCRIPTION "A cross-platform terminal manipulation library for C++20 with features to manipulate terminal properties, styles and key readings using UTF-8 encoding."
              HOMEPAGE_URL "https://github.com/skippyr/Tmk"

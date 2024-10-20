@@ -1,13 +1,13 @@
 #include <Tmk/Terminal.h>
 
-#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+#if defined(_WIN32)
 #include <Windows.h>
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
 
-#if TMK_IS_OPERATING_SYSTEM_WINDOWS
+#if defined(_WIN32)
 #define TMK_ISATTY(fileNo) _isatty(fileNo)
 #else
 #define TMK_ISATTY(fileNo) isatty(fileNo)
