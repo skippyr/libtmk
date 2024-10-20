@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
@@ -81,14 +82,33 @@ namespace Tmk
     {
         Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
     }
-    
+
     void Terminal::Font::SetWeight(FontWeight weight)
     {
         Driver::WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
     }
-    
+
     void Terminal::Font::ResetWeight()
     {
         Driver::WriteAnsiEscapeSequence("\x1b[22m");
+    }
+
+    Tmk::Dimensions Terminal::Window::GetDimensions()
+    {
+#if defined(_WIN32)
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+        if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
+        {
+            throw new StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
+        }
+        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
+#else
+        struct winsize ioctlSize;
+        if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize))
+        {
+            throw new StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
+        }
+        return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
+#endif
     }
 }

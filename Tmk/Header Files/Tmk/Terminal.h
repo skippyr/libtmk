@@ -1,10 +1,11 @@
 #pragma once
 
 #include <Tmk/AnsiColor.h>
+#include <Tmk/Dimensions.h>
+#include <Tmk/FontWeight.h>
 #include <Tmk/Layer.h>
 #include <Tmk/RgbColor.h>
 #include <Tmk/StreamRedirectionException.h>
-#include <Tmk/FontWeight.h>
 
 #include <iostream>
 
@@ -258,6 +259,23 @@ namespace Tmk
             /// Resets the terminal font weight.
             /// </summary>
             static void ResetWeight();
+        };
+
+        /// <summary>
+        /// Represents the terminal window.
+        /// </summary>
+        class Window final
+        {
+        private:
+            Window() = delete;
+
+        public:
+            /// <summary>
+            /// Gets the dimensions of the terminal window.
+            /// </summary>
+            /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
+            /// <return>The dimensions of the window.</return>
+            static Dimensions GetDimensions();
         };
     };
 }
