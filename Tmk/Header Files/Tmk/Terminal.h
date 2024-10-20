@@ -213,7 +213,7 @@ namespace Tmk
         class Input final : public Stream<0>
         {
             /// <summary>
-            /// Clears cached key events that are inside the input buffer.
+            /// Clears cached key events that are inside of the input buffer.
             /// </summary>
             static void ClearCachedEvents();
         };
