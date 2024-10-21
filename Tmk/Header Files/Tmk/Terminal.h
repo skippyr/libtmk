@@ -104,7 +104,7 @@ namespace Tmk
             /// <param name="arguments">The arguments to be formatted.</param>
             /// <exception cref="StreamRedirectionException">Thrown when both streams are redirected.</exception>
             template <typename... Args>
-            static void WriteAnsiEscapeSequence(std::string_view format, Args... arguments)
+            static void WriteAnsiEscapeSequence(const std::string_view format, Args... arguments)
             {
                 if (!OutputStream::IsRedirected())
                 {
@@ -176,7 +176,7 @@ namespace Tmk
             /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
             /// <param name="arguments">The arguments to be formatted.</param>
             template <typename... Args>
-            static void Write(std::string_view format, Args... arguments)
+            static void Write(const std::string_view format, Args... arguments)
             {
                 Driver::EnableFeatures();
                 GetCppStream() << std::vformat(format, std::make_format_args(arguments...));
@@ -198,7 +198,7 @@ namespace Tmk
             /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
             /// <param name="arguments">The arguments to be formatted.</param>
             template <typename... Args>
-            static void WriteLine(std::string_view format, Args... arguments)
+            static void WriteLine(const std::string_view format, Args... arguments)
             {
                 Write(format, arguments...);
                 GetCppStream() << std::endl;

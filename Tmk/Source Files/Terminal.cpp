@@ -27,12 +27,12 @@ namespace Tmk
     {
     }
 
-    Terminal::StreamRedirectionCache::StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected) noexcept
+    Terminal::StreamRedirectionCache::StreamRedirectionCache(const bool isInputRedirected, const bool isOutputRedirected, const bool isErrorRedirected) noexcept
         : m_isInputRedirected(isInputRedirected), m_isOutputRedirected(isOutputRedirected), m_isErrorRedirected(isErrorRedirected)
     {
     }
 
-    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo) const noexcept
+    bool Terminal::StreamRedirectionCache::IsRedirected(const int fileNo) const noexcept
     {
         return !fileNo ? m_isInputRedirected : fileNo == 1 ? m_isOutputRedirected : m_isErrorRedirected;
     }
@@ -80,8 +80,8 @@ namespace Tmk
 #if defined(_WIN32)
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
-        struct termios attributes;
-        int flags = fcntl(STDIN_FILENO, F_GETFL);
+        termios attributes{};
+        const int flags = fcntl(STDIN_FILENO, F_GETFL);
         tcgetattr(STDIN_FILENO, &attributes);
         attributes.c_lflag &= ~(ICANON | ECHO);
         tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
@@ -106,18 +106,18 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
 
-    void Terminal::Font::SetColor(RgbColor color, Layer layer) noexcept
+    void Terminal::Font::SetColor(const RgbColor color, Layer layer) noexcept
     {
         try
         {
             Driver::WriteAnsiEscapeSequence("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -128,7 +128,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[39;49m");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -139,7 +139,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[22;{}m", static_cast<int>(weight));
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -150,7 +150,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[22m");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -160,7 +160,7 @@ namespace Tmk
         SetEffects(static_cast<int>(effect));
     }
 
-    void Terminal::Font::SetEffects(int effects) noexcept
+    void Terminal::Font::SetEffects(const int effects) noexcept
     {
         try
         {
@@ -172,7 +172,7 @@ namespace Tmk
                 }
             }
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -189,7 +189,7 @@ namespace Tmk
                 }
             }
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -202,14 +202,14 @@ namespace Tmk
         {
             throw StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
         }
-        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
+        return {bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1};
 #else
-        struct winsize ioctlSize;
+        winsize ioctlSize{};
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize))
         {
             throw StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
         }
-        return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
+        return {ioctlSize.ws_col, ioctlSize.ws_row};
 #endif
     }
 
@@ -219,7 +219,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -230,18 +230,18 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[?1049l");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
 
-    void Terminal::Cursor::SetShape(CursorShape shape, bool isBlinking) noexcept
+    void Terminal::Cursor::SetShape(CursorShape shape, const bool isBlinking) noexcept
     {
         try
         {
             Driver::WriteAnsiEscapeSequence("\x1b[{} q", static_cast<int>(shape) - static_cast<int>(isBlinking));
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -252,18 +252,18 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[0 q");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
 
-    void Terminal::Cursor::SetVisible(bool isVisible) noexcept
+    void Terminal::Cursor::SetVisible(const bool isVisible) noexcept
     {
         try
         {
             Driver::WriteAnsiEscapeSequence("\x1b[?25{}", isVisible ? 'h' : 'l');
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -274,7 +274,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
@@ -285,7 +285,7 @@ namespace Tmk
         {
             Driver::WriteAnsiEscapeSequence("\7");
         }
-        catch (const StreamRedirectionException&)
+        catch (...)
         {
         }
     }
