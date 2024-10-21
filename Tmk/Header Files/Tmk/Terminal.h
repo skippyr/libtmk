@@ -49,13 +49,13 @@ namespace Tmk
             /// <param name="isInputRedirected">A boolean that states the input stream is redirected.</param>
             /// <param name="isOutputRedirected">A boolean that states the output stream is redirected.</param>
             /// <param name="isErrorRedirected">A boolean that states the error stream is redirected.</param>
-            StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected);
+            StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected) noexcept;
             /// <summary>
             /// Checks if a stream is redirected.
             /// </summary>
             /// <param name="fileNo">The file number related to the stream.</param>
             /// <returns>A boolean that states the stream is redirected.</returns>
-            bool IsRedirected(int fileNo) const;
+            [[nodiscard]] bool IsRedirected(int fileNo) const noexcept;
         };
 
         /// <summary>
@@ -77,11 +77,11 @@ namespace Tmk
             /// <summary>
             /// Sets UTF-8 as the output encoding.
             /// </summary>
-            static void SetUtf8Encoding();
+            static void SetUtf8Encoding() noexcept;
             /// <summary>
             /// Enables the parse of ANSI escape sequences by setting the ENABLE_VIRTUAL_TERMINAL_PROCESSING flag.
             /// </summary>
-            static void EnableVirtualTerminalProcessing();
+            static void EnableVirtualTerminalProcessing() noexcept;
 #endif
 
         public:
@@ -91,11 +91,11 @@ namespace Tmk
             /// Gets the stream redirection cache.
             /// </summary>
             /// <returns>The stream redirection cache.</returns>
-            static const StreamRedirectionCache& GetStreamRedirectionCache();
+            [[nodiscard]] static const StreamRedirectionCache& GetStreamRedirectionCache() noexcept;
             /// <summary>
             /// Enables the driver features.
             /// </summary>
-            static void EnableFeatures();
+            static void EnableFeatures() noexcept;
             /// <summary>
             /// Formats and writes an ANSI escape sequence to the output or error streams.
             /// </summary>
@@ -116,7 +116,7 @@ namespace Tmk
                 }
                 else
                 {
-                    throw new StreamRedirectionException("could not write ANSI escape sequence due to the terminal output and error streams being redirected.");
+                    throw StreamRedirectionException("could not write ANSI escape sequence due to the terminal output and error streams being redirected.");
                 }
             }
         };
@@ -133,7 +133,7 @@ namespace Tmk
             /// Gets the file number related to the stream.
             /// </summary>
             /// <returns>The file number related to the stream.</returns>
-            static int GetFileNo()
+            [[nodiscard]] static int GetFileNo() noexcept
             {
                 return N;
             }
@@ -145,7 +145,7 @@ namespace Tmk
             /// Checks if the stream is redirected.
             /// </summary>
             /// <returns>A boolean that states the stream is redirected.</returns>
-            static bool IsRedirected()
+            [[nodiscard]] static bool IsRedirected() noexcept
             {
                 return Driver::GetStreamRedirectionCache().IsRedirected(GetFileNo());
             }
@@ -163,7 +163,7 @@ namespace Tmk
             /// Gets the C++ output stream (ostream) related to the stream.
             /// </summary>
             /// <returns>The C++ output stream (ostream) related to the stream.</returns>
-            static std::ostream& GetCppStream()
+            [[nodiscard]] static std::ostream& GetCppStream() noexcept
             {
                 return N == 1 ? std::cout : std::cerr;
             }
@@ -216,7 +216,7 @@ namespace Tmk
             /// <summary>
             /// Clears the input buffer, removing possible cached key events that are inside it.
             /// </summary>
-            static void ClearBuffer();
+            static void ClearBuffer() noexcept;
         };
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Tmk
             /// <summary>
             /// Flushes the contents that are inside the output buffer, writing them out.
             /// </summary>
-            static void FlushBuffer();
+            static void FlushBuffer() noexcept;
         };
 
         /// <summary>
@@ -251,40 +251,40 @@ namespace Tmk
             /// </summary>
             /// <param name="color">The color to be applied.</param>
             /// <param name="layer">The layer to be affected.</param>
-            static void SetColor(AnsiColor color, Layer layer);
+            static void SetColor(AnsiColor color, Layer layer) noexcept;
             /// <summary>
             /// Sets an RGB color to a layer.
             /// </summary>
             /// <param name="color">The color to be applied.</param>
             /// <param name="layer">The layer to be affected.</param>
-            static void SetColor(RgbColor color, Layer layer);
+            static void SetColor(RgbColor color, Layer layer) noexcept;
             /// <summary>
             /// Resets the font colors.
             /// </summary>
-            static void ResetColors();
+            static void ResetColors() noexcept;
             /// <summary>
             /// Sets the font weight.
             /// </summary>
             /// <param name="weight">The weight to be set.</param>
-            static void SetWeight(FontWeight weight);
+            static void SetWeight(FontWeight weight) noexcept;
             /// <summary>
             /// Resets the font weight.
             /// </summary>
-            static void ResetWeight();
+            static void ResetWeight() noexcept;
             /// <summary>
             /// Sets a font effect.
             /// </summary>
             /// <param name="effect">The effect to be set.</param>
-            static void SetEffects(FontEffect effect);
+            static void SetEffects(FontEffect effect) noexcept;
             /// <summary>
             /// Sets the font effects flagged in a bitmask.
             /// </summary>
             /// <param name="effects">A bitmask containing the effects to be set.</param>
-            static void SetEffects(int effects);
+            static void SetEffects(int effects) noexcept;
             /// <summary>
             /// Resets the font effects.
             /// </summary>
-            static void ResetEffects();
+            static void ResetEffects() noexcept;
         };
 
         /// <summary>
@@ -300,15 +300,15 @@ namespace Tmk
             /// </summary>
             /// <returns>The dimensions of the window.</returns>
             /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
-            static Dimensions GetDimensions();
+            [[nodiscard]] static Dimensions GetDimensions();
             /// <summary>
             /// Opens the alternate window.
             /// </summary>
-            static void OpenAlternate();
+            static void OpenAlternate() noexcept;
             /// <summary>
             /// Closes the alternate window.
             /// </summary>
-            static void CloseAlternate();
+            static void CloseAlternate() noexcept;
         };
 
         /// <summary>
@@ -324,20 +324,20 @@ namespace Tmk
             /// </summary>
             /// <param name="shape">The shape to be set.</param>
             /// <param name="isBlinking">A boolean that states the cursor should blink.</param>
-            static void SetShape(CursorShape shape, bool isBlinking);
+            static void SetShape(CursorShape shape, bool isBlinking) noexcept;
             /// <summary>
             /// Resets the cursor shape.
             /// </summary>
-            static void ResetShape();
+            static void ResetShape() noexcept;
             /// <summary>
             /// Sets the cursor visibility.
             /// </summary>
             /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
-            static void SetVisible(bool isVisible);
+            static void SetVisible(bool isVisible) noexcept;
             /// <summary>
             /// Clears the line the cursor is on.
             /// </summary>
-            static void ClearLine();
+            static void ClearLine() noexcept;
         };
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace Tmk
             /// <summary>
             /// Rings the bell, possibly emitting a sound, system notification, screen flash and/or a bell symbol.
             /// </summary>
-            static void Ring();
+            static void Ring() noexcept;
         };
     };
 }

@@ -10,8 +10,14 @@
 #endif
 
 #if defined(_WIN32)
+/// <summary>
+/// A wrapper around the isatty function to avoid deprecated calls.
+/// </summary>
 #define TMK_ISATTY(fileNo) _isatty(fileNo)
 #else
+/// <summary>
+/// A wrapper around the isatty function to avoid deprecated calls.
+/// </summary>
 #define TMK_ISATTY(fileNo) isatty(fileNo)
 #endif
 
@@ -21,12 +27,12 @@ namespace Tmk
     {
     }
 
-    Terminal::StreamRedirectionCache::StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected)
+    Terminal::StreamRedirectionCache::StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected) noexcept
         : m_isInputRedirected(isInputRedirected), m_isOutputRedirected(isOutputRedirected), m_isErrorRedirected(isErrorRedirected)
     {
     }
 
-    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo) const
+    bool Terminal::StreamRedirectionCache::IsRedirected(int fileNo) const noexcept
     {
         return !fileNo ? m_isInputRedirected : fileNo == 1 ? m_isOutputRedirected : m_isErrorRedirected;
     }
@@ -35,12 +41,12 @@ namespace Tmk
     bool Terminal::Driver::s_hasEnabledFeatures = false;
 
 #if TMK_IS_OPERATING_SYSTEM_WINDOWS
-    void Terminal::Driver::SetUtf8Encoding()
+    void Terminal::Driver::SetUtf8Encoding() noexcept
     {
         SetConsoleOutputCP(CP_UTF8);
     }
 
-    void Terminal::Driver::EnableVirtualTerminalProcessing()
+    void Terminal::Driver::EnableVirtualTerminalProcessing() noexcept
     {
         HANDLE handle;
         DWORD mode;
@@ -49,13 +55,13 @@ namespace Tmk
     }
 #endif
 
-    const Terminal::StreamRedirectionCache& Terminal::Driver::GetStreamRedirectionCache()
+    const Terminal::StreamRedirectionCache& Terminal::Driver::GetStreamRedirectionCache() noexcept
     {
         EnableFeatures();
         return s_streamRedirectionCache;
     }
 
-    void Terminal::Driver::EnableFeatures()
+    void Terminal::Driver::EnableFeatures() noexcept
     {
         if (s_hasEnabledFeatures)
         {
@@ -69,7 +75,7 @@ namespace Tmk
         s_streamRedirectionCache = StreamRedirectionCache(!TMK_ISATTY(0), !TMK_ISATTY(1), !TMK_ISATTY(2));
     }
 
-    void Terminal::InputStream::ClearBuffer()
+    void Terminal::InputStream::ClearBuffer() noexcept
     {
 #if defined(_WIN32)
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
@@ -89,12 +95,12 @@ namespace Tmk
 #endif
     }
 
-    void Terminal::OutputStream::FlushBuffer()
+    void Terminal::OutputStream::FlushBuffer() noexcept
     {
         std::fflush(stdout);
     }
 
-    void Terminal::Font::SetColor(AnsiColor color, Layer layer)
+    void Terminal::Font::SetColor(AnsiColor color, Layer layer) noexcept
     {
         try
         {
@@ -105,7 +111,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::SetColor(RgbColor color, Layer layer)
+    void Terminal::Font::SetColor(RgbColor color, Layer layer) noexcept
     {
         try
         {
@@ -116,7 +122,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::ResetColors()
+    void Terminal::Font::ResetColors() noexcept
     {
         try
         {
@@ -127,7 +133,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::SetWeight(FontWeight weight)
+    void Terminal::Font::SetWeight(FontWeight weight) noexcept
     {
         try
         {
@@ -138,7 +144,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::ResetWeight()
+    void Terminal::Font::ResetWeight() noexcept
     {
         try
         {
@@ -149,12 +155,12 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::SetEffects(FontEffect effect)
+    void Terminal::Font::SetEffects(FontEffect effect) noexcept
     {
         SetEffects(static_cast<int>(effect));
     }
 
-    void Terminal::Font::SetEffects(int effects)
+    void Terminal::Font::SetEffects(int effects) noexcept
     {
         try
         {
@@ -171,7 +177,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Font::ResetEffects()
+    void Terminal::Font::ResetEffects() noexcept
     {
         try
         {
@@ -188,26 +194,26 @@ namespace Tmk
         }
     }
 
-    Tmk::Dimensions Terminal::Window::GetDimensions()
+    Dimensions Terminal::Window::GetDimensions()
     {
 #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
         if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo))
         {
-            throw new StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
+            throw StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
         }
         return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
 #else
         struct winsize ioctlSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize))
         {
-            throw new StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
+            throw StreamRedirectionException("could not get the terminal window dimensions due to the possible data source streams being redirected.");
         }
         return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
 #endif
     }
 
-    void Terminal::Window::OpenAlternate()
+    void Terminal::Window::OpenAlternate() noexcept
     {
         try
         {
@@ -218,7 +224,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Window::CloseAlternate()
+    void Terminal::Window::CloseAlternate() noexcept
     {
         try
         {
@@ -229,7 +235,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Cursor::SetShape(CursorShape shape, bool isBlinking)
+    void Terminal::Cursor::SetShape(CursorShape shape, bool isBlinking) noexcept
     {
         try
         {
@@ -240,7 +246,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Cursor::ResetShape()
+    void Terminal::Cursor::ResetShape() noexcept
     {
         try
         {
@@ -251,7 +257,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Cursor::SetVisible(bool isVisible)
+    void Terminal::Cursor::SetVisible(bool isVisible) noexcept
     {
         try
         {
@@ -262,7 +268,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Cursor::ClearLine()
+    void Terminal::Cursor::ClearLine() noexcept
     {
         try
         {
@@ -273,7 +279,7 @@ namespace Tmk
         }
     }
 
-    void Terminal::Bell::Ring()
+    void Terminal::Bell::Ring() noexcept
     {
         try
         {

@@ -26,12 +26,12 @@ namespace Tmk
         /// <summary>
         /// Gets the total number of arguments.
         /// </summary>
-        /// <return>The total number of arguments.</return>
-        std::size_t GetTotalArguments() const;
+        /// <returns>The total number of arguments.</returns>
+        [[nodiscard]] std::size_t GetTotalArguments() const;
         /// <summary>
         /// Gets the arguments.
         /// </summary>
         /// <return>The arguments.</return>
-        const std::vector<MultiEncodedString>& GetArguments() const;
+        [[nodiscard]] const std::vector<MultiEncodedString>& GetArguments() const;
     };
 }

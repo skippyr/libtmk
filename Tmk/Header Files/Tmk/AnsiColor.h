@@ -3,7 +3,7 @@
 namespace Tmk
 {
     /// <summary>
-    /// Contains the first 16 colors of the terminal ANSI color palette.
+    /// Contains the first 16 colors of the ANSI color palette.
     /// </summary>
     enum class AnsiColor
     {
