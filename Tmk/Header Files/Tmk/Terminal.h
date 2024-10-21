@@ -108,13 +108,13 @@ namespace Tmk
             template <typename... Args>
             static void WriteAnsiEscapeSequence(std::string_view format, Args... arguments)
             {
-                if (!Output::IsRedirected())
+                if (!OutputStream::IsRedirected())
                 {
-                    Output::Write(format, arguments...);
+                    OutputStream::Write(format, arguments...);
                 }
-                else if (!Error::IsRedirected())
+                else if (!ErrorStream::IsRedirected())
                 {
-                    Error::Write(format, arguments...);
+                    ErrorStream::Write(format, arguments...);
                 }
                 else
                 {
@@ -210,7 +210,7 @@ namespace Tmk
         /// <summary>
         /// Represents the terminal input stream.
         /// </summary>
-        class Input final : public Stream<0>
+        class InputStream final : public Stream<0>
         {
             /// <summary>
             /// Clears the input buffer, removing possible cached key events that are inside of it.
@@ -221,7 +221,7 @@ namespace Tmk
         /// <summary>
         /// Represents the terminal output stream.
         /// </summary>
-        class Output final : public WritableStream<1>
+        class OutputStream final : public WritableStream<1>
         {
         public:
             /// <summary>
@@ -233,7 +233,7 @@ namespace Tmk
         /// <summary>
         /// Represents the terminal error stream.
         /// </summary>
-        class Error final : public WritableStream<2>
+        class ErrorStream final : public WritableStream<2>
         {
         };
 

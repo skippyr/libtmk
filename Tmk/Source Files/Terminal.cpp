@@ -69,7 +69,7 @@ namespace Tmk
         s_streamRedirectionCache = StreamRedirectionCache(!TMK_ISATTY(0), !TMK_ISATTY(1), !TMK_ISATTY(2));
     }
 
-    void Terminal::Input::ClearBuffer()
+    void Terminal::InputStream::ClearBuffer()
     {
 #if defined(_WIN32)
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
@@ -89,7 +89,7 @@ namespace Tmk
 #endif
     }
 
-    void Terminal::Output::FlushBuffer()
+    void Terminal::OutputStream::FlushBuffer()
     {
         std::fflush(stdout);
     }
