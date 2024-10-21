@@ -133,7 +133,7 @@ namespace Tmk
         private:
             Stream() = delete;
 
-        public:
+        protected:
             /// <summary>
             /// Gets the file number related to the stream.
             /// </summary>
@@ -142,6 +142,7 @@ namespace Tmk
                 return N;
             }
 
+        public:
             /// <summary>
             /// Checks if the stream is redirected.
             /// </summary>

@@ -1,5 +1,4 @@
 #include <Tmk/Terminal.h>
-
 #if defined(_WIN32)
 #include <Windows.h>
 #include <io.h>

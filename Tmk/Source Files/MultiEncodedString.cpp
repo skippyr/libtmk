@@ -1,7 +1,5 @@
 #include <Tmk/MultiEncodedString.h>
-
 #include <memory>
-
 #if defined(_WIN32)
 #include <Windows.h>
 #endif
