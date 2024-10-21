@@ -40,13 +40,13 @@ namespace Tmk
     }
 #endif
 
-    const std::string& MultiEncodedString::GetUtf8String()
+    const std::string& MultiEncodedString::GetUtf8String() const
     {
         return m_utf8String;
     }
 
 #if defined(_WIN32)
-    const std::wstring& MultiEncodedString::GetUtf16String()
+    const std::wstring& MultiEncodedString::GetUtf16String() const
     {
         return m_utf16String;
     }

@@ -53,13 +53,13 @@ namespace Tmk
         /// Gets the string encoded in UTF-8.
         /// </summary>
         /// <return>The string encoded in UTF-8.</return>
-        const std::string& GetUtf8String();
+        const std::string& GetUtf8String() const;
 #if defined(_WIN32)
         /// <summary>
         /// Gets the string encoded in UTF-16.
         /// </summary>
         /// <return>The string encoded in UTF-16.</return>
-        const std::wstring& GetUtf16String();
+        const std::wstring& GetUtf16String() const;
 #endif
     };
 }
