@@ -19,8 +19,6 @@ namespace Tmk
     class Terminal final
     {
     private:
-        Terminal() = delete;
-
         /// <summary>
         /// Represents a cache of the terminal stream redirection statuses.
         /// </summary>
@@ -56,7 +54,7 @@ namespace Tmk
             /// Checks if a stream is redirected.
             /// </summary>
             /// <param name="fileNo">The file number related to the stream.</param>
-            /// <return>A boolean that states the stream is redirected.</return>
+            /// <returns>A boolean that states the stream is redirected.</returns>
             bool IsRedirected(int fileNo) const;
         };
 
@@ -75,8 +73,6 @@ namespace Tmk
             /// </summary>
             static bool s_hasEnabledFeatures;
 
-            Driver() = delete;
-
 #if defined(_WIN32)
             /// <summary>
             /// Sets UTF-8 as the output encoding.
@@ -89,10 +85,12 @@ namespace Tmk
 #endif
 
         public:
+            Driver() = delete;
+
             /// <summary>
             /// Gets the stream redirection cache.
             /// </summary>
-            /// <return>The stream redirection cache.</return>
+            /// <returns>The stream redirection cache.</returns>
             static const StreamRedirectionCache& GetStreamRedirectionCache();
             /// <summary>
             /// Enables the driver features.
@@ -130,23 +128,23 @@ namespace Tmk
         template <int N>
         class Stream
         {
-        private:
-            Stream() = delete;
-
         protected:
             /// <summary>
             /// Gets the file number related to the stream.
             /// </summary>
+            /// <returns>The file number related to the stream.</returns>
             static int GetFileNo()
             {
                 return N;
             }
 
         public:
+            Stream() = delete;
+
             /// <summary>
             /// Checks if the stream is redirected.
             /// </summary>
-            /// <return>A boolean that states the stream is redirected.</return>
+            /// <returns>A boolean that states the stream is redirected.</returns>
             static bool IsRedirected()
             {
                 return Driver::GetStreamRedirectionCache().IsRedirected(GetFileNo());
@@ -162,8 +160,9 @@ namespace Tmk
         {
         private:
             /// <summary>
-            /// Gets the CPP output stream related to the stream.
+            /// Gets the C++ output stream (ostream) related to the stream.
             /// </summary>
+            /// <returns>The C++ output stream (ostream) related to the stream.</returns>
             static std::ostream& GetCppStream()
             {
                 return N == 1 ? std::cout : std::cerr;
@@ -207,13 +206,15 @@ namespace Tmk
         };
 
     public:
+        Terminal() = delete;
+
         /// <summary>
         /// Represents the terminal input stream.
         /// </summary>
         class InputStream final : public Stream<0>
         {
             /// <summary>
-            /// Clears the input buffer, removing possible cached key events that are inside of it.
+            /// Clears the input buffer, removing possible cached key events that are inside it.
             /// </summary>
             static void ClearBuffer();
         };
@@ -225,7 +226,7 @@ namespace Tmk
         {
         public:
             /// <summary>
-            /// Flushes the contents that are inside of the output buffer, writing them out.
+            /// Flushes the contents that are inside the output buffer, writing them out.
             /// </summary>
             static void FlushBuffer();
         };
@@ -242,10 +243,9 @@ namespace Tmk
         /// </summary>
         class Font final
         {
-        private:
+        public:
             Font() = delete;
 
-        public:
             /// <summary>
             /// Sets an ANSI color to a layer.
             /// </summary>
@@ -292,14 +292,13 @@ namespace Tmk
         /// </summary>
         class Window final
         {
-        private:
+        public:
             Window() = delete;
 
-        public:
             /// <summary>
             /// Gets the dimensions of the window.
             /// </summary>
-            /// <return>The dimensions of the window.</return>
+            /// <returns>The dimensions of the window.</returns>
             /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
             static Dimensions GetDimensions();
             /// <summary>
@@ -317,10 +316,9 @@ namespace Tmk
         /// </summary>
         class Cursor final
         {
-        private:
+        public:
             Cursor() = delete;
 
-        public:
             /// <summary>
             /// Sets the cursor shape.
             /// </summary>
@@ -329,6 +327,7 @@ namespace Tmk
             static void SetShape(CursorShape shape, bool isBlinking);
             /// <summary>
             /// Resets the cursor shape.
+            /// </summary>
             static void ResetShape();
             /// <summary>
             /// Sets the cursor visibility.
@@ -346,10 +345,9 @@ namespace Tmk
         /// </summary>
         class Bell final
         {
-        private:
+        public:
             Bell() = delete;
 
-        public:
             /// <summary>
             /// Rings the bell, possibly emitting a sound, system notification, screen flash and/or a bell symbol.
             /// </summary>
