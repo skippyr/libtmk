@@ -1,11 +1,13 @@
 #pragma once
 
 #include <Tmk/MultiEncodedString.h>
-
 #include <vector>
 
 namespace Tmk
 {
+    /// <summary>
+    /// Represents the command line arguments.
+    /// </summary>
     class CommandLineArguments
     {
     private:
@@ -16,7 +18,7 @@ namespace Tmk
 
     public:
         /// <summary>
-        /// Creates an instance of the command line arguments class from the main function parameters.
+        /// Creates an instance of the command line arguments class from the values received as the main function parameters.
         /// </summary>
         /// <param name="totalMainArguments">The total number of arguments received as the first parameter of the main function.</param>
         /// <param name="mainArguments">The arguments received as the second parameter of the main function.</param>

@@ -5,7 +5,7 @@
 namespace Tmk
 {
     /// <summary>
-    /// A string encoded in UTF-8 and possibly in UTF-16.
+    /// A string encoded in UTF-8 and UTF-16 (this one only available on Windows).
     /// </summary>
     class MultiEncodedString
     {
@@ -38,13 +38,13 @@ namespace Tmk
 
     public:
         /// <summary>
-        /// Creates a new instance of the MultiEncodedString class from a UTF-8 string.
+        /// Creates an instance of the MultiEncodedString class from a UTF-8 string.
         /// </summary>
         /// <param name="utf8String">The string encoded in UTF-8.</param>
         MultiEncodedString(const std::string& utf8String);
 #if defined(_WIN32)
         /// <summary>
-        /// Creates a new instance of the MultiEncodedString class from a UTF-16 string.
+        /// Creates an instance of the MultiEncodedString class from a UTF-16 string.
         /// </summary>
         /// <param name="utf8String">The string encoded in UTF-16.</param>
         MultiEncodedString(const std::wstring& utf16String);

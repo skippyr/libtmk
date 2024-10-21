@@ -2,6 +2,9 @@
 
 namespace Tmk
 {
+    /// <summary>
+    /// Contains the cursor shapes.
+    /// </summary>
     enum class CursorShape
     {
         /// <summary>

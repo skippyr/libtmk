@@ -8,7 +8,6 @@
 #include <Tmk/Layer.h>
 #include <Tmk/RgbColor.h>
 #include <Tmk/StreamRedirectionException.h>
-
 #include <format>
 #include <iostream>
 
@@ -23,41 +22,41 @@ namespace Tmk
         Terminal() = delete;
 
         /// <summary>
-        /// Represents a cache of the stream redirection statuses.
+        /// Represents a cache of the terminal stream redirection statuses.
         /// </summary>
         class StreamRedirectionCache final
         {
         private:
             /// <summary>
-            /// A boolean that states the input stream is being redirected.
+            /// A boolean that states the input stream is redirected.
             /// </summary>
             bool m_isInputRedirected;
             /// <summary>
-            /// A boolean that states the output stream is being redirected.
+            /// A boolean that states the output stream is redirected.
             /// </summary>
             bool m_isOutputRedirected;
             /// <summary>
-            /// A boolean that states the error stream is being redirected.
+            /// A boolean that states the error stream is redirected.
             /// </summary>
             bool m_isErrorRedirected;
 
         public:
             /// <summary>
-            /// Creates a new instance of the StreamRedirectionCache class with all streams being considered directed.
+            /// Creates an instance of the StreamRedirectionCache class with all streams unredirected.
             /// </summary>
             StreamRedirectionCache();
             /// <summary>
-            /// Creates a new instance of the StreamRedirectionCache class with the given statuses.
+            /// Creates an instance of the StreamRedirectionCache class with the given statuses.
             /// </summary>
-            /// <param name="isInputRedirected">A boolean that states the input stream is being redirected.</param>
-            /// <param name="isOutputRedirected">A boolean that states the output stream is being redirected.</param>
-            /// <param name="isErrorRedirected">A boolean that states the error stream is being redirected.</param>
+            /// <param name="isInputRedirected">A boolean that states the input stream is redirected.</param>
+            /// <param name="isOutputRedirected">A boolean that states the output stream is redirected.</param>
+            /// <param name="isErrorRedirected">A boolean that states the error stream is redirected.</param>
             StreamRedirectionCache(bool isInputRedirected, bool isOutputRedirected, bool isErrorRedirected);
             /// <summary>
-            /// Checks if a stream is being redirected.
+            /// Checks if a stream is redirected.
             /// </summary>
             /// <param name="fileNo">The file number related to the stream.</param>
-            /// <return>A boolean that states the stream is being redirected.</return>
+            /// <return>A boolean that states the stream is redirected.</return>
             bool IsRedirected(int fileNo) const;
         };
 
@@ -72,7 +71,7 @@ namespace Tmk
             /// </summary>
             static StreamRedirectionCache s_streamRedirectionCache;
             /// <summary>
-            /// A boolean that states the driver has enabled the terminal features.
+            /// A boolean that states the driver has enabled its features.
             /// </summary>
             static bool s_hasEnabledFeatures;
 
@@ -80,7 +79,7 @@ namespace Tmk
 
 #if defined(_WIN32)
             /// <summary>
-            /// Sets UTF-8 as the terminal output encoding.
+            /// Sets UTF-8 as the output encoding.
             /// </summary>
             static void SetUtf8Encoding();
             /// <summary>
@@ -96,15 +95,15 @@ namespace Tmk
             /// <return>The stream redirection cache.</return>
             static const StreamRedirectionCache& GetStreamRedirectionCache();
             /// <summary>
-            /// Enables the terminal features.
+            /// Enables the driver features.
             /// </summary>
             static void EnableFeatures();
             /// <summary>
-            /// Formats and writes an ANSI escape sequence to the terminal output or error streams.
+            /// Formats and writes an ANSI escape sequence to the output or error streams.
             /// </summary>
+            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
             /// <param name="arguments">The arguments to be formatted.</param>
-            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             /// <exception cref="StreamRedirectionException">Thrown when both streams are redirected.</exception>
             template <typename... Args>
             static void WriteAnsiEscapeSequence(std::string_view format, Args... arguments)
@@ -173,9 +172,9 @@ namespace Tmk
             /// <summary>
             /// Formats and writes a string to the stream.
             /// </summary>
+            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
             /// <param name="arguments">The arguments to be formatted.</param>
-            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             template <typename... Args>
             static void Write(std::string_view format, Args... arguments)
             {
@@ -195,9 +194,9 @@ namespace Tmk
             /// <summary>
             /// Formats and writes a string to the stream with a newline append to its end.
             /// </summary>
+            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             /// <param name="format">The format to be used. It accepts the same specifiers as the std::format function family.</param>
             /// <param name="arguments">The arguments to be formatted.</param>
-            /// <typeparam name="Args">A parameter pack containing the arguments to be formatted.</typeparam>
             template <typename... Args>
             static void WriteLine(std::string_view format, Args... arguments)
             {
@@ -213,9 +212,9 @@ namespace Tmk
         class Input final : public Stream<0>
         {
             /// <summary>
-            /// Clears cached key events that are inside of the input buffer.
+            /// Clears the input buffer, removing possible cached key events that are inside of it.
             /// </summary>
-            static void ClearCachedEvents();
+            static void ClearBuffer();
         };
 
         /// <summary>
@@ -223,9 +222,9 @@ namespace Tmk
         /// </summary>
         class Output final : public WritableStream<1>
         {
-            public:
+        public:
             /// <summary>
-            /// Flushes the contents that are inside of the output buffer.
+            /// Flushes the contents that are inside of the output buffer, writing them out.
             /// </summary>
             static void FlushBuffer();
         };
@@ -299,8 +298,8 @@ namespace Tmk
             /// <summary>
             /// Gets the dimensions of the window.
             /// </summary>
-            /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
             /// <return>The dimensions of the window.</return>
+            /// <exception cref="StreamRedirectionException">Thrown when the possible data source streams are redirected.</exception>
             static Dimensions GetDimensions();
             /// <summary>
             /// Opens the alternate window.
@@ -351,7 +350,7 @@ namespace Tmk
 
         public:
             /// <summary>
-            /// Rings the bell.
+            /// Rings the bell, possibly emitting a sound, system notification, screen flash and/or a bell symbol.
             /// </summary>
             static void Ring();
         };

@@ -16,12 +16,14 @@ namespace Tmk
         /// </summary>
         std::string m_message;
 
-    public:
+    protected:
         /// <summary>
         /// Creates an instance of the Exception class with a given message.
         /// </summary>
         /// <param name="message">A message that describes why the exception was thrown.</param>
         Exception(const std::string& message);
+
+    public:
         const char* what() const noexcept override;
     };
 }

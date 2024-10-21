@@ -2,6 +2,9 @@
 
 namespace Tmk
 {
+    /// <summary>
+    /// Contains the font effects.
+    /// </summary>
     enum class FontEffect
     {
         /// <summary>
@@ -31,7 +34,7 @@ namespace Tmk
     };
 
     /// <summary>
-    /// Concatenates two effects together in order to create a bitmask.
+    /// Concatenates two effects together, creating a bitmask.
     /// </summary>
     /// <param name="effectI">The first effect.</param>
     /// <param name="effectII">The second effect.</param>

@@ -25,7 +25,7 @@ namespace Tmk
 
     public:
         /// <summary>
-        /// Creates an instance of the RGB color with the given components.
+        /// Creates an instance of the RGBColor class with the given components.
         /// </summary>
         /// <param name="red">The red component of the color.</param>
         /// <param name="green">The green component of the color.</param>

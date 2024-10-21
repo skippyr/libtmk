@@ -70,7 +70,7 @@ namespace Tmk
         s_streamRedirectionCache = StreamRedirectionCache(!TMK_ISATTY(0), !TMK_ISATTY(1), !TMK_ISATTY(2));
     }
 
-    void Terminal::Input::ClearCachedEvents()
+    void Terminal::Input::ClearBuffer()
     {
 #if defined(_WIN32)
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
@@ -265,7 +265,13 @@ namespace Tmk
 
     void Terminal::Cursor::ClearLine()
     {
-        Driver::WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
+        try
+        {
+            Driver::WriteAnsiEscapeSequence("\x1b[2K\x1b[1G");
+        }
+        catch (const StreamRedirectionException&)
+        {
+        }
     }
 
     void Terminal::Bell::Ring()
