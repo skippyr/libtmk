@@ -1,666 +1,620 @@
 #include "tmk.h"
 #include <stdio.h>
-#include <string.h>
-#include <wchar.h>
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+#ifdef _WIN32
 #include <Windows.h>
-#include <io.h>
 #else
+#ifdef __linux__
+#include <time.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-#include <time.h>
 #include <unistd.h>
 #endif
 
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-#define tmk_REDIRECTION_CACHE(stream_a) (!_isatty(stream_a) << stream_a)
+#ifdef _WIN32
+#define ISATTY(std_a) !!_isatty(std_a)
+#define KEY(val_a, key_a) \
+  case val_a: \
+    key->buf = key_a; \
+    goto end_l;
 #else
-#define tmk_REDIRECTION_CACHE(stream_a) (!isatty(stream_a) << stream_a)
-#define tmk_TIMESPEC_TO_MILLISECONDS(timespec_a)                               \
-  (timespec_a.tv_sec * 1000 + timespec_a.tv_nsec / 1000000)
+#ifdef __APPLE__
+#define ALTKEY(val_a, key_a) \
+  case val_a: \
+    key->buf = key_a; \
+    key->mods |= tmk_ModAlt; \
+    goto end_l;
 #endif
-#if tmk_IS_OPERATING_SYSTEM_MACOS
-#define tmk_PARSE_OPTION_KEY(value_a, key_a)                                   \
-  case value_a:                                                                \
-    temporaryEvent.key = key_a;                                                \
-    temporaryEvent.modifiers |= tmk_ModifierKey_AltOrOption;                   \
-    goto reset_l;
+#define ISATTY(std_a) isatty(std_a)
+#define UEOF 255
+#define DIFFMS(start_a, end_a) \
+  (((end_a.tv_sec - start_a.tv_sec) * 1000) + \
+   ((end_a.tv_nsec - start_a.tv_nsec) / 1000000))
+#define MAX(ni_a, nii_a) (ni_a > nii_a ? ni_a : nii_a)
+#define BYTE(i_a) ((unsigned char*)&key->buf)[i_a]
 #endif
-#define tmk_PARSE_KEY(condition_a, key_a)                                      \
-  if (condition_a) {                                                           \
-    temporaryEvent.key = key_a;                                                \
-    break;                                                                     \
-  }
-#define tmk_IS_STREAM_REDIRECTED(stream_a)                                     \
-  (tmk_redirectionCache & 1 << stream_a)
-#define tmk_HAS_REDIRECTION_CACHE_FLAG (1 << 7)
-#define tmk_MAXIMUM(numberI_a, numberII_a)                                     \
-  (numberI_a > numberII_a ? numberI_a : numberII_a)
-#define tmk_SIGNED_EOF 255
 
-static char tmk_redirectionCache = 0;
-
-#if !tmk_IS_OPERATING_SYSTEM_WINDOWS
-static void tmk_handleSigwinch(int signal);
+static void init(void);
+#ifndef _WIN32
+static void setraw(int israw);
+static void setblk(int isblk);
+static void fltsig(int isflt, sigset_t *bkp);
+static void catchsig(int sig);
 #endif
-static void tmk_initRedirectionCache(void);
-static int tmk_writeAnsiSequence(const char *format, ...);
+static void writeansi(const char *fmt, ...);
 
-#if !tmk_IS_OPERATING_SYSTEM_WINDOWS
-static void tmk_handleSigwinch(int signal) {
+static char cache_g = 0;
+
+static void
+init(void)
+{
+  if (cache_g & 1 << 7)
+    return;
+#ifdef _WIN32
+  SetConsoleOutputCP(CP_UTF8);
+  HANDLE h;
+  DWORD m;
+  (GetConsoleMode((h = GetStdHandle(STD_OUTPUT_HANDLE)), &m) ||
+   GetConsoleMode((h = GetStdHandle(STD_ERROR_HANDLE)), &m)) &&
+       SetConsoleMode(h, m | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
+  cache_g |= ISATTY(0) | ISATTY(1) << 1 | ISATTY(2) << 2 | 1 << 7;
 }
-#endif
 
-static void tmk_initRedirectionCache(void) {
-  if (tmk_redirectionCache & tmk_HAS_REDIRECTION_CACHE_FLAG) {
+#ifndef _WIN32
+static void
+setraw(int israw)
+{
+  struct termios t;
+  tcgetattr(STDIN_FILENO, &t);
+  t.c_lflag = israw ? t.c_lflag & ~(ICANON | ECHO | ISIG)
+                    : t.c_lflag | ICANON | ECHO | ISIG;
+  t.c_iflag = israw ? t.c_iflag & ~IXON : t.c_iflag | IXON;
+  tcsetattr(STDIN_FILENO, TCSANOW, &t);
+}
+
+static void
+setblk(int isblk)
+{
+  int f = fcntl(STDIN_FILENO, F_GETFL);
+  fcntl(STDIN_FILENO, F_SETFL, isblk ? f & ~O_NONBLOCK : f | O_NONBLOCK);
+}
+
+static void
+fltsig(int isflt, sigset_t *bkp)
+{
+  struct sigaction a;
+  a.sa_flags = 0;
+  sigemptyset(&a.sa_mask);
+  a.sa_handler = isflt ? catchsig : SIG_DFL;
+  sigaction(SIGWINCH, &a, NULL);
+  if (!isflt) {
+    pthread_sigmask(SIG_SETMASK, bkp, NULL);
     return;
   }
-  tmk_redirectionCache = tmk_REDIRECTION_CACHE(tmk_Stream_Input) |
-                         tmk_REDIRECTION_CACHE(tmk_Stream_Output) |
-                         tmk_REDIRECTION_CACHE(tmk_Stream_Error) |
-                         tmk_HAS_REDIRECTION_CACHE_FLAG;
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  SetConsoleOutputCP(CP_UTF8);
-  HANDLE handle;
-  DWORD mode;
-  (GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) ||
-   GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
-      SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
-#endif
+  sigset_t flt;
+  sigfillset(&flt);
+  sigdelset(&flt, SIGWINCH);
+  pthread_sigmask(SIG_SETMASK, &flt, bkp);
 }
 
-static int tmk_writeAnsiSequence(const char *format, ...) {
-  tmk_initRedirectionCache();
-  if (tmk_IS_STREAM_REDIRECTED(tmk_Stream_Output) &&
-      tmk_IS_STREAM_REDIRECTED(tmk_Stream_Error)) {
-    return -1;
-  }
-  va_list arguments;
-  va_start(arguments, format);
-  vfprintf(!tmk_IS_STREAM_REDIRECTED(tmk_Stream_Output) ? stdout : stderr,
-           format, arguments);
-  va_end(arguments);
-  return 0;
-}
-
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
-  int temporaryLength =
-      WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL, NULL);
-  char *utf8String = malloc(temporaryLength);
-  WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, utf8String, temporaryLength,
-                      NULL, NULL);
-  if (length) {
-    *length = temporaryLength - 1;
-  }
-  return utf8String;
-}
-
-wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
-  int temporaryLength =
-      MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, NULL, 0);
-  wchar_t *utf16String = malloc(temporaryLength * sizeof(wchar_t));
-  MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, utf16String, temporaryLength);
-  if (length) {
-    *length = temporaryLength - 1;
-  }
-  return utf16String;
+static void
+catchsig(int sig)
+{
 }
 #endif
 
-int tmk_isStreamRedirected(enum tmk_Stream stream) {
-  tmk_initRedirectionCache();
-  return !!tmk_IS_STREAM_REDIRECTED(stream);
+static void
+writeansi(const char *fmt, ...)
+{
+  va_list v;
+  va_start(v, fmt);
+  if (tmk_istty(tmk_StdOut))
+    tmk_vwrite(fmt, v);
+  else if (tmk_istty(tmk_StdErr))
+    tmk_vewrite(fmt, v);
+  va_end(v);
 }
 
-void tmk_flushOutputBuffer(void) {
+#ifdef _WIN32
+char *
+tmk_asutf8(const wchar_t *wstr)
+{
+  int sz = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+  char *buf = malloc(sz);
+  WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buf, sz, NULL, NULL);
+  return buf;
+}
+#endif
+
+int
+tmk_istty(int std)
+{
+  init();
+  return cache_g & 1 << std;
+}
+
+void
+tmk_flushout(void)
+{
   fflush(stdout);
 }
 
-void tmk_clearInputBuffer(void) {
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
+void
+tmk_clearin(void)
+{
+#ifdef _WIN32
   FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
-  struct termios attributes;
-  int flags = fcntl(STDIN_FILENO, F_GETFL);
-  tcgetattr(STDIN_FILENO, &attributes);
-  attributes.c_lflag &= ~(ICANON | ECHO);
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-  while (getchar() != EOF) {
-  }
-  attributes.c_lflag |= ICANON | ECHO;
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  fcntl(STDIN_FILENO, F_SETFL, flags);
+  if (!tmk_istty(tmk_StdIn))
+    return;
+  setraw(1);
+  setblk(0);
+  while (getchar() != EOF);
+  setblk(1);
+  setraw(0);
 #endif
 }
 
-void tmk_ringBell(void) {
-  tmk_writeAnsiSequence("\7");
-}
-
-void tmk_clearCursorLine(void) {
-  tmk_writeAnsiSequence("\x1b[2K\x1b[1G");
-}
-
-void tmk_getCommandLineArguments(int totalMainArguments,
-                                 const char **mainArguments,
-                                 struct tmk_CommandLineArguments *arguments) {
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  arguments->utf16Arguments =
-      CommandLineToArgvW(GetCommandLineW(), &arguments->totalArguments);
-  arguments->utf8Arguments =
-      malloc(arguments->totalArguments * sizeof(const char **));
-  for (int offset = 0; offset < arguments->totalArguments; ++offset) {
-    arguments->utf8Arguments[offset] =
-        tmk_convertUtf16ToUtf8(arguments->utf16Arguments[offset], NULL);
-  }
+int
+tmk_getwdim(struct tmk_dim *d)
+{
+#ifdef _WIN32
+  CONSOLE_SCREEN_BUFFER_INFO b;
+  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &b) &&
+      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &b))
+    return -1;
+  d->cols = b.srWindow.Right - b.srWindow.Left + 1;
+  d->rows = b.srWindow.Bottom - b.srWindow.Top + 1;
 #else
-  arguments->utf8Arguments = mainArguments;
-  arguments->totalArguments = totalMainArguments;
-#endif
-}
-
-void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments *arguments) {
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  LocalFree(arguments->utf16Arguments);
-  for (int offset = 0; offset < arguments->totalArguments; ++offset) {
-    free((void *)arguments->utf8Arguments[offset]);
-  }
-#endif
-}
-
-int tmk_getWindowDimensions(struct tmk_WindowDimensions *dimensions) {
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
-                                  &bufferInfo) &&
-      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
-                                  &bufferInfo)) {
+  struct winsize w;
+  if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w) &&
+      ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) &&
+      ioctl(STDERR_FILENO, TIOCGWINSZ, &w))
     return -1;
-  }
-  dimensions->totalColumns =
-      bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
-  dimensions->totalRows =
-      bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
-#else
-  struct winsize ioctlSize;
-  if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) &&
-      ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) &&
-      ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize)) {
-    return -1;
-  }
-  dimensions->totalColumns = ioctlSize.ws_col;
-  dimensions->totalRows = ioctlSize.ws_row;
-#endif
-  dimensions->area = dimensions->totalColumns * dimensions->totalRows;
-  return 0;
-}
-
-void tmk_setFontAnsiColor(unsigned char color, enum tmk_Layer layer) {
-  tmk_writeAnsiSequence("\x1b[%d8;5;%dm", layer, color);
-}
-
-void tmk_setFontRgbColor(struct tmk_RgbColor color, enum tmk_Layer layer) {
-  tmk_writeAnsiSequence("\x1b[%d8;2;%hu;%hu;%hum", layer, color.red,
-                        color.green, color.blue);
-}
-
-void tmk_resetFontColors(void) {
-  tmk_writeAnsiSequence("\x1b[39;49m");
-}
-
-void tmk_setFontWeight(enum tmk_FontWeight weight) {
-  tmk_writeAnsiSequence("\x1b[22;%dm", weight);
-}
-
-void tmk_resetFontWeight(void) {
-  tmk_writeAnsiSequence("\x1b[22m");
-}
-
-void tmk_setFontEffects(int effectsMask) {
-  for (int effect = 3; effect < 10; ++effect) {
-    if (effectsMask & 1 << effect) {
-      tmk_writeAnsiSequence("\x1b[%dm", effect);
-    }
-  }
-}
-
-void tmk_resetFontEffects(void) {
-  for (int effect = 23; effect < 30; ++effect) {
-    if (effect != 26) {
-      tmk_writeAnsiSequence("\x1b[%dm", effect);
-    }
-  }
-}
-
-void tmk_openAlternateWindow(void) {
-  tmk_writeAnsiSequence("\x1b[?1049h\x1b[2J\x1b[1;1H");
-}
-
-void tmk_closeAlternateWindow(void) {
-  tmk_writeAnsiSequence("\x1b[?1049l");
-}
-
-int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
-                                  &bufferInfo) &&
-      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
-                                  &bufferInfo)) {
-    return -1;
-  }
-  coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
-  coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Right;
-#else
-  tmk_clearInputBuffer();
-  struct termios attributes;
-  if (tmk_writeAnsiSequence("\x1b[6n") ||
-      tcgetattr(STDIN_FILENO, &attributes)) {
-    return -1;
-  }
-  attributes.c_lflag &= ~(ICANON | ECHO);
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  int totalMatches =
-      scanf("\x1b[%hu;%huR", &coordinate->row, &coordinate->column);
-  attributes.c_lflag |= ICANON | ECHO;
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  if (totalMatches != 2) {
-    return -1;
-  }
-  --coordinate->row;
-  --coordinate->column;
+  d->cols = w.ws_col;
+  d->rows = w.ws_row;
 #endif
   return 0;
 }
 
-void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
-  tmk_writeAnsiSequence("\x1b[%hu;%huH", coordinate.row + 1,
-                        coordinate.column + 1);
+void
+tmk_setwalt(int isalt)
+{
+  writeansi(isalt ? "\x1b[?1049h\x1b[2J\x1b[1;1H" : "\x1b[?1049l");
 }
 
-void tmk_setCursorShape(enum tmk_CursorShape shape, int shouldBlink) {
-  tmk_writeAnsiSequence("\x1b[%d q", shape - !!shouldBlink);
+void
+tmk_setcvis(int isvis)
+{
+  writeansi("\x1b[?25%c", isvis ? 'h' : 'l');
 }
 
-void tmk_resetCursorShape(void) {
-  tmk_writeAnsiSequence("\x1b[0 q");
+void
+tmk_setcshp(int shp)
+{
+  writeansi("\x1b[%d q", shp);
 }
 
-void tmk_setCursorVisible(int isVisible) {
-  tmk_writeAnsiSequence("\x1b[?25%c", isVisible ? 'h' : 'l');
-}
-
-int tmk_readKeyEvent(short waitInMilliseconds, struct tmk_KeyEvent *event,
-                     int (*filter)(struct tmk_KeyEvent *)) {
-  tmk_initRedirectionCache();
-  if (tmk_IS_STREAM_REDIRECTED(tmk_Stream_Input) || fwide(stdin, 0) > 0 ||
-      (tmk_IS_STREAM_REDIRECTED(tmk_Stream_Output) &&
-       tmk_IS_STREAM_REDIRECTED(tmk_Stream_Error))) {
+int
+tmk_getcpos(struct tmk_pos *p)
+{
+#ifdef _WIN32
+  CONSOLE_SCREEN_BUFFER_INFO b;
+  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &b) &&
+      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &b))
     return -1;
-  }
-  struct tmk_KeyEvent temporaryEvent;
-  tmk_flushOutputBuffer();
-#if tmk_IS_OPERATING_SYSTEM_WINDOWS
-  HANDLE input = GetStdHandle(STD_INPUT_HANDLE);
+  p->col = b.dwCursorPosition.X - b.srWindow.Left;
+  p->row = b.dwCursorPosition.Y - b.srWindow.Top;
+#else
+  if (!tmk_istty(tmk_StdIn) || (!tmk_istty(tmk_StdOut) &&
+                                !tmk_istty(tmk_StdErr)))
+    return -1;
+  tmk_clearin();
+  setraw(1);
+  writeansi("\x1b[6n");
+  unsigned short col;
+  unsigned short row;
+  scanf("\x1b[%hu;%huR", &row, &col);
+  setraw(0);
+  p->col = col - 1;
+  p->row = row - 1;
+#endif
+  return 0;
+}
+
+void
+tmk_setcpos(struct tmk_pos p)
+{
+  writeansi("\x1b[%hu;%huH", p.row + 1, p.col + 1);
+}
+
+void
+tmk_mvcpos(unsigned short stp, int drt)
+{
+  writeansi("\x1b[%hu%c", stp, drt);
+}
+
+void
+tmk_setclr(int clr, int lyr)
+{
+  writeansi(clr == tmk_ClrDft ? "\x1b[%d9m" : "\x1b[%d8;5;%dm", lyr, clr);
+}
+
+void
+tmk_swpclr(int isswp)
+{
+  writeansi("\x1b[%dm", isswp ? 7 : 27);
+}
+
+void
+tmk_setwgt(int wgt)
+{
+  writeansi(wgt == tmk_WgtDft ? "\x1b[22m" : "\x1b[22;%dm", wgt);
+}
+
+void
+tmk_clearln(void)
+{
+  writeansi("\x1b[2K\x1b[1G");
+}
+
+void
+tmk_ringbell(void)
+{
+  writeansi("\7");
+}
+
+int
+tmk_readkey(int wait, int (*flt)(struct tmk_key*), struct tmk_key *key)
+{
+  if (!tmk_istty(tmk_StdIn) || (!tmk_istty(tmk_StdOut) &&
+                                !tmk_istty(tmk_StdErr)))
+    return -1;
+  tmk_flushout();
+  int ret = 0;
+#ifdef _WIN32
+  HANDLE in = GetStdHandle(STD_INPUT_HANDLE);
   HANDLE timer = NULL;
   DWORD mode;
-  GetConsoleMode(input, &mode);
-  SetConsoleMode(input, mode & ~ENABLE_PROCESSED_INPUT);
-parse_l:
-  int returnCode = 0;
+  GetConsoleMode(in, &mode);
+  SetConsoleMode(in, mode & ~ENABLE_PROCESSED_INPUT);
   while (1) {
-    if (!waitInMilliseconds) {
-      DWORD totalEvents;
-      GetNumberOfConsoleInputEvents(input, &totalEvents);
-      if (!totalEvents) {
-        returnCode = -2;
-        break;
+    if (!wait) {
+      DWORD t;
+      GetNumberOfConsoleInputEvents(in, &t);
+      if (!t) {
+        ret = -2;
+        goto end_l;
       }
-    } else if (waitInMilliseconds > 0) {
+    } else if (wait > 0) {
       if (!timer) {
         timer = CreateWaitableTimerW(NULL, TRUE, NULL);
-        LARGE_INTEGER dueTime;
-        dueTime.QuadPart = waitInMilliseconds * -10000;
-        SetWaitableTimer(timer, &dueTime, 0, NULL, NULL, FALSE);
+        LARGE_INTEGER l;
+        l.QuadPart = wait * -10000;
+        SetWaitableTimer(timer, &l, 0, NULL, NULL, FALSE);
       }
-      HANDLE objects[] = {timer, input};
-      if (WaitForMultipleObjects(2, objects, FALSE, INFINITE) ==
-          WAIT_OBJECT_0) {
-        returnCode = -3;
-        break;
+      HANDLE h[] = {timer, in};
+      if (WaitForMultipleObjects(2, h, FALSE, INFINITE) == WAIT_OBJECT_0) {
+        ret = -3;
+        goto end_l;
       }
     }
-    INPUT_RECORD record;
-    DWORD totalEventsRead;
-    ReadConsoleInputW(input, &record, 1, &totalEventsRead);
-    if (record.EventType == WINDOW_BUFFER_SIZE_EVENT) {
-      returnCode = -4;
-      break;
+    INPUT_RECORD rec;
+    DWORD t;
+    ReadConsoleInputW(in, &rec, 1, &t);
+    if (rec.EventType == WINDOW_BUFFER_SIZE_EVENT) {
+      ret = -4;
+      goto end_l;
     }
-    if (record.EventType != KEY_EVENT || !record.Event.KeyEvent.bKeyDown ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_SHIFT ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_MENU ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK ||
-        record.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL) {
+    if (rec.EventType != KEY_EVENT || !rec.Event.KeyEvent.bKeyDown ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_CONTROL ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_SHIFT ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_MENU ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_CAPITAL ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_NUMLOCK ||
+        rec.Event.KeyEvent.wVirtualKeyCode == VK_SCROLL)
       continue;
-    }
-    memset(&temporaryEvent, 0, sizeof(struct tmk_KeyEvent));
-    int buffer = record.Event.KeyEvent.uChar.UnicodeChar;
-    if (buffer) {
-      if (buffer <= 26 && buffer != tmk_Key_Tab && buffer != tmk_Key_Enter) {
-        temporaryEvent.key = buffer + 96;
-      } else if (buffer >= HIGH_SURROGATE_START &&
-                 buffer <= HIGH_SURROGATE_END) {
-        ReadConsoleInputW(input, &record, 1, &totalEventsRead);
-        ReadConsoleInputW(input, &record, 1, &totalEventsRead);
-        *((short *)&buffer + 1) = record.Event.KeyEvent.uChar.UnicodeChar;
-        WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 2,
-                            (char *)&temporaryEvent.key, 4, NULL, NULL);
+    memset(key, 0, sizeof(struct tmk_key));
+    ((wchar_t*)&key->buf)[0] = rec.Event.KeyEvent.uChar.UnicodeChar;
+    if (rec.Event.KeyEvent.uChar.UnicodeChar) {
+      if (key->buf <= 26 && key->buf != tmk_KeyTab && key->buf != tmk_KeyRet)
+        key->buf += 96;
+      else if (key->buf >= HIGH_SURROGATE_START &&
+                 key->buf <= HIGH_SURROGATE_END) {
+        ReadConsoleInputW(in, &rec, 1, &t);
+        ReadConsoleInputW(in, &rec, 1, &t);
+        ((wchar_t*)&key->buf)[1] = rec.Event.KeyEvent.uChar.UnicodeChar;
+        int k = 0;
+        WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)&key->buf, 2, (char*)&k, 4,
+                            NULL, NULL);
+        key->buf = k;
       } else {
-        WideCharToMultiByte(CP_UTF8, 0, (wchar_t *)&buffer, 1,
-                            (char *)&temporaryEvent.key, 4, NULL, NULL);
+        int k = 0;
+        WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)&key->buf, 1, (char*)&k, 4,
+                            NULL, NULL);
+        key->buf = k;
       }
-      temporaryEvent.modifiers = !!(record.Event.KeyEvent.dwControlKeyState &
-                                    (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
-                                 !!(record.Event.KeyEvent.dwControlKeyState &
-                                    (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
-                                     << 1;
-      break;
-    } else if (record.Event.KeyEvent.dwControlKeyState &
+      key->mods =
+          !!(rec.Event.KeyEvent.dwControlKeyState &
+             (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) |
+          !!(rec.Event.KeyEvent.dwControlKeyState &
+             (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)) << 1;
+      goto end_l;
+    } else if (rec.Event.KeyEvent.dwControlKeyState &
                (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED | LEFT_CTRL_PRESSED |
-                RIGHT_CTRL_PRESSED | SHIFT_PRESSED)) {
+                RIGHT_CTRL_PRESSED | SHIFT_PRESSED))
       continue;
+    switch (rec.Event.KeyEvent.wVirtualKeyCode) {
+      KEY(VK_UP, tmk_KeyUpArr);
+      KEY(VK_DOWN, tmk_KeyDnArr);
+      KEY(VK_RIGHT, tmk_KeyRgArr);
+      KEY(VK_LEFT, tmk_KeyLfArr);
     }
-    tmk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_LEFT &&
-                      record.Event.KeyEvent.wVirtualKeyCode <= VK_DOWN,
-                  record.Event.KeyEvent.wVirtualKeyCode - VK_LEFT +
-                      tmk_Key_LeftArrow);
-    tmk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_PRIOR &&
-                      record.Event.KeyEvent.wVirtualKeyCode <= VK_HOME,
-                  record.Event.KeyEvent.wVirtualKeyCode - VK_PRIOR +
-                      tmk_Key_PageUp);
-    tmk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_INSERT &&
-                      record.Event.KeyEvent.wVirtualKeyCode <= VK_DELETE,
-                  record.Event.KeyEvent.wVirtualKeyCode - VK_INSERT +
-                      tmk_Key_Insert);
-    tmk_PARSE_KEY(record.Event.KeyEvent.wVirtualKeyCode >= VK_F1 &&
-                      record.Event.KeyEvent.wVirtualKeyCode <= VK_F12,
-                  record.Event.KeyEvent.wVirtualKeyCode - VK_F1 + tmk_Key_F1);
-  }
-  if (waitInMilliseconds > 0 && !returnCode && filter &&
-      !filter(&temporaryEvent)) {
-    goto parse_l;
-  }
-  if (timer) {
-    CloseHandle(timer);
-  }
-  SetConsoleMode(input, mode);
-#else
-  sigset_t blockedSignals;
-  sigset_t backupSignals;
-  sigfillset(&blockedSignals);
-  sigdelset(&blockedSignals, SIGWINCH);
-  pthread_sigmask(SIG_SETMASK, &blockedSignals, &backupSignals);
-  struct sigaction sigwinchAction;
-  sigwinchAction.sa_handler = tmk_handleSigwinch;
-  sigwinchAction.sa_flags = 0;
-  sigemptyset(&sigwinchAction.sa_mask);
-  sigaction(SIGWINCH, &sigwinchAction, NULL);
-  struct termios attributes;
-  int flags = fcntl(STDIN_FILENO, F_GETFL);
-  tcgetattr(STDIN_FILENO, &attributes);
-  attributes.c_lflag &= ~(ICANON | ECHO | ISIG);
-  attributes.c_iflag &= ~IXON;
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  long timer = waitInMilliseconds;
-  int returnCode;
-parse_l:
-  returnCode = 0;
-  while (1) {
-    struct pollfd stdinPollFd = {STDIN_FILENO, POLLIN, 0};
-    unsigned char buffer[5];
-    memset(buffer, 0, sizeof(buffer));
-    if (!waitInMilliseconds) {
-      fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-      if ((buffer[0] = getchar()) == tmk_SIGNED_EOF) {
-        returnCode = -2;
-        break;
-      }
-    } else if (waitInMilliseconds > 0 && timer >= 0) {
-      fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-      if ((buffer[0] = getchar()) == tmk_SIGNED_EOF) {
-        struct timespec initTime;
-        struct timespec endTime;
-        clock_gettime(CLOCK_MONOTONIC, &initTime);
-        int status = poll(&stdinPollFd, 1, timer);
-        clock_gettime(CLOCK_MONOTONIC, &endTime);
-        timer = tmk_MAXIMUM(0, timer - tmk_TIMESPEC_TO_MILLISECONDS(endTime) +
-                                   tmk_TIMESPEC_TO_MILLISECONDS(initTime));
-        if (status <= 0) {
-          returnCode = status < 0 && errno == EINTR ? -4 : -3;
-          break;
-        }
-        buffer[0] = getchar();
-      }
-    } else {
-      buffer[0] = getchar();
-      fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-    }
-    memset(&temporaryEvent, 0, sizeof(struct tmk_KeyEvent));
-#if tmk_IS_OPERATING_SYSTEM_MACOS
-    switch (buffer[0]) {
-      tmk_PARSE_OPTION_KEY(38, 'J');
-      tmk_PARSE_OPTION_KEY(47, 'q');
-      tmk_PARSE_OPTION_KEY(60, 'Z');
-      tmk_PARSE_OPTION_KEY(62, 'X');
-      tmk_PARSE_OPTION_KEY(63, 'w');
-      tmk_PARSE_OPTION_KEY(92, 'Q');
-    case 194:
-      switch (buffer[1] = getchar()) {
-        tmk_PARSE_OPTION_KEY(167, 'S');
-        tmk_PARSE_OPTION_KEY(169, 'C');
-        tmk_PARSE_OPTION_KEY(174, 'r');
-        tmk_PARSE_OPTION_KEY(181, 'm');
-        tmk_PARSE_OPTION_KEY(191, 'W');
-      }
-    case 195:
-      switch (buffer[1] = getchar()) {
-        tmk_PARSE_OPTION_KEY(134, 'A');
-        tmk_PARSE_OPTION_KEY(144, 'D');
-        tmk_PARSE_OPTION_KEY(152, 'O');
-        tmk_PARSE_OPTION_KEY(158, 'P');
-        tmk_PARSE_OPTION_KEY(159, 's');
-        tmk_PARSE_OPTION_KEY(166, 'a');
-        tmk_PARSE_OPTION_KEY(176, 'd');
-        tmk_PARSE_OPTION_KEY(184, 'o');
-        tmk_PARSE_OPTION_KEY(190, 'p');
-      }
-    case 196:
-      switch (buffer[1] = getchar()) {
-        tmk_PARSE_OPTION_KEY(145, 'f');
-        tmk_PARSE_OPTION_KEY(166, 'H');
-        tmk_PARSE_OPTION_KEY(167, 'h');
-        tmk_PARSE_OPTION_KEY(177, 'I');
-        tmk_PARSE_OPTION_KEY(184, 'k');
-      }
-    case 197:
-      switch (buffer[1] = getchar()) {
-        tmk_PARSE_OPTION_KEY(129, 'L');
-        tmk_PARSE_OPTION_KEY(130, 'l');
-        tmk_PARSE_OPTION_KEY(138, 'N');
-        tmk_PARSE_OPTION_KEY(139, 'n');
-        tmk_PARSE_OPTION_KEY(166, 'T');
-        tmk_PARSE_OPTION_KEY(167, 't');
-      }
-    case 198:
-      switch (buffer[1] = getchar()) { tmk_PARSE_OPTION_KEY(178, 'V'); }
-    case 202:
-      switch (buffer[1] = getchar()) {
-        tmk_PARSE_OPTION_KEY(139, 'v');
-        tmk_PARSE_OPTION_KEY(157, 'j');
-      }
-    case 203:
-      switch (buffer[1] = getchar()) { tmk_PARSE_OPTION_KEY(157, 'G'); }
-    case 206:
-      switch (buffer[1] = getchar()) { tmk_PARSE_OPTION_KEY(169, 'z'); }
-    case 226:
-      switch (buffer[1] = getchar()) {
-      case 130:
-        switch (buffer[2] = getchar()) {
-          tmk_PARSE_OPTION_KEY(162, 'c');
-          tmk_PARSE_OPTION_KEY(172, 'e');
-        }
-      case 132:
-        switch (buffer[2] = getchar()) { tmk_PARSE_OPTION_KEY(162, 'B'); }
-      case 134:
-        switch (buffer[2] = getchar()) {
-          tmk_PARSE_OPTION_KEY(144, 'y');
-          tmk_PARSE_OPTION_KEY(145, 'U');
-          tmk_PARSE_OPTION_KEY(146, 'i');
-          tmk_PARSE_OPTION_KEY(147, 'u');
-        }
-      case 136:
-        switch (buffer[2] = getchar()) {
-          tmk_PARSE_OPTION_KEY(134, 'g');
-          tmk_PARSE_OPTION_KEY(171, 'b');
-        }
-      case 137:
-        switch (buffer[2] = getchar()) { tmk_PARSE_OPTION_KEY(136, 'x'); }
-      case 151:
-        buffer[2] = getchar();
-        switch (buffer[2] = getchar()) { tmk_PARSE_OPTION_KEY(138, 'F'); }
-      }
-    case 239:
-      switch (buffer[1] = getchar()) {
-      case 163:
-        switch (buffer[2] = getchar()) { tmk_PARSE_OPTION_KEY(191, 'K'); }
-      case 157:
-        if ((buffer[2] = getchar()) == 134) {
-          temporaryEvent.key = tmk_Key_Insert;
-          goto reset_l;
-        }
-      }
-    }
-#endif
-    if (buffer[0] == 27 && ((buffer[1] = getchar()) == 91 || buffer[1] == 79)) {
-      for (int offset = 2; offset < sizeof(buffer); ++offset) {
-        buffer[offset] = getchar();
-      }
-      while (getchar() != EOF) {
-      }
-      tmk_PARSE_KEY(buffer[2] >= 65 && buffer[2] <= 68,
-                    buffer[2] - 65 + tmk_Key_UpArrow);
-      tmk_PARSE_KEY(buffer[3] == 126, buffer[2] - 49 + tmk_Key_Home);
-      tmk_PARSE_KEY(buffer[3] == 104 || (buffer[1] == 91 && buffer[2] == 80),
-                    !(buffer[3] == 104) + tmk_Key_Home);
-      tmk_PARSE_KEY(buffer[2] == 70 || buffer[2] == 72,
-                    buffer[2] == 72 ? tmk_Key_Home : tmk_Key_End);
-      tmk_PARSE_KEY(buffer[2] >= 80 && buffer[2] <= 83,
-                    buffer[2] - 80 + tmk_Key_F1);
-      tmk_PARSE_KEY(buffer[3] >= 65 && buffer[3] <= 69,
-                    buffer[3] - 65 + tmk_Key_F1);
-      tmk_PARSE_KEY(buffer[4] == 126, buffer[3] == 53 ? tmk_Key_F5
-                                      : buffer[3] >= 55 && buffer[3] <= 57
-                                          ? buffer[3] - 55 + tmk_Key_F6
-                                      : buffer[3] == 48 || buffer[3] == 49
-                                          ? buffer[3] - 48 + tmk_Key_F9
-                                          : buffer[3] - 51 + tmk_Key_F11);
-      fcntl(STDIN_FILENO, F_SETFL, flags);
+    continue;
+  end_l:
+    if (!ret && flt && !flt(key))
       continue;
-    }
-    if (buffer[0] & 1 << 7) {
-      for (int offset = 1;
-           offset < 1 + !!(buffer[0] & 1 << 6) + !!(buffer[0] & 1 << 5) +
-                        !!(buffer[0] & 1 << 4);
-           ++offset) {
-        buffer[offset] = getchar();
-      }
-      temporaryEvent.key = *(int *)buffer;
-    } else if ((temporaryEvent.key =
-                    (temporaryEvent.modifiers =
-                         buffer[0] == 27 && buffer[1] != tmk_SIGNED_EOF)
-                        ? buffer[1]
-                        : buffer[0]) >= 0 &&
-               temporaryEvent.key <= 26 && temporaryEvent.key != tmk_Key_Tab &&
-               temporaryEvent.key != tmk_Key_Enter) {
-      temporaryEvent.key =
-          !temporaryEvent.key ? tmk_Key_Spacebar : temporaryEvent.key + 96;
-      temporaryEvent.modifiers |= tmk_ModifierKey_Ctrl;
-    }
+    SetConsoleMode(in, mode);
+    if (timer)
+      CloseHandle(timer);
     break;
   }
-reset_l:
-  fcntl(STDIN_FILENO, F_SETFL, flags);
-  if (waitInMilliseconds > 0 && !returnCode && filter &&
-      !filter(&temporaryEvent)) {
-    goto parse_l;
-  }
-  attributes.c_lflag |= ICANON | ECHO | ISIG;
-  attributes.c_iflag |= IXON;
-  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-  sigwinchAction.sa_handler = SIG_DFL;
-  sigaction(SIGWINCH, &sigwinchAction, NULL);
-  pthread_sigmask(SIG_SETMASK, &backupSignals, NULL);
+#else
+  sigset_t sigbkp;
+  int timer;
+  if (wait) {
+    fltsig(1, &sigbkp);
+    timer = wait;
+  } else
+    setblk(0);
+  setraw(1);
+  while (1) {
+    memset(key, 0, sizeof(struct tmk_key));
+    if (!wait) {
+      if ((BYTE(0) = getchar()) == UEOF) {
+        ret = -2;
+        goto end_l;
+      }
+    } else if (wait < 0) {
+      struct pollfd pfd = {STDIN_FILENO, POLLIN, 0};
+      int s = poll(&pfd, 1, -1);
+      if (s < 0) {
+        ret = errno == EINTR ? -4 : -1;
+        goto end_l;
+      }
+      BYTE(0) = getchar();
+      setblk(0);
+    } else {
+      struct pollfd pfd = {STDIN_FILENO, POLLIN, 0};
+      struct timespec start;
+      struct timespec end;
+      clock_gettime(CLOCK_MONOTONIC, &start);
+      int s = poll(&pfd, 1, timer);
+      clock_gettime(CLOCK_MONOTONIC, &end);
+      if (s <= 0) {
+        ret = errno == EINTR ? -4 : !s ? -3 : -1;
+        goto end_l;
+      }
+      timer = MAX(0, timer - DIFFMS(start, end));
+      BYTE(0) = getchar();
+      setblk(0);
+    }
+#ifdef __APPLE__
+    switch (BYTE(0)) {
+      ALTKEY(38, 'J');
+      ALTKEY(47, 'q');
+      ALTKEY(60, 'Z');
+      ALTKEY(62, 'X');
+      ALTKEY(63, 'w');
+      ALTKEY(92, 'Q');
+    case 194:
+      switch ((BYTE(1) = getchar())) {
+        ALTKEY(160, ' ');
+        ALTKEY(167, 'S');
+        ALTKEY(169, 'C');
+        ALTKEY(174, 'r');
+        ALTKEY(181, 'm');
+        ALTKEY(191, 'W');
+      }
+    case 195:
+      switch ((BYTE(1) = getchar())) {
+        ALTKEY(134, 'A');
+        ALTKEY(144, 'D');
+        ALTKEY(152, 'O');
+        ALTKEY(158, 'P');
+        ALTKEY(159, 's');
+        ALTKEY(166, 'a');
+        ALTKEY(176, 'd');
+        ALTKEY(184, 'o');
+        ALTKEY(190, 'p');
+      }
+    case 196:
+      switch ((BYTE(1) = getchar())) {
+        ALTKEY(145, 'f');
+        ALTKEY(166, 'H');
+        ALTKEY(167, 'h');
+        ALTKEY(177, 'I');
+        ALTKEY(184, 'k');
+      }
+    case 197:
+      switch ((BYTE(1) = getchar())) {
+        ALTKEY(129, 'L');
+        ALTKEY(130, 'l');
+        ALTKEY(138, 'N');
+        ALTKEY(139, 'n');
+        ALTKEY(166, 'T');
+        ALTKEY(167, 't');
+      }
+    case 198:
+      switch ((BYTE(1) = getchar()))
+        ALTKEY(178, 'V');
+    case 202:
+      switch ((BYTE(1) = getchar())) {
+        ALTKEY(139, 'v');
+        ALTKEY(157, 'j');
+      }
+    case 203:
+      switch ((BYTE(1) = getchar()))
+        ALTKEY(157, 'G');
+    case 206:
+      switch ((BYTE(1) = getchar()))
+        ALTKEY(169, 'z');
+    case 226:
+      switch ((BYTE(1) = getchar())) {
+      case 130:
+        switch ((BYTE(2) = getchar())) {
+          ALTKEY(162, 'c');
+          ALTKEY(172, 'e');
+        }
+      case 132:
+        switch ((BYTE(2) = getchar()))
+          ALTKEY(162, 'B');
+      case 134:
+        switch ((BYTE(2) = getchar())) {
+          ALTKEY(144, 'y');
+          ALTKEY(145, 'U');
+          ALTKEY(146, 'i');
+          ALTKEY(147, 'u');
+        }
+      case 136:
+        switch ((BYTE(2) = getchar())) {
+          ALTKEY(134, 'g');
+          ALTKEY(171, 'b');
+        }
+      case 137:
+        switch ((BYTE(2) = getchar()))
+          ALTKEY(136, 'x');
+      case 151:
+        switch ((BYTE(2) = getchar()))
+          ALTKEY(138, 'F');
+      }
+    case 239:
+      switch ((BYTE(1) = getchar()))
+      case 163:
+        switch ((BYTE(2) = getchar()))
+          ALTKEY(191, 'K');
+    }
 #endif
-  if (event && !returnCode) {
-    *event = temporaryEvent;
+    if (BYTE(0) & 1 << 7) {
+      if (BYTE(0) & 1 << 6 && !BYTE(1))
+        BYTE(1) = getchar();
+      if (BYTE(0) & 1 << 5 && !BYTE(2))
+        BYTE(2) = getchar();
+      if (BYTE(0) & 1 << 4 && !BYTE(3))
+        BYTE(3) = getchar();
+      goto end_l;
+    }
+    if (BYTE(0) == 27) {
+      switch ((BYTE(1) = getchar())) {
+      case UEOF:
+        key->buf = tmk_KeyEsc;
+        goto end_l;
+      case 91:
+        if ((BYTE(2) = getchar()) >= 65 && BYTE(2) <= 68) {
+          key->buf = BYTE(2) - 70;
+          goto end_l;
+        }
+      case 79:
+        while (getchar() != EOF);
+        if (wait)
+          setblk(1);
+        continue;
+      }
+    }
+    if ((key->buf = (key->mods = BYTE(0) == 27) ? BYTE(1) : BYTE(0)) >= 0 &&
+        key->buf <= 26 && key->buf != tmk_KeyTab && key->buf != tmk_KeyRet) {
+      key->buf = !key->buf ? 32 : key->buf + 96;
+      key->mods |= tmk_ModCtrl;
+    }
+  end_l:
+    if (wait)
+      setblk(1);
+    if (!ret && flt && !flt(key))
+      continue;
+    if (wait)
+      fltsig(0, &sigbkp);
+    else
+      setblk(1);
+    setraw(0);
+    break;
   }
-  return returnCode;
+#endif
+  return ret;
 }
 
-void tmk_writeArguments(const char *format, va_list arguments) {
-  tmk_initRedirectionCache();
-  vprintf(format, arguments);
+void
+tmk_getargs(int argc, const char **argv, struct tmk_args *a)
+{
+#ifdef _WIN32
+  a->asutf16 = CommandLineToArgvW(GetCommandLineW(), &a->total);
+  if (a->total == 1) {
+    LocalFree(a->asutf16);
+    a->total = 0;
+    return;
+  }
+  ++a->asutf16;
+  --a->total;
+  a->asutf8 = malloc(sizeof(void*) * a->total);
+  for (int i = 0; i < a->total; ++i)
+    a->asutf8[i] = tmk_asutf8(a->asutf16[i]);
+#else
+  if (argc == 1) {
+    a->total = 0;
+    return;
+  }
+  a->total = argc - 1;
+  a->asutf8 = argv + 1;
+#endif
 }
 
-void tmk_writeArgumentsLine(const char *format, va_list arguments) {
-  tmk_writeArguments(format, arguments);
-  putchar('\n');
+void
+tmk_freeargs(struct tmk_args *a)
+{
+#ifdef _WIN32
+  if (!a->total)
+    return;
+  LocalFree(a->asutf16 - 1);
+  for (int i = 0; i < a->total; ++i)
+    free((void*)a->asutf8[i]);
+  free(a->asutf8);
+#endif
 }
 
-void tmk_writeErrorArguments(const char *format, va_list arguments) {
-  tmk_initRedirectionCache();
-  tmk_flushOutputBuffer();
-  vfprintf(stderr, format, arguments);
+void
+tmk_vwrite(const char *fmt, va_list v)
+{
+  init();
+  vprintf(fmt, v);
 }
 
-void tmk_writeErrorArgumentsLine(const char *format, va_list arguments) {
-  tmk_writeErrorArguments(format, arguments);
-  fputc('\n', stderr);
+void
+tmk_write(const char *fmt, ...)
+{
+  va_list v;
+  va_start(v, fmt);
+  tmk_vwrite(fmt, v);
+  va_end(v);
 }
 
-void tmk_write(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeArguments(format, arguments);
-  va_end(arguments);
+void
+tmk_vewrite(const char *fmt, va_list v)
+{
+  init();
+  tmk_flushout();
+  vfprintf(stderr, fmt, v);
 }
 
-void tmk_writeLine(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeArgumentsLine(format, arguments);
-  va_end(arguments);
-}
-
-void tmk_writeError(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeErrorArguments(format, arguments);
-  va_end(arguments);
-}
-
-void tmk_writeErrorLine(const char *format, ...) {
-  va_list arguments;
-  va_start(arguments, format);
-  tmk_writeErrorArgumentsLine(format, arguments);
-  va_end(arguments);
+void
+tmk_ewrite(const char *fmt, ...)
+{
+  va_list v;
+  va_start(v, fmt);
+  tmk_vewrite(fmt, v);
+  va_end(v);
 }

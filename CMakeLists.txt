@@ -1,4 +1,11 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD 99)
 project(tmk)
-add_library(tmk "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.c" "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.h")
+add_library(tmk "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.c"
+                "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.h")
 target_include_directories(tmk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+if (UNIX AND TMK_TOOLS)
+  add_executable(tmk-evtlog "${CMAKE_CURRENT_SOURCE_DIR}/tools/tmk-evtlog.c")
+  target_link_libraries(tmk-evtlog tmk)
+endif ()
