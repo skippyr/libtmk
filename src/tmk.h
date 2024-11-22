@@ -3,13 +3,13 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-enum tmk_Std {
+enum {
   tmk_StdIn,
   tmk_StdOut,
   tmk_StdErr
 };
 
-enum tmk_Shp {
+enum {
   tmk_ShpDft,
   tmk_ShpBBlk,
   tmk_ShpBlk,
@@ -19,12 +19,12 @@ enum tmk_Shp {
   tmk_ShpBar
 };
 
-enum tmk_LyrFg {
+enum {
   tmk_LyrFg = 3,
   tmk_LyrBg
 };
 
-enum tmk_Clr {
+enum {
   tmk_ClrDft = -1,
   tmk_ClrBlk,
   tmk_ClrRed,
@@ -37,20 +37,20 @@ enum tmk_Clr {
   tmk_ClrGry
 };
 
-enum tmk_Wgt {
+enum {
   tmk_WgtDft,
   tmk_WgtBld,
   tmk_WgtDim
 };
 
-enum tmk_Drt {
+enum {
   tmk_DrtUp = 'A',
   tmk_DrtDn,
   tmk_DrtRg,
   tmk_DrtLf
 };
 
-enum tmk_Key {
+enum {
   tmk_KeyUpArr = -5,
   tmk_KeyDnArr,
   tmk_KeyRgArr,
@@ -66,7 +66,7 @@ enum tmk_Key {
   tmk_KeyBckspc = 127
 };
 
-enum tmk_Mod {
+enum {
   tmk_ModAlt = 1,
   tmk_ModCtrl = 1 << 1
 };
