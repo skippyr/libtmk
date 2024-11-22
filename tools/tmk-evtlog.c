@@ -8,32 +8,33 @@
 #include <tmk.h>
 #include <unistd.h>
 
+#define NAME "tmk-evtlog"
+#define VERSION "1.0.0"
+#define REPO "https://github.com/skippyr/libtmk"
 #define UEOF 255
 
-static void help(void);
-static void version(void);
+static void writehelp(void);
+static void writeversion(void);
 static void setraw(int israw);
 static void setblk(int isblk);
-static int prsargs(int argc, const char **argv);
+static int parseargs(int argc, const char **argv);
 static void logevts(void);
 
 static void
-help(void)
+writehelp(void)
 {
-  tmk_write("Usage: tmk-evtlog [OPTIONS]...\n");
-  tmk_write("Log the bytes of key events on macOS and Linux.\n\n");
+  tmk_write("Usage: %s [OPTIONS]...\n", NAME);
+  tmk_write("Logs the bytes of key events on macOS and Linux.\n\n");
   tmk_write("AVAILABLE OPTIONS\n");
   tmk_write("  --help     shows the software help instructions.\n");
   tmk_write("  --version  shows the software version.\n");
 }
 
 static void
-version(void)
+writeversion(void)
 {
-  tmk_write("tmk-evtlog 1.0.0\n\n");
-  tmk_write("BSD-3-Clause License.\n");
-  tmk_write("Copyright (c) 2023 Sherman Rofeman "
-            "<skippyr.developer@icloud.com>\n");
+  tmk_write("%s %s\n", NAME, VERSION);
+  tmk_write("%s\n", REPO);
 }
 
 static void
@@ -55,14 +56,14 @@ setblk(int isblk)
 }
 
 static int
-prsargs(int argc, const char **argv)
+parseargs(int argc, const char **argv)
 {
   for (int i = 1; i < argc; ++i)
     if (!strcmp(argv[i], "--help")) {
-      help();
+      writehelp();
       return -1;
     } else if (!strcmp(argv[i], "--version")) {
-      version();
+      writeversion();
       return -1;
     }
   return 0;
@@ -99,7 +100,7 @@ logevts(void)
 int
 main(int argc, const char **argv)
 {
-  if (prsargs(argc, argv))
+  if (parseargs(argc, argv))
     return 0;
   logevts();
   return 0;
