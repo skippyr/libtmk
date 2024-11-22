@@ -1,10 +1,7 @@
 <p align="center">
   <img alt="" src="assets/ornament.png" width=1020 />
 </p>
-<p align="center">
-<img alt="" src="assets/dragon.png" width=200 />
-</p>
-<h1 align="center">&ensp;libtmk&ensp;</h1>
+<h1 align="center">≥v≥v&ensp;libtmk&ensp;≥v≥v</h1>
 <p align="center">— Terminal Manipulation Kit – README – Release 17.0.x —<br />C Programming Language</p>
 <p align="center">
   <img alt="" src="https://img.shields.io/github/license/skippyr/libtmk?style=plastic&label=%E2%89%A5%20license&labelColor=%2324130e&color=%23b8150d" />
@@ -16,11 +13,11 @@
   <img alt="" src="https://img.shields.io/github/stars/skippyr/libtmk?style=plastic&label=%E2%89%A5%20stars&labelColor=%2324130e&color=%23b8150d" />
 </p>
 
-## About
+## ❡ About
 Libtmk (_aka_ "Terminal Manipulation Kit") is a simple C99 terminal manipulation library that contains a modest set of features to manipulate terminal properties, styles, arguments and key readings primarily using UTF-8 encoding. It is available for Windows, macOS and Linux.
 
 With its minimalistic and opinionated design, it encourages the development of software with great system compatibility, while leaving room to full-feature libraries to be built upon for more specific use cases.
-## Install
+## ❡ Install
 ### Dependencies
 Due to its cross-platform nature, it is highly recommended to use this library with a setup that combines CMake and Git. For that, the following dependencies are required, varying depending of the operating system you are using:
 - **Windows:**
@@ -59,16 +56,16 @@ add_executable(main "${CMAKE_SOURCE_DIR}/src/main.c")
 target_link_libraries(main tmk)
 ```
 - Delete and recreate the CMake auto-generated build files and, at the next time you build your project, the library will be automatically linked to your executable.
-## Documentation
+## ❡ Documentation
 After installed, you can learn how to use it by reading its [documentation](DOCS.pdf).
-## Help
+## ❡ Help
 If you need any help related to this project, create a new issue in its [issues page](https://github.com/skippyr/libtmk/issues) or send an [e-mail](mailto:skippyr.developer@icloud.com) describing what is going on.
-## Contributing
+## ❡ Contributing
 This project is open to review and possibly accept contributions in the form of bug reports and suggestions. If you are interested, send your contribution to its pull [requests page](https://github.com/skippyr/libtmk/pulls) or via [e-mail](mailto:skippyr.developer@icloud.com).
-## License
+## ❡ License
 This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the `LICENSE` file that comes in its source code for license and copyright details.
 
 &ensp;
-<p align="right"><i>For the memory of all fellow dragons seeing this,<br />in the help to keep your flames alive.</i></p>
+<p align="center"><i>In the memory of all fellow dragons,<br />as the dreams that keeps our flames alive.</i></p>
 &ensp;
-<p align="right"><sup><strong>Here Be Dragons!</strong><br />Made with love.</sup></p>
+<p align="center"><sup><strong>≥v≥v&ensp;Here Be Dragons!&ensp;≥v≥</strong><br />Made With Love</sup></p>

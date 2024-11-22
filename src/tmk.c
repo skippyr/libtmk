@@ -50,7 +50,9 @@ static void writeansi(const char *fmt, ...);
 
 static char cache_g = 0;
 
-static void init(void) {
+static void
+init(void)
+{
   if (cache_g & 1 << 7) {
     return;
   }
@@ -66,7 +68,9 @@ static void init(void) {
 }
 
 #ifndef _WIN32
-static void setraw(int israw) {
+static void
+setraw(int israw)
+{
   struct termios t;
   tcgetattr(STDIN_FILENO, &t);
   t.c_lflag = israw ? t.c_lflag & ~(ICANON | ECHO | ISIG)
@@ -75,12 +79,16 @@ static void setraw(int israw) {
   tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
 
-static void setblk(int isblk) {
+static void
+setblk(int isblk)
+{
   int f = fcntl(STDIN_FILENO, F_GETFL);
   fcntl(STDIN_FILENO, F_SETFL, isblk ? f & ~O_NONBLOCK : f | O_NONBLOCK);
 }
 
-static void filtsig(int isfilt, sigset_t *bkp) {
+static void
+filtsig(int isfilt, sigset_t *bkp)
+{
   struct sigaction a;
   a.sa_flags = 0;
   sigemptyset(&a.sa_mask);
@@ -96,11 +104,15 @@ static void filtsig(int isfilt, sigset_t *bkp) {
   pthread_sigmask(SIG_SETMASK, &filt, bkp);
 }
 
-static void catchsig(int sig) {
+static void
+catchsig(int sig)
+{
 }
 #endif
 
-static void writeansi(const char *fmt, ...) {
+static void
+writeansi(const char *fmt, ...)
+{
   va_list v;
   va_start(v, fmt);
   if (tmk_istty(tmk_StdOut)) {
@@ -112,7 +124,9 @@ static void writeansi(const char *fmt, ...) {
 }
 
 #ifdef _WIN32
-char *tmk_asutf8(const wchar_t *wstr) {
+char *
+tmk_asutf8(const wchar_t *wstr)
+{
   int sz = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
   char *buf = malloc(sz);
   WideCharToMultiByte(CP_UTF8, 0, wstr, -1, buf, sz, NULL, NULL);
@@ -120,16 +134,22 @@ char *tmk_asutf8(const wchar_t *wstr) {
 }
 #endif
 
-int tmk_istty(int std) {
+int
+tmk_istty(int std)
+{
   init();
   return cache_g & 1 << std;
 }
 
-void tmk_flushout(void) {
+void
+tmk_flushout(void)
+{
   fflush(stdout);
 }
 
-void tmk_clearin(void) {
+void
+tmk_clearin(void)
+{
 #ifdef _WIN32
   FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
@@ -145,7 +165,9 @@ void tmk_clearin(void) {
 #endif
 }
 
-int tmk_getwdim(struct tmk_dim *d) {
+int
+tmk_getwdim(struct tmk_dim *d)
+{
 #ifdef _WIN32
   CONSOLE_SCREEN_BUFFER_INFO b;
   if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &b) &&
@@ -167,19 +189,27 @@ int tmk_getwdim(struct tmk_dim *d) {
   return 0;
 }
 
-void tmk_setwalt(int isalt) {
+void
+tmk_setwalt(int isalt)
+{
   writeansi(isalt ? "\x1b[?1049h\x1b[2J\x1b[1;1H" : "\x1b[?1049l");
 }
 
-void tmk_setcvis(int isvis) {
+void
+tmk_setcvis(int isvis)
+{
   writeansi("\x1b[?25%c", isvis ? 'h' : 'l');
 }
 
-void tmk_setcshp(int shp) {
+void
+tmk_setcshp(int shp)
+{
   writeansi("\x1b[%d q", shp);
 }
 
-int tmk_getcpos(struct tmk_pos *p) {
+int
+tmk_getcpos(struct tmk_pos *p)
+{
 #ifdef _WIN32
   CONSOLE_SCREEN_BUFFER_INFO b;
   if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &b) &&
@@ -206,35 +236,51 @@ int tmk_getcpos(struct tmk_pos *p) {
   return 0;
 }
 
-void tmk_setcpos(struct tmk_pos p) {
+void
+tmk_setcpos(struct tmk_pos p)
+{
   writeansi("\x1b[%hu;%huH", p.row + 1, p.col + 1);
 }
 
-void tmk_mvcpos(unsigned short stp, int drt) {
+void
+tmk_mvcpos(unsigned short stp, int drt)
+{
   writeansi("\x1b[%hu%c", stp, drt);
 }
 
-void tmk_setclr(int clr, int lyr) {
+void
+tmk_setclr(int clr, int lyr)
+{
   writeansi(clr == tmk_ClrDft ? "\x1b[%d9m" : "\x1b[%d8;5;%dm", lyr, clr);
 }
 
-void tmk_swpclr(int isswp) {
+void
+tmk_swpclr(int isswp)
+{
   writeansi("\x1b[%dm", isswp ? 7 : 27);
 }
 
-void tmk_setwgt(int wgt) {
+void
+tmk_setwgt(int wgt)
+{
   writeansi(wgt == tmk_WgtDft ? "\x1b[22m" : "\x1b[22;%dm", wgt);
 }
 
-void tmk_clearln(void) {
+void
+tmk_clearln(void)
+{
   writeansi("\x1b[2K\x1b[1G");
 }
 
-void tmk_ringbell(void) {
+void
+tmk_ringbell(void)
+{
   writeansi("\7");
 }
 
-int tmk_readkey(int wait, int (*filt)(struct tmk_key*), struct tmk_key *key) {
+int
+tmk_readkey(int wait, int (*filt)(struct tmk_key*), struct tmk_key *key)
+{
   if (!tmk_istty(tmk_StdIn) || (!tmk_istty(tmk_StdOut) &&
                                 !tmk_istty(tmk_StdErr))) {
     return -1;
@@ -532,7 +578,9 @@ int tmk_readkey(int wait, int (*filt)(struct tmk_key*), struct tmk_key *key) {
   return ret;
 }
 
-void tmk_getargs(int argc, const char **argv, struct tmk_args *a) {
+void
+tmk_getargs(int argc, const char **argv, struct tmk_args *a)
+{
 #ifdef _WIN32
   a->asutf16 = CommandLineToArgvW(GetCommandLineW(), &a->total);
   if (a->total == 1) {
@@ -556,7 +604,9 @@ void tmk_getargs(int argc, const char **argv, struct tmk_args *a) {
 #endif
 }
 
-void tmk_freeargs(struct tmk_args *a) {
+void
+tmk_freeargs(struct tmk_args *a)
+{
 #ifdef _WIN32
   if (!a->total) {
     return;
@@ -569,25 +619,33 @@ void tmk_freeargs(struct tmk_args *a) {
 #endif
 }
 
-void tmk_vwrite(const char *fmt, va_list v) {
+void
+tmk_vwrite(const char *fmt, va_list v)
+{
   init();
   vprintf(fmt, v);
 }
 
-void tmk_write(const char *fmt, ...) {
+void
+tmk_write(const char *fmt, ...)
+{
   va_list v;
   va_start(v, fmt);
   tmk_vwrite(fmt, v);
   va_end(v);
 }
 
-void tmk_vewrite(const char *fmt, va_list v) {
+void
+tmk_vewrite(const char *fmt, va_list v)
+{
   init();
   tmk_flushout();
   vfprintf(stderr, fmt, v);
 }
 
-void tmk_ewrite(const char *fmt, ...) {
+void
+tmk_ewrite(const char *fmt, ...)
+{
   va_list v;
   va_start(v, fmt);
   tmk_vewrite(fmt, v);

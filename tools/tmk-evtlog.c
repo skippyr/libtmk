@@ -20,7 +20,9 @@ static void setblk(int isblk);
 static int parseargs(int argc, const char **argv);
 static void logevts(void);
 
-static void writehelp(void) {
+static void
+writehelp(void)
+{
   tmk_write("Usage: %s [OPTIONS]...\n", NAME);
   tmk_write("Logs the bytes of key events on macOS and Linux.\n\n");
   tmk_write("AVAILABLE OPTIONS\n");
@@ -28,12 +30,16 @@ static void writehelp(void) {
   tmk_write("  --version  shows the software version.\n");
 }
 
-static void writeversion(void) {
+static void
+writeversion(void)
+{
   tmk_write("%s %s\n", NAME, VERSION);
   tmk_write("%s\n", REPO);
 }
 
-static void setraw(int israw) {
+static void
+setraw(int israw)
+{
   struct termios t;
   tcgetattr(STDIN_FILENO, &t);
   t.c_lflag = israw ? t.c_lflag & ~(ICANON | ECHO | ISIG)
@@ -42,12 +48,16 @@ static void setraw(int israw) {
   tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
 
-static void setblk(int isblk) {
+static void
+setblk(int isblk)
+{
   int f = fcntl(STDIN_FILENO, F_GETFL);
   fcntl(STDIN_FILENO, F_SETFL, isblk ? f & ~O_NONBLOCK : f | O_NONBLOCK);
 }
 
-static int parseargs(int argc, const char **argv) {
+static int
+parseargs(int argc, const char **argv)
+{
   for (int i = 1; i < argc; ++i) {
     if (!strcmp(argv[i], "--help")) {
       writehelp();
@@ -60,7 +70,9 @@ static int parseargs(int argc, const char **argv) {
   return 0;
 }
 
-static void logevts(void) {
+static void
+logevts(void)
+{
   tmk_write("Waiting for key events to log\n");
   tmk_write("Press the [Escape] key to exit.\n\n");
   setraw(1);
@@ -87,7 +99,9 @@ static void logevts(void) {
   tmk_write("\nExited.\n");
 }
 
-int main(int argc, const char **argv) {
+int
+main(int argc, const char **argv)
+{
   if (parseargs(argc, argv)) {
     return 0;
   }

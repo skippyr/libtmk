@@ -7,12 +7,9 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{lettrine}
 \usepackage{caption}
 \usepackage{enumitem}
 \usepackage{titlesec}
-\usepackage[oldstyle]{fbb}
-\usepackage{inconsolata}
 \lstset{
   basicstyle=\small\ttfamily,
   frame=tb,
@@ -36,17 +33,16 @@
 \newcommand{\txtbox}[1]{\fbox{\parbox{\linewidth}{#1}}}
 \newcommand{\tip}[1]{\txtbox{\textbf{\color{flmred}Tip:} #1}}
 \newcommand{\flmurl}[1]{{\color{flmred}\url{#1}}}
-\newcommand{\flmcap}[2]{\lettrine{\color{flmred}#1}{#2}}
 \newcommand{\dev}[2]{#1 $\langle$\flmurl{#2}$\rangle$}
-\title{\includegraphics[width=\linewidth]{../assets/ornament.png}\\\vspace{2cm}\includegraphics[width=4.5cm]{../assets/dragon.png}\\\vspace{-.5cm}{\color{flmred}\rule{2cm}{.5pt}}\\\vspace{-.7cm}\rule{1.5cm}{.5pt}\\\vspace{.5cm}\textbf{\color{flmred}libtmk}\\\vspace{.1cm}{\large — Terminal Manipulation Kit – Documentation – Release 17.0.x —\\\flmurl{https://github.com/skippyr/libtmk}\\C Programming Language}\vspace{.8cm}}
-\author{\textbf{Author(s):}\\\dev{Sherman Rofeman}{skippyr.developer@icloud.com}\vspace{1cm}\\\rule{4cm}{.5pt}}
+\title{\includegraphics[width=\linewidth]{../assets/ornament.png}\\\vspace{3cm}\textbf{$\geq$v$\geq$v\hspace{.3cm}{\color{flmred}libtmk}\hspace{.3cm}$\geq$v$\geq$v}\\\vspace{.3cm}{\large — Terminal Manipulation Kit – Documentation – Release 17.0.x —\\\flmurl{https://github.com/skippyr/libtmk}\\C Programming Language}\vspace{.8cm}}
+\author{\textbf{Author(s):}\\\dev{Sherman Rofeman}{skippyr.developer@icloud.com}\vspace{1cm}}
 \date{}
 \renewcommand{\footrulewidth}{.5pt}
 \fancyhf{}
 \fancypagestyle{plain}{
-  \fancyhead[l]{{\color{flmred}\textbf{libtmk:}} Terminal Manipulation Kit – Documentation – Release 17.0.x}
+  \fancyhead[l]{\textbf{libtmk:} Terminal Manipulation Kit – Documentation – Release 17.0.x}
   \fancyfoot[l]{C Programming Language}
-  \fancyfoot[r]{$\langle$Page \thepage{} of {\color{flmred}\textbf{\pageref{LastPage}}}$\rangle$}
+  \fancyfoot[r]{$\langle$Page \thepage{} of \textbf{\pageref{LastPage}}$\rangle$}
 }
 \pagestyle{plain}
 \begin{document}
@@ -54,9 +50,9 @@
 \thispagestyle{empty}
 \hrule
 \vfill
-\begin{flushright}
-\textit{For the memory of all fellow dragons seeing this,\\in the help to keep your flames alive.}
-\end{flushright}
+\begin{center}
+\textit{In the memory of all fellow dragons,\\as the dreams that keeps our flames alive.}
+\end{center}
 \vfill
 \noindent BSD-3-Clause License
 \vspace{.1cm}
@@ -67,15 +63,15 @@
 \vspace{.25cm}
 \noindent Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 \vspace{1cm}
-\begin{flushright}
-\textbf{Here Be Dragons!}
+\begin{center}
+\textbf{$\geq$v$\geq$v Here Be Dragons! $\geq$v$\geq$v}
 
-Made With Love.
-\end{flushright}
+Made With Love
+\end{center}
 \tableofcontents
 \chapter{Overview}
 \section{About}
-\flmcap{L}{ibtmk} (\textit{aka} ``Terminal Manipulation Kit'') is a simple C99 terminal manipulation library that contains a modest set of features to manipulate terminal properties, styles, arguments and key readings primarily using UTF-8 encoding. It is available for Windows, macOS and Linux.
+Libtmk (\textit{aka} ``Terminal Manipulation Kit'') is a simple C99 terminal manipulation library that contains a modest set of features to manipulate terminal properties, styles, arguments and key readings primarily using UTF-8 encoding. It is available for Windows, macOS and Linux.
 
 With its minimalistic and opinionated design, it encourages the development of software with great system compatibility, while leaving room to full-feature libraries to be built upon for more specific use cases.
 \section{Help}
@@ -86,7 +82,7 @@ This project is open to review and possibly accept contributions in the form of 
 This is free software licensed under the BSD-3-Clause License that comes WITH NO WARRANTY. Refer to the \texttt{LICENSE} file that comes in its source code for license and copyright details.
 \chapter{Installation}
 \section{Dependencies}
-\flmcap{D}{ue} to its cross-platform nature, it is highly recommended to use this library with a setup that combines CMake and Git. For that, the following dependencies are required, varying depending of the operating system you are using:
+Due to its cross-platform nature, it is highly recommended to use this library with a setup that combines CMake and Git. For that, the following dependencies are required, varying depending of the operating system you are using:
 \begin{itemize}
   \item \textbf{Windows:}
   \begin{enumerate}
@@ -131,7 +127,7 @@ target_link_libraries(main tmk)
 \end{itemize}
 \chapter{Specification}
 \section{Standard}
-\flmcap{T}{he} library uses features that require the C99 standard or later to be targetted. As shown during the installation, with CMake, that can be configured by setting the \texttt{CMAKE\_C\_STANDARD} and \texttt{CMAKE\_C\_STANDARD\_REQUIRED} global variables.
+The library uses features that require the C99 standard or later to be targetted. As shown during the installation, with CMake, that can be configured by setting the \texttt{CMAKE\_C\_STANDARD} and \texttt{CMAKE\_C\_STANDARD\_REQUIRED} global variables.
 \section{Platform}
 Due to the constrain of supporting UTF-8 encoding, it requires to be run in computer systems that are x32 or x64 bits. This condition is always met for Windows and macOS, but, as Linux is very versatile, this turn the library less portable, depending on where you need to use it.
 \section{Headers}
@@ -151,7 +147,7 @@ The library has some limitations over its usage. To avoid conflicts and malfunct
 \end{itemize}
 \chapter{Usage}
 \section{History}
-\flmcap{T}{he} terminal was a hardware device that allowed people to interact with mainframes with the use of a keyboard, screen and text based applications. As computers have become smaller and portable, vendors started to offer a software to emulate its features called the ``virtual terminal'', ``terminal emulator'' or simply ``terminal''.
+The terminal was a hardware device that allowed people to interact with mainframes with the use of a keyboard, screen and text based applications. As computers have become smaller and portable, vendors started to offer a software to emulate its features called the ``virtual terminal'', ``terminal emulator'' or simply ``terminal''.
 
 Though graphical related software have become popular among desktop users, the terminal still relevant specially considering that all software running on a computer is always connected to a terminal related layer.
 
@@ -180,7 +176,9 @@ Using them, you can write data and draw text user interfaces, but to avoid clash
 
 #define DRAGON "\xf0\x9f\x90\x89"
 
-int main(void) {
+int
+main(void)
+{
   tmk_write("Hello, world!");
   tmk_clearln();
   tmk_write("Here Be Dragons! %s\n", DRAGON);
@@ -221,7 +219,9 @@ It returns the reading status, which can be:
 #endif
 #define DRAGON "\xf0\x9f\x90\x89"
 
-int main(void) {
+int
+main(void)
+{
   tmk_write("Use the following keys:\n");
   tmk_write("    - Up Arrow\n");
   tmk_write("    - A\n");
@@ -299,7 +299,9 @@ When a stream is connected to a terminal and its respective buffer, if it has on
 
 #define BOOL(val_a) (val_a ? "true" : "false")
 
-int main(void) {
+int
+main(void)
+{
   tmk_write("TTY Statuses\n");
   tmk_write("In: %s\n", BOOL(tmk_istty(tmk_StdIn)));
   tmk_write("Out: %s\n", BOOL(tmk_istty(tmk_StdOut)));
@@ -320,7 +322,9 @@ The Windows terminal API has a particular trait: it evolved from using ASCII enc
 #endif
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   char *str = tmk_asutf8(L"Here Be Dragons!");
   tmk_write("%s\n", str);
   free(str);
@@ -343,7 +347,9 @@ You can get the dimensions of the window using the \texttt{tmk\_getwdim} functio
 \begin{lstlisting}[language=c,caption=an example that gets the terminal window dimensions.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   struct tmk_dim d;
   tmk_getwdim(&d);
   tmk_write("Total Columns: %hu\n", d.cols);
@@ -367,7 +373,9 @@ Terminals often provide an alternate buffer, a separate window environment where
 \begin{lstlisting}[language=c,caption=an example that shows an usage for the alternate buffer.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   tmk_setwalt(1);
   tmk_write("Here Be Dragons!\n");
   tmk_write("Press [Return] to exit.\n");
@@ -397,7 +405,9 @@ The foreground and background colors can also be swapped by giving a boolean to 
 \begin{lstlisting}[language=c,caption=an example that applies and swaps the colors of a message written.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   const char *msg = "Here Be Dragons!\n";
   tmk_setclr(tmk_ClrRed, tmk_LyrFg);
   tmk_write(msg);
@@ -442,7 +452,9 @@ The font can have its weight set using the \texttt{tmk\_setwgt} function by givi
 \begin{lstlisting}[language=c,caption=an example that sets font weights.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   const char *msg = "Here Be Dragons!\n";
   tmk_setwgt(tmk_WgtBld);
   tmk_write(msg);
@@ -472,7 +484,9 @@ The visibility of the cursor can be set by giving a boolean to the \texttt{tmk\_
 \begin{lstlisting}[language=c,caption=an example that sets the cursor visibility.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   struct tmk_key k;
   tmk_write("Cursor is now invisible.\n");
   tmk_write("Press [Return] to exit.\n");
@@ -494,11 +508,15 @@ The shape of the cursor can be set by giving an enumerator from the \texttt{tmk\
 \begin{lstlisting}[language=c,caption=an example that sets cursor shapes.]
 #include <tmk.h>
 
-static int filt(struct tmk_key *k) {
+static int
+filt(struct tmk_key *k)
+{
   return k->buf == tmk_KeyRet;
 }
 
-int main(void) {
+int
+main(void)
+{
   struct tmk_key k;
   tmk_write("Use [Return] to advance between the cursor shapes.\n\n");
   tmk_setcshp(tmk_ShpUnd);
@@ -540,7 +558,9 @@ All positions given are always restrained within the window, so exceeding them w
 \begin{lstlisting}[language=c,caption=an example that interacts with the cursor position in different ways.]
 #include <tmk.h>
 
-int main(void) {
+int
+main(void)
+{
   struct tmk_key k;
   struct tmk_pos p;
   tmk_setwalt(1);
@@ -594,7 +614,9 @@ The arguments returned by the function are both encoded in UTF-8 and UTF-16 (thi
 \begin{lstlisting}[language=c,caption=an example that gets the command line arguments.]
 #include <tmk.h>
 
-int main(int argc, const char **argv) {
+int
+main(int argc, const char **argv)
+{
   struct tmk_args args;
   tmk_getargs(argc, argv, &args);
   tmk_write("Arguments:\n");
