@@ -3,15 +3,13 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-enum tmk_Std
-{
+enum tmk_Std {
   tmk_StdIn,
   tmk_StdOut,
   tmk_StdErr
 };
 
-enum tmk_Shp
-{
+enum tmk_Shp {
   tmk_ShpDft,
   tmk_ShpBBlk,
   tmk_ShpBlk,
@@ -21,14 +19,12 @@ enum tmk_Shp
   tmk_ShpBar
 };
 
-enum tmk_LyrFg
-{
+enum tmk_LyrFg {
   tmk_LyrFg = 3,
   tmk_LyrBg
 };
 
-enum tmk_Clr
-{
+enum tmk_Clr {
   tmk_ClrDft = -1,
   tmk_ClrBlk,
   tmk_ClrRed,
@@ -41,23 +37,20 @@ enum tmk_Clr
   tmk_ClrGry
 };
 
-enum tmk_Wgt
-{
+enum tmk_Wgt {
   tmk_WgtDft,
   tmk_WgtBld,
   tmk_WgtDim
 };
 
-enum tmk_Drt
-{
+enum tmk_Drt {
   tmk_DrtUp = 'A',
   tmk_DrtDn,
   tmk_DrtRg,
   tmk_DrtLf
 };
 
-enum tmk_Key
-{
+enum tmk_Key {
   tmk_KeyUpArr = -5,
   tmk_KeyDnArr,
   tmk_KeyRgArr,
@@ -73,32 +66,27 @@ enum tmk_Key
   tmk_KeyBckspc = 127
 };
 
-enum tmk_Mod
-{
+enum tmk_Mod {
   tmk_ModAlt = 1,
   tmk_ModCtrl = 1 << 1
 };
 
-struct tmk_dim
-{
+struct tmk_dim {
   unsigned short cols;
   unsigned short rows;
 };
 
-struct tmk_pos
-{
+struct tmk_pos {
   unsigned short col;
   unsigned short row;
 };
 
-struct tmk_key
-{
+struct tmk_key {
   int buf;
   int mods;
 };
 
-struct tmk_args
-{
+struct tmk_args {
   int total;
   const char **asutf8;
 #ifdef _WIN32
@@ -127,7 +115,7 @@ void tmk_swpclr(int isswp);
 void tmk_setwgt(int wgt);
 void tmk_clearln(void);
 void tmk_ringbell(void);
-int tmk_readkey(int wait, int (*flt)(struct tmk_key*), struct tmk_key *key);
+int tmk_readkey(int wait, int (*filt)(struct tmk_key*), struct tmk_key *key);
 void tmk_getargs(int argc, const char **argv, struct tmk_args *a);
 void tmk_freeargs(struct tmk_args *a);
 void tmk_vwrite(const char *fmt, va_list v);

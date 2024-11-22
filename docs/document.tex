@@ -180,9 +180,7 @@ Using them, you can write data and draw text user interfaces, but to avoid clash
 
 #define DRAGON "\xf0\x9f\x90\x89"
 
-int
-main(void)
-{
+int main(void) {
   tmk_write("Hello, world!");
   tmk_clearln();
   tmk_write("Here Be Dragons! %s\n", DRAGON);
@@ -223,9 +221,7 @@ It returns the reading status, which can be:
 #endif
 #define DRAGON "\xf0\x9f\x90\x89"
 
-int
-main(void)
-{
+int main(void) {
   tmk_write("Use the following keys:\n");
   tmk_write("    - Up Arrow\n");
   tmk_write("    - A\n");
@@ -237,17 +233,18 @@ main(void)
   do {
     tmk_clearin();
     tmk_readkey(-1, NULL, &k);
-    if (k.buf == tmk_KeyUpArr)
+    if (k.buf == tmk_KeyUpArr) {
       tmk_write("You used: Up Arrow.\n");
-    else if (k.buf == 'a' && !k.mods)
+    } else if (k.buf == 'a' && !k.mods)  {
       tmk_write("You used: A.\n");
-    else if (k.buf == 'A')
+    } else if (k.buf == 'A') {
       tmk_write("You used: Shift + A.\n");
-    else if (k.buf == 'a' && k.mods & tmk_ModAlt &&
-             !(k.mods & tmk_ModCtrl))
+    } else if (k.buf == 'a' && k.mods & tmk_ModAlt &&
+               !(k.mods & tmk_ModCtrl)) {
       tmk_write("You used: %s + A.\n", ALT);
-    else if (k.buf == *(int*)DRAGON)
+    } else if (k.buf == *(int*)DRAGON) {
       tmk_write("You used: Dragon Emoji %s.\n", DRAGON);
+    }
   } while (k.buf != tmk_KeyEsc);
   return 0;
 }
@@ -266,7 +263,7 @@ The function allows the reading of any UTF-8 grapheme but only a limited set of 
 
 The possibility of being interrupted by window resizes allows you to catch and treat that condition in order to create software whose text user interface is responsive.
 \begin{lstlisting}[language=c,caption=the declaration of the \texttt{tmk\_readkey} function.]
-int tmk_readkey(int wait, int (*flt)(struct tmk_key*), struct tmk_key *key);
+int tmk_readkey(int wait, int (*filt)(struct tmk_key*), struct tmk_key *key);
 \end{lstlisting}
 
 The \texttt{tmk\_key} struct represents the information read of a key, and it is composed of the following fields:
@@ -302,9 +299,7 @@ When a stream is connected to a terminal and its respective buffer, if it has on
 
 #define BOOL(val_a) (val_a ? "true" : "false")
 
-int
-main(void)
-{
+int main(void) {
   tmk_write("TTY Statuses\n");
   tmk_write("In: %s\n", BOOL(tmk_istty(tmk_StdIn)));
   tmk_write("Out: %s\n", BOOL(tmk_istty(tmk_StdOut)));
@@ -325,9 +320,7 @@ The Windows terminal API has a particular trait: it evolved from using ASCII enc
 #endif
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   char *str = tmk_asutf8(L"Here Be Dragons!");
   tmk_write("%s\n", str);
   free(str);
@@ -350,9 +343,7 @@ You can get the dimensions of the window using the \texttt{tmk\_getwdim} functio
 \begin{lstlisting}[language=c,caption=an example that gets the terminal window dimensions.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   struct tmk_dim d;
   tmk_getwdim(&d);
   tmk_write("Total Columns: %hu\n", d.cols);
@@ -376,16 +367,14 @@ Terminals often provide an alternate buffer, a separate window environment where
 \begin{lstlisting}[language=c,caption=an example that shows an usage for the alternate buffer.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   tmk_setwalt(1);
   tmk_write("Here Be Dragons!\n");
   tmk_write("Press [Return] to exit.\n");
   struct tmk_key k;
-  do
+  do {
     tmk_readkey(-1, NULL, &k);
-  while (k.buf != tmk_KeyRet);
+  } while (k.buf != tmk_KeyRet);
   tmk_setwalt(0);
   return 0;
 }
@@ -408,9 +397,7 @@ The foreground and background colors can also be swapped by giving a boolean to 
 \begin{lstlisting}[language=c,caption=an example that applies and swaps the colors of a message written.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   const char *msg = "Here Be Dragons!\n";
   tmk_setclr(tmk_ClrRed, tmk_LyrFg);
   tmk_write(msg);
@@ -455,9 +442,7 @@ The font can have its weight set using the \texttt{tmk\_setwgt} function by givi
 \begin{lstlisting}[language=c,caption=an example that sets font weights.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   const char *msg = "Here Be Dragons!\n";
   tmk_setwgt(tmk_WgtBld);
   tmk_write(msg);
@@ -487,16 +472,14 @@ The visibility of the cursor can be set by giving a boolean to the \texttt{tmk\_
 \begin{lstlisting}[language=c,caption=an example that sets the cursor visibility.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   struct tmk_key k;
   tmk_write("Cursor is now invisible.\n");
   tmk_write("Press [Return] to exit.\n");
   tmk_setcvis(0);
-  do
+  do {
     tmk_readkey(-1, NULL, &k);
-  while (k.buf != tmk_KeyRet);
+  } while (k.buf != tmk_KeyRet);
   tmk_setcvis(1);
   return 0;
 }
@@ -511,32 +494,27 @@ The shape of the cursor can be set by giving an enumerator from the \texttt{tmk\
 \begin{lstlisting}[language=c,caption=an example that sets cursor shapes.]
 #include <tmk.h>
 
-static int
-flt(struct tmk_key *k)
-{
+static int filt(struct tmk_key *k) {
   return k->buf == tmk_KeyRet;
 }
 
-int
-main(void)
-{
+int main(void) {
   struct tmk_key k;
   tmk_write("Use [Return] to advance between the cursor shapes.\n\n");
   tmk_setcshp(tmk_ShpUnd);
   tmk_write("[1/3] Underline Shape ");
-  tmk_readkey(-1, flt, &k);
+  tmk_readkey(-1, filt, &k);
   tmk_setcshp(tmk_ShpBlk);
   tmk_write("\n[2/3] Block Shape ");
-  tmk_readkey(-1, flt, &k);
+  tmk_readkey(-1, filt, &k);
   tmk_setcshp(tmk_ShpBar);
   tmk_write("\n[3/3] Bar Shape ");
-  tmk_readkey(-1, flt, &k);
+  tmk_readkey(-1, filt, &k);
   tmk_setcshp(tmk_ShpDft);
   tmk_write("\n");
   return 0;
 }
 \end{lstlisting}
-
 In the example above, the different cursor shapes are applied and then reverted back to its original one. Reading a key is necessary so the changes can be seen between the function calls.
 \begin{lstlisting}[language=c,caption=the declaration of the \texttt{tmk\_setcshp} function.]
 void tmk_setcshp(int shp);
@@ -562,9 +540,7 @@ All positions given are always restrained within the window, so exceeding them w
 \begin{lstlisting}[language=c,caption=an example that interacts with the cursor position in different ways.]
 #include <tmk.h>
 
-int
-main(void)
-{
+int main(void) {
   struct tmk_key k;
   struct tmk_pos p;
   tmk_setwalt(1);
@@ -578,9 +554,9 @@ main(void)
   tmk_mvcpos(1, tmk_DrtDn);
   tmk_mvcpos(2, tmk_DrtRg);
   tmk_write("Press the [Return] key to exit");
-  do
+  do {
     tmk_readkey(-1, NULL, &k);
-  while (k.buf != tmk_KeyRet);
+  } while (k.buf != tmk_KeyRet);
   tmk_setwalt(0);
   return 0;
 }
@@ -616,14 +592,15 @@ The terminal receives arguments given through the shell and those arguments are 
 
 The arguments returned by the function are both encoded in UTF-8 and UTF-16 (this one, exclusively on Windows) and do not include the binary path as per usual in C.
 \begin{lstlisting}[language=c,caption=an example that gets the command line arguments.]
-int
-main(int argc, const char **argv)
-{
+#include <tmk.h>
+
+int main(int argc, const char **argv) {
   struct tmk_args args;
   tmk_getargs(argc, argv, &args);
   tmk_write("Arguments:\n");
-  for (int i = 0; i < args.total; ++i)
+  for (int i = 0; i < args.total; ++i) {
     tmk_write("  [%d] %s\n", i, args.asutf8[i]);
+  }
   tmk_write("Total: %d\n", args.total);
   tmk_freeargs(&args);
   return 0;
