@@ -192,8 +192,23 @@ void Terminal::setCursorCoordinate(Coordinate coordinate) {
   writeAnsi("\x1b[{};{}H", coordinate.getRow() + 1, coordinate.getColumn() + 1);
 }
 
+Coordinate Terminal::moveCursor(uint16_t steps, Direction direction) {
+  Coordinate cursorCoordinate = getCursorCoordinate();
+  if (direction == Direction::Up) {
+    cursorCoordinate.setRow(cursorCoordinate.getRow() - steps);
+  } else if (direction == Direction::Down) {
+    cursorCoordinate.setRow(cursorCoordinate.getRow() + steps);
+  } else if (direction == Direction::Left) {
+    cursorCoordinate.setColumn(cursorCoordinate.getColumn() - steps);
+  } else {
+    cursorCoordinate.setColumn(cursorCoordinate.getColumn() + steps);
+  }
+  setCursorCoordinate(cursorCoordinate);
+  return cursorCoordinate;
+}
+
 Dimensions Terminal::getWindowDimensions() {
-#ifdef _WIN32
+#if defined(_WIN32)
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
   if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
                                   &bufferInfo) &&
@@ -202,7 +217,7 @@ Dimensions Terminal::getWindowDimensions() {
     throw StreamRedirectionException();
   }
   return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1,
-                    bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1)
+                    bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
 #else
   struct winsize ioctlSize;
   if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) &&

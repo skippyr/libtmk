@@ -29,6 +29,8 @@ enum class FontWeight { Bold = 1, Light };
 
 enum class CursorShape { Block = 2, Underline = 4, Bar = 6 };
 
+enum class Direction { Up = 'A', Down, Right, Left };
+
 class StreamRedirectionException : public std::exception {};
 class OutOfBoundsException : public std::exception {};
 
@@ -59,6 +61,7 @@ public:
   void setColumn(uint16_t column) noexcept;
   uint16_t getRow() const noexcept;
   void setRow(uint16_t row) noexcept;
+  void move(uint16_t steps, Direction direction);
 };
 
 class Dimensions {
@@ -112,6 +115,7 @@ public:
   static void resetCursorShape() noexcept;
   static Coordinate getCursorCoordinate();
   static void setCursorCoordinate(Coordinate coordinate);
+  static Coordinate moveCursor(uint16_t steps, Direction direction);
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;
