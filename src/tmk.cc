@@ -57,7 +57,7 @@ std::string Encoding::convertfUtf16ToUtf8(std::wstring &utf16String) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.c_str(), -1, nullptr,
                                  0, nullptr, nullptr);
   std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
-  WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, utf8String.get(), size,
+  WideCharToMultiByte(CP_UTF8, 0, utf16String.c_str(), -1, buffer.get(), size,
                       nullptr, nullptr);
   return buffer.get();
 }
