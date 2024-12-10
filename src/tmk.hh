@@ -75,6 +75,15 @@ public:
   uint32_t getArea() const noexcept;
 };
 
+#if defined(_WIN32)
+class Encoding {
+public:
+  Encoding() = delete;
+  static std::string convertfUtf16ToUtf8(std::wstring &utf16String);
+  static std::wstring convertUtf8ToUtf16(std::string &utf8String);
+};
+#endif
+
 class Terminal {
 private:
   static uint8_t cache_m;
@@ -98,6 +107,7 @@ private:
   }
 
 public:
+  Terminal() = delete;
   static void init() noexcept;
   static void flushOutput() noexcept;
   static void clearInput() noexcept;
