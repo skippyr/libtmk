@@ -227,17 +227,48 @@ namespace Tmk
         void SetBlue(uint8_t blue) noexcept;
     };
 
+
+    /// <summary>
+    /// Represents a coordinate within the terminal window cell grid.
+    /// </summary>
     class Coordinate
     {
     private:
+        /// <summary>
+        /// The column component of the coordinate.
+        /// </summary>
         uint16_t m_column;
+        /// <summary>
+        /// The row component of the coordinate.
+        /// </summary>
         uint16_t m_row;
 
     public:
+        /// <summary>
+        /// Creates an instance of the Coordinate class with the given components.
+        /// </summary>
+        /// <param name="column">The column component of the coordinate.</param>
+        /// <param name="row">The row component of the coordinate.</param>
         Coordinate(uint16_t column, uint16_t row) noexcept;
+        /// <summary>
+        /// Gets the column component of the coordinate.
+        /// </summary>
+        /// <returns>The column component of the coordinate.</returns>
         uint16_t GetColumn() const noexcept;
+        /// <summary>
+        /// Sets the column component of the coordinate.
+        /// </summary>
+        /// <param name="column">The column component to be set.</param>
         void SetColumn(uint16_t column) noexcept;
+        /// <summary>
+        /// Gets the row component of the coordinate.
+        /// </summary>
+        /// <returns>The row component of the coordinate.</returns>
         uint16_t GetRow() const noexcept;
+        /// <summary>
+        /// Sets the row component of the coordinate.
+        /// </summary>
+        /// <param name="row">The row component to be set.</param>
         void SetRow(uint16_t row) noexcept;
     };
 
