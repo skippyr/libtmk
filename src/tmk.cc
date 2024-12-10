@@ -15,6 +15,21 @@
 #endif
 
 namespace tmk {
+RgbColor::RgbColor(uint8_t red, uint8_t green, uint8_t blue) noexcept
+    : red_m(red), green_m(green), blue_m(blue) {}
+
+uint8_t RgbColor::getRed() const noexcept { return red_m; }
+
+void RgbColor::setRed(uint8_t red) noexcept { red_m = red; }
+
+uint8_t RgbColor::getGreen() const noexcept { return green_m; }
+
+void RgbColor::setGreen(uint8_t green) noexcept { green_m = green; }
+
+uint8_t RgbColor::getBlue() const noexcept { return blue_m; }
+
+void RgbColor::setBlue(uint8_t blue) noexcept { blue_m = blue; }
+
 uint8_t Terminal::cache_m = 0;
 
 #if defined(_WIN32)
@@ -38,7 +53,8 @@ void Terminal::setRawInput(bool isRaw) noexcept {
 
 void Terminal::setBlockingInput(bool isBlocking) noexcept {
   int flags = fcntl(STDIN_FILENO, F_GETFL);
-  fcntl(STDIN_FILENO, F_SETFL, isBlocking ? flags & ~O_NONBLOCK : flags | O_NONBLOCK);
+  fcntl(STDIN_FILENO, F_SETFL,
+        isBlocking ? flags & ~O_NONBLOCK : flags | O_NONBLOCK);
 }
 #endif
 
@@ -96,6 +112,14 @@ void Terminal::setFontColor(AnsiColor color, Layer layer) noexcept {
   try {
     writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
               static_cast<int>(color));
+  } catch (...) {
+  }
+}
+
+void Terminal::setFontColor(const RgbColor &color, Layer layer) noexcept {
+  try {
+    writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
+              color.getGreen(), color.getBlue());
   } catch (...) {
   }
 }

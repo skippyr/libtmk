@@ -27,6 +27,22 @@ enum class AnsiColor {
 
 class StreamRedirectionException : public std::exception {};
 
+class RgbColor {
+private:
+  uint8_t red_m;
+  uint8_t green_m;
+  uint8_t blue_m;
+
+public:
+  RgbColor(uint8_t red, uint8_t green, uint8_t blue) noexcept;
+  uint8_t getRed() const noexcept;
+  void setRed(uint8_t red) noexcept;
+  uint8_t getGreen() const noexcept;
+  void setGreen(uint8_t green) noexcept;
+  uint8_t getBlue() const noexcept;
+  void setBlue(uint8_t blue) noexcept;
+};
+
 class Terminal {
 private:
   static uint8_t cache_m;
@@ -59,6 +75,7 @@ public:
   static bool isOutputRedirected() noexcept;
   static bool isErrorRedirected() noexcept;
   static void setFontColor(AnsiColor color, Layer layer) noexcept;
+  static void setFontColor(const RgbColor &color, Layer layer) noexcept;
   static void resetFontColors() noexcept;
   static void writeLine() noexcept;
   static void writeErrorLine() noexcept;
