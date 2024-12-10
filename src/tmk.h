@@ -228,9 +228,9 @@ class Encoding {
 
 class MultiEncodingString {
   private:
-    std::string m_utf8String;
+    std::string utf8String;
 #if defined(_WIN32)
-    std::wstring m_utf16String;
+    std::wstring utf16String;
 #endif
 
   public:
@@ -238,9 +238,9 @@ class MultiEncodingString {
 #if defined(_WIN32)
     MultiEncodingString(const std::wstring &utf16String);
 #endif
-    const std::string &AsUtf8String() const;
+    const std::string &asUtf8String() const;
 #if defined(_WIN32)
-    const std::wstring &AsUtf16String() const;
+    const std::wstring &asUtf16String() const;
 #endif
 };
 

@@ -10,9 +10,9 @@
 #endif
 
 #if defined(_WIN32)
-#define IS_STREAM_REDIRECTED(a_stream) (!_isatty(a_stream) << a_stream)
+#define IS_STREAM_REDIRECTED(stream) (!_isatty(stream) << stream)
 #else
-#define IS_STREAM_REDIRECTED(a_stream) (!isatty(a_stream) << a_stream)
+#define IS_STREAM_REDIRECTED(stream) (!isatty(stream) << stream)
 #endif
 
 namespace tmk {
@@ -83,32 +83,32 @@ std::wstring Encoding::convertUtf8ToUtf16(const std::string &utf8String)
 
 #if defined(_WIN32)
 MultiEncodingString::MultiEncodingString(const std::string &utf8String)
-    : m_utf8String(utf8String),
-      m_utf16String(Encoding::convertUtf8ToUtf16(utf8String))
+    : utf8String(utf8String),
+      utf16String(Encoding::convertUtf8ToUtf16(utf8String))
 {
 }
 
 MultiEncodingString::MultiEncodingString(const std::wstring &utf16String)
-    : m_utf8String(Encoding::convertUtf16ToUtf8(utf16String)),
-      m_utf16String(utf16String)
+    : utf8String(Encoding::convertUtf16ToUtf8(utf16String)),
+      utf16String(utf16String)
 {
 }
 #else
 MultiEncodingString::MultiEncodingString(const std::string &utf8String)
-    : m_utf8String(utf8String)
+    : utf8String(utf8String)
 {
 }
 #endif
 
-const std::string &MultiEncodingString::AsUtf8String() const
+const std::string &MultiEncodingString::asUtf8String() const
 {
-    return m_utf8String;
+    return utf8String;
 }
 
 #if defined(_WIN32)
-const std::wstring &MultiEncodingString::AsUtf16String() const
+const std::wstring &MultiEncodingString::asUtf16String() const
 {
-    return m_utf16String;
+    return utf16String;
 }
 #endif
 
