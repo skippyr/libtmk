@@ -127,13 +127,14 @@ namespace tmk
         std::wstring utf16String_m;
 #endif
 
+    public:
         MultiEncodingString(const std::string& utf8String);
 #if defined(_WIN32)
         MultiEncodingString(const std::wstring& utf16String);
 #endif
-        const std::string& getUtf8String();
+        const std::string& asUtf8String() const;
 #if defined(_WIN32)
-        const std::wstring& getUtf16String();
+        const std::wstring& asUtf16String() const;
 #endif
     };
 

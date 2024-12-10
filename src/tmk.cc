@@ -132,13 +132,13 @@ namespace tmk
     }
 #endif
 
-    const std::string& MultiEncodingString::getUtf8String()
+    const std::string& MultiEncodingString::asUtf8String() const
     {
         return utf8String_m;
     }
 
 #if defined(_WIN32)
-    const std::wstring& MultiEncodingString::getUtf16String()
+    const std::wstring& MultiEncodingString::asUtf16String() const
     {
         return utf16String_m;
     }
@@ -382,12 +382,12 @@ namespace tmk
         writeAnsi("\x1b[?1049l");
     }
 
-    std::vector<MultiEncodingString> getCmdArguments(int totalMainArguments, const char** mainArguments)
+    std::vector<MultiEncodingString> Terminal::getArguments(int totalMainArguments, const char** mainArguments)
     {
-        std::vector<MultiEncodingString> cmdArguments;
+        std::vector<MultiEncodingString> arguments;
         if (totalMainArguments == 1)
         {
-            return cmdArguments;
+            return arguments;
         }
 #if defined(_WIN32)
         wchar_t** utf16Arguments = CommandLineToArgvW(GetCommandLineW(), &totalMainArguments);
@@ -395,15 +395,15 @@ namespace tmk
         for (int offset = 1; offset < totalMainArguments; ++offset)
         {
 #if defined(_WIN32)
-            cmdArguments.emplace_back(utf16Arguments[offset]);
+            arguments.emplace_back(utf16Arguments[offset]);
 #else
-            cmdArguments.emplace_back(mainArguments[offset]);
+            arguments.emplace_back(mainArguments[offset]);
 #endif
         }
 #if defined(_WIN32)
         LocalFree(utf16Arguments);
 #endif
-        return cmdArguments;
+        return arguments;
     }
 
     void Terminal::writeLine() noexcept
