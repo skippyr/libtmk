@@ -26,13 +26,15 @@ void Terminal::enableAnsiParse() noexcept {
 #endif
 
 void Terminal::cacheStreamStates() noexcept {
-  cache_m |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
+  cache_m |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) |
+             IS_STREAM_REDIRECTED(2);
 }
 
 void Terminal::init() noexcept {
   if (cache_m & 1 << 7) {
     return;
   }
+  cache_m |= 1 << 7;
 #if defined(_WIN32)
   SetConsoleOutputCP(CP_UTF8);
   enableAnsiParse();
@@ -54,4 +56,4 @@ bool Terminal::isErrorRedirected() noexcept {
   init();
   return cache_m & 1 << 2;
 }
-}
+} // namespace tmk

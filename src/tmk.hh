@@ -20,4 +20,4 @@ public:
   static bool isOutputRedirected() noexcept;
   static bool isErrorRedirected() noexcept;
 };
-}
+} // namespace tmk
