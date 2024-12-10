@@ -47,21 +47,21 @@ uint16_t Coordinate::getRow() const noexcept { return row; }
 void Coordinate::setRow(uint16_t row) noexcept { this->row = row; }
 
 Dimensions::Dimensions(uint16_t totalColumns, uint16_t totalRows) noexcept
-    : m_totalColumns(totalColumns), m_totalRows(totalRows)
+    : totalColumns(totalColumns), totalRows(totalRows)
 {
 }
 
-uint16_t Dimensions::GetTotalColumns() const noexcept { return m_totalColumns; }
+uint16_t Dimensions::getTotalColumns() const noexcept { return totalColumns; }
 
-uint16_t Dimensions::GetTotalRows() const noexcept { return m_totalRows; }
+uint16_t Dimensions::getTotalRows() const noexcept { return totalRows; }
 
-uint32_t Dimensions::GetArea() const noexcept
+uint32_t Dimensions::getArea() const noexcept
 {
-    return m_totalColumns * m_totalRows;
+    return totalColumns * totalRows;
 }
 
 #if defined(_WIN32)
-std::string Encoding::ConvertUtf16ToUtf8(const std::wstring &utf16String)
+std::string Encoding::convertUtf16ToUtf8(const std::wstring &utf16String)
 {
     int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.c_str(), -1, nullptr,
                                    0, nullptr, nullptr);
@@ -71,7 +71,7 @@ std::string Encoding::ConvertUtf16ToUtf8(const std::wstring &utf16String)
     return buffer.get();
 }
 
-std::wstring Encoding::ConvertUtf8ToUtf16(const std::string &utf8String)
+std::wstring Encoding::convertUtf8ToUtf16(const std::string &utf8String)
 {
     int size =
         MultiByteToWideChar(CP_UTF8, 0, utf8String.c_str(), -1, nullptr, 0);
@@ -84,12 +84,12 @@ std::wstring Encoding::ConvertUtf8ToUtf16(const std::string &utf8String)
 #if defined(_WIN32)
 MultiEncodingString::MultiEncodingString(const std::string &utf8String)
     : m_utf8String(utf8String),
-      m_utf16String(Encoding::ConvertUtf8ToUtf16(utf8String))
+      m_utf16String(Encoding::convertUtf8ToUtf16(utf8String))
 {
 }
 
 MultiEncodingString::MultiEncodingString(const std::wstring &utf16String)
-    : m_utf8String(Encoding::ConvertUtf16ToUtf8(utf16String)),
+    : m_utf8String(Encoding::convertUtf16ToUtf8(utf16String)),
       m_utf16String(utf16String)
 {
 }
@@ -262,8 +262,8 @@ Coordinate Terminal::GetCursorCoordinate()
 void Terminal::SetCursorCoordinate(Coordinate coordinate)
 {
     Dimensions windowDimensions = GetWindowDimensions();
-    if (coordinate.getColumn() >= windowDimensions.GetTotalColumns() ||
-        coordinate.getRow() >= windowDimensions.GetTotalRows()) {
+    if (coordinate.getColumn() >= windowDimensions.getTotalColumns() ||
+        coordinate.getRow() >= windowDimensions.getTotalRows()) {
         throw OutOfBoundsException();
     }
     WriteAnsi("\x1b[{};{}H", coordinate.getRow() + 1,

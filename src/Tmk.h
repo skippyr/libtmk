@@ -189,9 +189,9 @@ class Coordinate {
 class Dimensions {
   private:
     /** The total columns in the dimensions. */
-    uint16_t m_totalColumns;
+    uint16_t totalColumns;
     /** The total rows in the dimensions. */
-    uint16_t m_totalRows;
+    uint16_t totalRows;
 
   public:
     /**
@@ -204,25 +204,25 @@ class Dimensions {
      * Gets the total columns in the dimensions.
      * @returns The total columns in the dimensions.
      */
-    uint16_t GetTotalColumns() const noexcept;
+    uint16_t getTotalColumns() const noexcept;
     /**
      * Gets the total rows in the dimensions.
      * @returns The total rows in the dimensions.
      */
-    uint16_t GetTotalRows() const noexcept;
+    uint16_t getTotalRows() const noexcept;
     /**
      * Gets the area of the dimensions.
      * @returns The area of the dimensions.
      */
-    uint32_t GetArea() const noexcept;
+    uint32_t getArea() const noexcept;
 };
 
 #if defined(_WIN32)
 class Encoding {
   public:
     Encoding() = delete;
-    static std::string ConvertUtf16ToUtf8(const std::wstring &utf16String);
-    static std::wstring ConvertUtf8ToUtf16(const std::string &utf8String);
+    static std::string convertUtf16ToUtf8(const std::wstring &utf16String);
+    static std::wstring convertUtf8ToUtf16(const std::string &utf8String);
 };
 #endif
 
