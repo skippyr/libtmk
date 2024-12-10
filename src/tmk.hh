@@ -27,6 +27,12 @@ enum class AnsiColor {
 
 enum class FontWeight { Bold = 1, Light };
 
+enum class CursorShape {
+  Block = 2,
+  Underline = 4,
+  Bar = 6
+};
+
 class StreamRedirectionException : public std::exception {};
 
 class RgbColor {
@@ -93,6 +99,8 @@ public:
   static void resetFontColors() noexcept;
   static void setFontWeight(FontWeight weight) noexcept;
   static void resetFontWeight() noexcept;
+  static void setCursorShape(CursorShape shape, bool shouldBlink) noexcept;
+  static void resetCursorShape() noexcept;
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;

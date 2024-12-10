@@ -144,13 +144,29 @@ void Terminal::resetFontColors() noexcept {
 void Terminal::setFontWeight(FontWeight weight) noexcept {
   try {
     writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
-  } catch (...) {}
+  } catch (...) {
+  }
 }
 
 void Terminal::resetFontWeight() noexcept {
   try {
     writeAnsi("\x1b[22m");
-  } catch (...) {}
+  } catch (...) {
+  }
+}
+
+void Terminal::setCursorShape(CursorShape shape, bool shouldBlink) noexcept {
+  try {
+    writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
+  } catch (...) {
+  }
+}
+
+void Terminal::resetCursorShape() noexcept {
+  try {
+    writeAnsi("\x1b[0 q");
+  } catch (...) {
+  }
 }
 
 Dimensions Terminal::getWindowDimensions() {
