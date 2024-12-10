@@ -71,6 +71,24 @@ std::wstring Encoding::convertUtf8ToUtf16(const std::string &utf8String) {
 }
 #endif
 
+#if defined(_WIN32)
+MultiEncodingString::MultiEncodingString(const std::string &utf8String) : utf8String_m(utf8String), utf16String_m(Encoding::convertUtf8ToUtf16(utf8String)) {}
+
+MultiEncodingString::MultiEncodingString(const std::wstring &utf16String) : utf8String_m(Encoding::convertUtf16ToUtf8(utf16String)), utf16String_m(utf16String) {}
+#else
+MultiEncodingString::MultiEncodingString(const std::string &utf8String) : utf8String_m(utf8String) {}
+#endif
+
+const std::string &MultiEncodingString::getUtf8String() {
+  return utf8String_m;
+}
+
+#if defined(_WIN32)
+const std::wstring &MultiEncodingString::getUtf16String() {
+  return utf16String_m;
+}
+#endif
+
 uint8_t Terminal::cache_m = 0;
 
 #if defined(_WIN32)

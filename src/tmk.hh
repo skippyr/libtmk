@@ -84,6 +84,23 @@ public:
 };
 #endif
 
+class MultiEncodingString {
+private:
+  std::string utf8String_m;
+#if defined(_WIN32)
+  std::wstring utf16String_m;
+#endif
+
+  MultiEncodingString(const std::string &utf8String);
+#if defined(_WIN32)
+  MultiEncodingString(const std::wstring &utf16String);
+#endif
+  const std::string &getUtf8String();
+#if defined(_WIN32)
+  const std::wstring &getUtf16String();
+#endif
+};
+
 class Terminal {
 private:
   static uint8_t cache_m;
