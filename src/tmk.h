@@ -102,11 +102,11 @@ class OutOfBoundsException : public std::exception {};
 class RgbColor {
   private:
     /** The red component of the color. */
-    uint8_t red;
+    uint8_t red_;
     /** The green component of the color. */
-    uint8_t green;
+    uint8_t green_;
     /** The blue component of the color. */
-    uint8_t blue;
+    uint8_t blue_;
 
   public:
     /**
@@ -152,9 +152,9 @@ class RgbColor {
 class Coordinate {
   private:
     /** The column component of the coordinate. */
-    uint16_t column;
+    uint16_t column_;
     /** The row component of the coordinate. */
-    uint16_t row;
+    uint16_t row_;
 
   public:
     /**
@@ -189,9 +189,9 @@ class Coordinate {
 class Dimensions {
   private:
     /** The total columns in the dimensions. */
-    uint16_t totalColumns;
+    uint16_t totalColumns_;
     /** The total rows in the dimensions. */
-    uint16_t totalRows;
+    uint16_t totalRows_;
 
   public:
     /**
@@ -228,9 +228,9 @@ class Encoding {
 
 class MultiEncodingString {
   private:
-    std::string utf8String;
+    std::string utf8String_;
 #if defined(_WIN32)
-    std::wstring utf16String;
+    std::wstring utf16String_;
 #endif
 
   public:
@@ -246,7 +246,7 @@ class MultiEncodingString {
 
 class Terminal {
   private:
-    static uint8_t cache;
+    static uint8_t cache_;
 
 #if defined(_WIN32)
     static void enableAnsiParse() noexcept;
@@ -261,7 +261,7 @@ class Terminal {
     {
         if (!isOutputRedirected()) {
             Write(format, arguments...);
-            cache |= 1 << 4;
+            cache_ |= 1 << 4;
         } else if (!isErrorRedirected()) {
             WriteError(format, arguments...);
         }
@@ -312,7 +312,7 @@ class Terminal {
     static void WriteLine(std::string_view format, Args... arguments)
     {
         Write(format, arguments...);
-        cache &= ~(1 << 4);
+        cache_ &= ~(1 << 4);
         try {
             std::cout << std::endl;
         } catch (...) {
@@ -323,8 +323,8 @@ class Terminal {
     static void WriteError(std::string_view format, Args... arguments)
     {
         initialize();
-        if (cache & 1 << 4) {
-            cache &= ~(1 << 4);
+        if (cache_ & 1 << 4) {
+            cache_ &= ~(1 << 4);
             flushOutput();
         }
         try {

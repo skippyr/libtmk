@@ -17,47 +17,47 @@
 
 namespace tmk {
 RgbColor::RgbColor(uint8_t red, uint8_t green, uint8_t blue) noexcept
-    : red(red), green(green), blue(blue)
+    : red_(red), green_(green), blue_(blue)
 {
 }
 
-uint8_t RgbColor::getRed() const noexcept { return red; }
+uint8_t RgbColor::getRed() const noexcept { return red_; }
 
-void RgbColor::setRed(uint8_t red) noexcept { this->red = red; }
+void RgbColor::setRed(uint8_t red) noexcept { red_ = red; }
 
-uint8_t RgbColor::getGreen() const noexcept { return green; }
+uint8_t RgbColor::getGreen() const noexcept { return green_; }
 
-void RgbColor::setGreen(uint8_t green) noexcept { this->green = green; }
+void RgbColor::setGreen(uint8_t green) noexcept { green_ = green; }
 
-uint8_t RgbColor::getBlue() const noexcept { return blue; }
+uint8_t RgbColor::getBlue() const noexcept { return blue_; }
 
-void RgbColor::setBlue(uint8_t blue) noexcept { this->blue = blue; }
+void RgbColor::setBlue(uint8_t blue) noexcept { blue_ = blue; }
 
 Coordinate::Coordinate(uint16_t column, uint16_t row) noexcept
-    : column(column), row(row)
+    : column_(column), row_(row)
 {
 }
 
-uint16_t Coordinate::getColumn() const noexcept { return column; }
+uint16_t Coordinate::getColumn() const noexcept { return column_; }
 
-void Coordinate::setColumn(uint16_t column) noexcept { this->column = column; }
+void Coordinate::setColumn(uint16_t column) noexcept { column_ = column; }
 
-uint16_t Coordinate::getRow() const noexcept { return row; }
+uint16_t Coordinate::getRow() const noexcept { return row_; }
 
-void Coordinate::setRow(uint16_t row) noexcept { this->row = row; }
+void Coordinate::setRow(uint16_t row) noexcept { row_ = row; }
 
 Dimensions::Dimensions(uint16_t totalColumns, uint16_t totalRows) noexcept
-    : totalColumns(totalColumns), totalRows(totalRows)
+    : totalColumns_(totalColumns), totalRows_(totalRows)
 {
 }
 
-uint16_t Dimensions::getTotalColumns() const noexcept { return totalColumns; }
+uint16_t Dimensions::getTotalColumns() const noexcept { return totalColumns_; }
 
-uint16_t Dimensions::getTotalRows() const noexcept { return totalRows; }
+uint16_t Dimensions::getTotalRows() const noexcept { return totalRows_; }
 
 uint32_t Dimensions::getArea() const noexcept
 {
-    return totalColumns * totalRows;
+    return totalColumns_ * totalRows_;
 }
 
 #if defined(_WIN32)
@@ -83,36 +83,36 @@ std::wstring Encoding::convertUtf8ToUtf16(const std::string &utf8String)
 
 #if defined(_WIN32)
 MultiEncodingString::MultiEncodingString(const std::string &utf8String)
-    : utf8String(utf8String),
-      utf16String(Encoding::convertUtf8ToUtf16(utf8String))
+    : utf8String_(utf8String),
+      utf16String_(Encoding::convertUtf8ToUtf16(utf8String))
 {
 }
 
 MultiEncodingString::MultiEncodingString(const std::wstring &utf16String)
-    : utf8String(Encoding::convertUtf16ToUtf8(utf16String)),
-      utf16String(utf16String)
+    : utf8String_(Encoding::convertUtf16ToUtf8(utf16String)),
+      utf16String_(utf16String)
 {
 }
 #else
 MultiEncodingString::MultiEncodingString(const std::string &utf8String)
-    : utf8String(utf8String)
+    : utf8String_(utf8String)
 {
 }
 #endif
 
 const std::string &MultiEncodingString::asUtf8String() const
 {
-    return utf8String;
+    return utf8String_;
 }
 
 #if defined(_WIN32)
 const std::wstring &MultiEncodingString::asUtf16String() const
 {
-    return utf16String;
+    return utf16String_;
 }
 #endif
 
-uint8_t Terminal::cache = 0;
+uint8_t Terminal::cache_ = 0;
 
 #if defined(_WIN32)
 void Terminal::enableAnsiParse() noexcept
@@ -145,15 +145,15 @@ void Terminal::setBlockingInput(bool isBlocking) noexcept
 
 void Terminal::cacheStreamStates() noexcept
 {
-    cache |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
+    cache_ |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
 }
 
 void Terminal::initialize() noexcept
 {
-    if (cache & 1 << 7) {
+    if (cache_ & 1 << 7) {
         return;
     }
-    cache |= 1 << 7;
+    cache_ |= 1 << 7;
 #if defined(_WIN32)
     SetConsoleOutputCP(CP_UTF8);
     enableAnsiParse();
@@ -183,19 +183,19 @@ void Terminal::clearInput() noexcept
 bool Terminal::isInputRedirected() noexcept
 {
     initialize();
-    return cache & 1;
+    return cache_ & 1;
 }
 
 bool Terminal::isOutputRedirected() noexcept
 {
     initialize();
-    return cache & 1 << 1;
+    return cache_ & 1 << 1;
 }
 
 bool Terminal::isErrorRedirected() noexcept
 {
     initialize();
-    return cache & 1 << 2;
+    return cache_ & 1 << 2;
 }
 
 void Terminal::SetFontColor(AnsiColor color, Layer layer) noexcept
@@ -348,7 +348,7 @@ Terminal::GetArguments(int totalMainArguments, const char **mainArguments)
 void Terminal::WriteLine() noexcept
 {
     initialize();
-    cache &= ~(1 << 4);
+    cache_ &= ~(1 << 4);
     try {
         std::cout << std::endl;
     } catch (...) {
@@ -358,8 +358,8 @@ void Terminal::WriteLine() noexcept
 void Terminal::WriteErrorLine() noexcept
 {
     initialize();
-    if (cache & 1 << 4) {
-        cache &= ~(1 << 4);
+    if (cache_ & 1 << 4) {
+        cache_ &= ~(1 << 4);
         flushOutput();
     }
     try {
