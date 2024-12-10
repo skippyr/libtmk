@@ -97,30 +97,72 @@ namespace Tmk
         LightWhite
     };
 
+    /// <summary>
+    /// Contains the available terminal font weights.
+    /// </summary>
     enum class FontWeight
     {
+        /// <summary>
+        /// Usually rendered with bold weight and/or light colors.
+        /// </summary>
         Bold = 1,
+        /// <summary>
+        /// Rendered with faint colors.
+        /// </summary>
         Light
     };
 
+    /// <summary>
+    /// Contains the available terminal cursor shapes.
+    /// </summary>
     enum class CursorShape
     {
+        /// <summary>
+        /// Fills the whole cursor cell.
+        /// </summary>
         Block = 2,
+        /// <summary>
+        /// Fills a portion of the bottom of the cursor cell.
+        /// </summary>
         Underline = 4,
+        /// <summary>
+        /// Fills a portion of the left side of the cursor cell.
+        /// </summary>
         Bar = 6
     };
 
+    /// <summary>
+    /// Contains the available directions the terminal cursor can move to.
+    /// </summary>
     enum class Direction
     {
+        /// <summary>
+        /// The up direction.
+        /// </summary>
         Up = 'A',
+        /// <summary>
+        /// The down direction.
+        /// </summary>
         Down,
+        /// <summary>
+        /// The right direction.
+        /// </summary>
         Right,
+        /// <summary>
+        /// The left direction.
+        /// </summary>
         Left
     };
 
+    /// <summary>
+    /// Represents an exception thrown when a set of standard terminal streams are being redirected.
+    /// </summary>
     class StreamRedirectionException : public std::exception
     {
     };
+    /// <summary>
+    /// Represents an exception thrown when a value is outside of its valid range.
+    /// </summary>
     class OutOfBoundsException : public std::exception
     {
     };
