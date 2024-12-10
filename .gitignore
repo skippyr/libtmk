@@ -3,6 +3,7 @@
 .idea
 .vs
 .vscode
+*.swp
 build
 cmake-build-*
 dist

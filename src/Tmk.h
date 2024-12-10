@@ -11,8 +11,7 @@
 
 namespace tmk {
 /** Contains the terminal layers where colors can be set into. */
-enum class Layer
-{
+enum class Layer {
   /** The foreground layer refers to the one where the graphemes are. */
   Foreground = 3,
   /** The background layer refers to the one behind the graphemes. */
@@ -23,8 +22,7 @@ enum class Layer
  * Contains the first 16 colors of the ANSI color palette, which map to colors
  * of the terminal colorscheme.
  */
-enum class AnsiColor
-{
+enum class AnsiColor {
   /** The dark variant of the black color. */
   DarkBlack,
   /** The dark variant of the red color. */
@@ -60,8 +58,7 @@ enum class AnsiColor
 };
 
 /** Contains the available terminal font weights. */
-enum class FontWeight
-{
+enum class FontWeight {
   /** Usually rendered with bold weight and/or light colors. */
   Bold = 1,
   /** Rendered with faint colors. */
@@ -69,8 +66,7 @@ enum class FontWeight
 };
 
 /** Contains the available terminal cursor shapes. */
-enum class CursorShape
-{
+enum class CursorShape {
   /** Fills the whole cursor cell. */
   Block = 2,
   /** Fills a portion of the bottom of the cursor cell. */
@@ -80,8 +76,7 @@ enum class CursorShape
 };
 
 /** Contains the available directions the terminal cursor can move to. */
-enum class Direction
-{
+enum class Direction {
   /** The up direction. */
   Up = 'A',
   /** The down direction. */
@@ -96,18 +91,15 @@ enum class Direction
  * Represents an exception thrown when a set of standard terminal streams is
  * being redirected.
  */
-class StreamRedirectionException : public std::exception
-{};
+class StreamRedirectionException : public std::exception {};
 
 /**
  * Represents an exception thrown when a value is outside of its valid range.
  */
-class OutOfBoundsException : public std::exception
-{};
+class OutOfBoundsException : public std::exception {};
 
 /** Represents a color in RGB format. */
-class RgbColor
-{
+class RgbColor {
 private:
   /** The red component of the color. */
   uint8_t m_red;
@@ -157,8 +149,7 @@ public:
 };
 
 /** Represents a coordinate within the terminal window cell grid. */
-class Coordinate
-{
+class Coordinate {
 private:
   /** The column component of the coordinate. */
   uint16_t m_column;
@@ -195,8 +186,7 @@ public:
 };
 
 /** Represents dimensions within the terminal window. */
-class Dimensions
-{
+class Dimensions {
 private:
   /** The total columns in the dimensions. */
   uint16_t m_totalColumns;
@@ -228,17 +218,15 @@ public:
 };
 
 #if defined(_WIN32)
-class Encoding
-{
+class Encoding {
 public:
   Encoding() = delete;
-  static std::string ConvertUtf16ToUtf8(const std::wstring& utf16String);
-  static std::wstring ConvertUtf8ToUtf16(const std::string& utf8String);
+  static std::string ConvertUtf16ToUtf8(const std::wstring &utf16String);
+  static std::wstring ConvertUtf8ToUtf16(const std::string &utf8String);
 };
 #endif
 
-class MultiEncodingString
-{
+class MultiEncodingString {
 private:
   std::string m_utf8String;
 #if defined(_WIN32)
@@ -246,18 +234,17 @@ private:
 #endif
 
 public:
-  MultiEncodingString(const std::string& utf8String);
+  MultiEncodingString(const std::string &utf8String);
 #if defined(_WIN32)
-  MultiEncodingString(const std::wstring& utf16String);
+  MultiEncodingString(const std::wstring &utf16String);
 #endif
-  const std::string& AsUtf8String() const;
+  const std::string &AsUtf8String() const;
 #if defined(_WIN32)
-  const std::wstring& AsUtf16String() const;
+  const std::wstring &AsUtf16String() const;
 #endif
 };
 
-class Terminal
-{
+class Terminal {
 private:
   static uint8_t m_cache;
 
@@ -269,7 +256,7 @@ private:
 #endif
   static void CacheStreamStates() noexcept;
 
-  template<typename... Args>
+  template <typename... Args>
   static void WriteAnsi(std::string_view format, Args... arguments)
   {
     if (!IsOutputRedirected()) {
@@ -289,7 +276,7 @@ public:
   static bool IsOutputRedirected() noexcept;
   static bool IsErrorRedirected() noexcept;
   static void SetFontColor(AnsiColor color, Layer layer) noexcept;
-  static void SetFontColor(const RgbColor& color, Layer layer) noexcept;
+  static void SetFontColor(const RgbColor &color, Layer layer) noexcept;
   static void ResetFontColors() noexcept;
   static void SetFontWeight(FontWeight weight) noexcept;
   static void ResetFontWeight() noexcept;
@@ -305,13 +292,12 @@ public:
   static void RingBell() noexcept;
   static void OpenAlternateWindow() noexcept;
   static void CloseAlternateWindow() noexcept;
-  static std::vector<MultiEncodingString> GetArguments(
-    int totalMainArguments,
-    const char** mainArguments);
+  static std::vector<MultiEncodingString>
+  GetArguments(int totalMainArguments, const char **mainArguments);
   static void WriteLine() noexcept;
   static void WriteErrorLine() noexcept;
 
-  template<typename... Args>
+  template <typename... Args>
   static void Write(std::string_view format, Args... arguments) noexcept
   {
     Initialize();
@@ -321,7 +307,7 @@ public:
     }
   }
 
-  template<typename... Args>
+  template <typename... Args>
   static void WriteLine(std::string_view format, Args... arguments)
   {
     Write(format, arguments...);
@@ -332,7 +318,7 @@ public:
     }
   }
 
-  template<typename... Args>
+  template <typename... Args>
   static void WriteError(std::string_view format, Args... arguments)
   {
     Initialize();
@@ -346,7 +332,7 @@ public:
     }
   }
 
-  template<typename... Args>
+  template <typename... Args>
   static void WriteErrorLine(std::string_view format, Args... arguments)
   {
     WriteError(format, arguments...);

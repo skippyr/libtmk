@@ -1,1 +1,3 @@
-BasedOnStyle: Mozilla
+BasedOnStyle: LLVM
+BreakBeforeBraces: WebKit
+FixNamespaceComments: false
