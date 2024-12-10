@@ -5,6 +5,9 @@
 #if defined(__linux__)
 #include <cstdint>
 #endif
+#if !defined(__APPLE__)
+#include <vector>
+#endif
 
 namespace tmk {
 enum class Layer { Foreground = 3, Background };
