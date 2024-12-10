@@ -246,35 +246,35 @@ class MultiEncodingString {
 
 class Terminal {
   private:
-    static uint8_t m_cache;
+    static uint8_t cache;
 
 #if defined(_WIN32)
-    static void EnableAnsiParse() noexcept;
+    static void enableAnsiParse() noexcept;
 #else
-    static void SetRawInput(bool isRaw) noexcept;
-    static void SetBlockingInput(bool isBlocking) noexcept;
+    static void setRawInput(bool isRaw) noexcept;
+    static void setBlockingInput(bool isBlocking) noexcept;
 #endif
-    static void CacheStreamStates() noexcept;
+    static void cacheStreamStates() noexcept;
 
     template <typename... Args>
-    static void WriteAnsi(std::string_view format, Args... arguments)
+    static void writeAnsi(std::string_view format, Args... arguments)
     {
-        if (!IsOutputRedirected()) {
+        if (!isOutputRedirected()) {
             Write(format, arguments...);
-            m_cache |= 1 << 4;
-        } else if (!IsErrorRedirected()) {
+            cache |= 1 << 4;
+        } else if (!isErrorRedirected()) {
             WriteError(format, arguments...);
         }
     }
 
   public:
     Terminal() = delete;
-    static void Initialize() noexcept;
-    static void FlushOutput() noexcept;
-    static void ClearInput() noexcept;
-    static bool IsInputRedirected() noexcept;
-    static bool IsOutputRedirected() noexcept;
-    static bool IsErrorRedirected() noexcept;
+    static void initialize() noexcept;
+    static void flushOutput() noexcept;
+    static void clearInput() noexcept;
+    static bool isInputRedirected() noexcept;
+    static bool isOutputRedirected() noexcept;
+    static bool isErrorRedirected() noexcept;
     static void SetFontColor(AnsiColor color, Layer layer) noexcept;
     static void SetFontColor(const RgbColor &color, Layer layer) noexcept;
     static void ResetFontColors() noexcept;
@@ -300,7 +300,7 @@ class Terminal {
     template <typename... Args>
     static void Write(std::string_view format, Args... arguments) noexcept
     {
-        Initialize();
+        initialize();
         try {
             std::cout << std::vformat(format,
                                       std::make_format_args(arguments...));
@@ -312,7 +312,7 @@ class Terminal {
     static void WriteLine(std::string_view format, Args... arguments)
     {
         Write(format, arguments...);
-        m_cache &= ~(1 << 4);
+        cache &= ~(1 << 4);
         try {
             std::cout << std::endl;
         } catch (...) {
@@ -322,10 +322,10 @@ class Terminal {
     template <typename... Args>
     static void WriteError(std::string_view format, Args... arguments)
     {
-        Initialize();
-        if (m_cache & 1 << 4) {
-            m_cache &= ~(1 << 4);
-            FlushOutput();
+        initialize();
+        if (cache & 1 << 4) {
+            cache &= ~(1 << 4);
+            flushOutput();
         }
         try {
             std::cerr << std::vformat(format,

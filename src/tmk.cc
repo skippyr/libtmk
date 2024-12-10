@@ -112,10 +112,10 @@ const std::wstring &MultiEncodingString::asUtf16String() const
 }
 #endif
 
-uint8_t Terminal::m_cache = 0;
+uint8_t Terminal::cache = 0;
 
 #if defined(_WIN32)
-void Terminal::EnableAnsiParse() noexcept
+void Terminal::enableAnsiParse() noexcept
 {
     HANDLE handle;
     DWORD mode;
@@ -124,7 +124,7 @@ void Terminal::EnableAnsiParse() noexcept
         SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 #else
-void Terminal::SetRawInput(bool isRaw) noexcept
+void Terminal::setRawInput(bool isRaw) noexcept
 {
     struct termios attributes;
     tcgetattr(STDIN_FILENO, &attributes);
@@ -135,7 +135,7 @@ void Terminal::SetRawInput(bool isRaw) noexcept
     tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
 }
 
-void Terminal::SetBlockingInput(bool isBlocking) noexcept
+void Terminal::setBlockingInput(bool isBlocking) noexcept
 {
     int flags = fcntl(STDIN_FILENO, F_GETFL);
     fcntl(STDIN_FILENO, F_SETFL,
@@ -143,94 +143,93 @@ void Terminal::SetBlockingInput(bool isBlocking) noexcept
 }
 #endif
 
-void Terminal::CacheStreamStates() noexcept
+void Terminal::cacheStreamStates() noexcept
 {
-    m_cache |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) |
-               IS_STREAM_REDIRECTED(2);
+    cache |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
 }
 
-void Terminal::Initialize() noexcept
+void Terminal::initialize() noexcept
 {
-    if (m_cache & 1 << 7) {
+    if (cache & 1 << 7) {
         return;
     }
-    m_cache |= 1 << 7;
+    cache |= 1 << 7;
 #if defined(_WIN32)
     SetConsoleOutputCP(CP_UTF8);
-    EnableAnsiParse();
+    enableAnsiParse();
 #endif
-    CacheStreamStates();
+    cacheStreamStates();
 }
 
-void Terminal::FlushOutput() noexcept { std::fflush(stdout); }
+void Terminal::flushOutput() noexcept { std::fflush(stdout); }
 
-void Terminal::ClearInput() noexcept
+void Terminal::clearInput() noexcept
 {
 #if defined(_WIN32)
     FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
-    if (IsInputRedirected()) {
+    if (isInputRedirected()) {
         return;
     }
-    SetRawInput(true);
-    SetBlockingInput(false);
+    setRawInput(true);
+    setBlockingInput(false);
     while (std::getchar() != EOF) {
     }
-    SetBlockingInput(true);
-    SetRawInput(false);
+    setBlockingInput(true);
+    setRawInput(false);
 #endif
 }
 
-bool Terminal::IsInputRedirected() noexcept
+bool Terminal::isInputRedirected() noexcept
 {
-    Initialize();
-    return m_cache & 1;
+    initialize();
+    return cache & 1;
 }
 
-bool Terminal::IsOutputRedirected() noexcept
+bool Terminal::isOutputRedirected() noexcept
 {
-    Initialize();
-    return m_cache & 1 << 1;
+    initialize();
+    return cache & 1 << 1;
 }
 
-bool Terminal::IsErrorRedirected() noexcept
+bool Terminal::isErrorRedirected() noexcept
 {
-    Initialize();
-    return m_cache & 1 << 2;
+    initialize();
+    return cache & 1 << 2;
 }
 
 void Terminal::SetFontColor(AnsiColor color, Layer layer) noexcept
 {
-    WriteAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
+    writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
               static_cast<int>(color));
 }
 
 void Terminal::SetFontColor(const RgbColor &color, Layer layer) noexcept
 {
-    WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
+    writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
               color.getGreen(), color.getBlue());
 }
 
-void Terminal::ResetFontColors() noexcept { WriteAnsi("\x1b[39;49m"); }
+void Terminal::ResetFontColors() noexcept { writeAnsi("\x1b[39;49m"); }
 
 void Terminal::SetFontWeight(FontWeight weight) noexcept
 {
-    WriteAnsi("\x1b[22;{}m", static_cast<int>(weight));
+    writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
 }
 
-void Terminal::ResetFontWeight() noexcept { WriteAnsi("\x1b[22m"); }
+void Terminal::ResetFontWeight() noexcept { writeAnsi("\x1b[22m"); }
 
 void Terminal::SetCursorVisible(bool isVisible) noexcept
 {
-    WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+    writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
 }
 
 void Terminal::SetCursorShape(CursorShape shape, bool shouldBlink) noexcept
 {
-    WriteAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
+    writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
 }
 
-void Terminal::ResetCursorShape() noexcept { WriteAnsi("\x1b[0 q"); }
+void Terminal::ResetCursorShape() noexcept { writeAnsi("\x1b[0 q"); }
 
 Coordinate Terminal::GetCursorCoordinate()
 {
@@ -245,16 +244,16 @@ Coordinate Terminal::GetCursorCoordinate()
     return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left,
                       bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
 #else
-    if (IsInputRedirected() || (IsOutputRedirected() && IsErrorRedirected())) {
+    if (isInputRedirected() || (isOutputRedirected() && isErrorRedirected())) {
         throw StreamRedirectionException();
     }
-    ClearInput();
-    SetRawInput(true);
-    WriteAnsi("\x1b[6n");
+    clearInput();
+    setRawInput(true);
+    writeAnsi("\x1b[6n");
     uint16_t column;
     uint16_t row;
     scanf("\x1b[%hu;%huR", &row, &column);
-    SetRawInput(false);
+    setRawInput(false);
     return Coordinate(column - 1, row - 1);
 #endif
 }
@@ -266,7 +265,7 @@ void Terminal::SetCursorCoordinate(Coordinate coordinate)
         coordinate.getRow() >= windowDimensions.getTotalRows()) {
         throw OutOfBoundsException();
     }
-    WriteAnsi("\x1b[{};{}H", coordinate.getRow() + 1,
+    writeAnsi("\x1b[{};{}H", coordinate.getRow() + 1,
               coordinate.getColumn() + 1);
 }
 
@@ -309,18 +308,18 @@ Dimensions Terminal::GetWindowDimensions()
 #endif
 }
 
-void Terminal::ClearWindow() noexcept { WriteAnsi("\x1b[2J\x1b[1;1H"); }
+void Terminal::ClearWindow() noexcept { writeAnsi("\x1b[2J\x1b[1;1H"); }
 
-void Terminal::ClearLine() noexcept { WriteAnsi("\x1b[2K\x1b[1G"); }
+void Terminal::ClearLine() noexcept { writeAnsi("\x1b[2K\x1b[1G"); }
 
-void Terminal::RingBell() noexcept { WriteAnsi("\7"); }
+void Terminal::RingBell() noexcept { writeAnsi("\7"); }
 
 void Terminal::OpenAlternateWindow() noexcept
 {
-    WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+    writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
 }
 
-void Terminal::CloseAlternateWindow() noexcept { WriteAnsi("\x1b[?1049l"); }
+void Terminal::CloseAlternateWindow() noexcept { writeAnsi("\x1b[?1049l"); }
 
 std::vector<MultiEncodingString>
 Terminal::GetArguments(int totalMainArguments, const char **mainArguments)
@@ -348,8 +347,8 @@ Terminal::GetArguments(int totalMainArguments, const char **mainArguments)
 
 void Terminal::WriteLine() noexcept
 {
-    Initialize();
-    m_cache &= ~(1 << 4);
+    initialize();
+    cache &= ~(1 << 4);
     try {
         std::cout << std::endl;
     } catch (...) {
@@ -358,10 +357,10 @@ void Terminal::WriteLine() noexcept
 
 void Terminal::WriteErrorLine() noexcept
 {
-    Initialize();
-    if (m_cache & 1 << 4) {
-        m_cache &= ~(1 << 4);
-        FlushOutput();
+    initialize();
+    if (cache & 1 << 4) {
+        cache &= ~(1 << 4);
+        flushOutput();
     }
     try {
         std::cerr << std::endl;
