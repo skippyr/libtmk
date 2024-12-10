@@ -99,12 +99,15 @@ public:
   static void resetFontColors() noexcept;
   static void setFontWeight(FontWeight weight) noexcept;
   static void resetFontWeight() noexcept;
+  static void setCursorVisible(bool isVisible) noexcept;
   static void setCursorShape(CursorShape shape, bool shouldBlink) noexcept;
   static void resetCursorShape() noexcept;
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;
   static void ringBell() noexcept;
+  static void openAlternateWindow() noexcept;
+  static void closeAlternateWindow() noexcept;
   static void writeLine() noexcept;
   static void writeErrorLine() noexcept;
 

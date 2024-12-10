@@ -155,6 +155,13 @@ void Terminal::resetFontWeight() noexcept {
   }
 }
 
+void Terminal::setCursorVisible(bool isVisible) noexcept {
+  try {
+    writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+  } catch (...) {
+  }
+}
+
 void Terminal::setCursorShape(CursorShape shape, bool shouldBlink) noexcept {
   try {
     writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
@@ -208,6 +215,20 @@ void Terminal::clearLine() noexcept {
 void Terminal::ringBell() noexcept {
   try {
     writeAnsi("\7");
+  } catch (...) {
+  }
+}
+
+void Terminal::openAlternateWindow() noexcept {
+  try {
+    writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+  } catch (...) {
+  }
+}
+
+void Terminal::closeAlternateWindow() noexcept {
+  try {
+    writeAnsi("\x1b[?1049l");
   } catch (...) {
   }
 }
