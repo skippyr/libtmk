@@ -163,6 +163,27 @@ Dimensions Terminal::getWindowDimensions() {
 #endif
 }
 
+void Terminal::clearWindow() noexcept {
+  try {
+    writeAnsi("\x1b[2J\x1b[1;1H");
+  } catch (...) {
+  }
+}
+
+void Terminal::clearLine() noexcept {
+  try {
+    writeAnsi("\x1b[2K\x1b[1G");
+  } catch (...) {
+  }
+}
+
+void Terminal::ringBell() noexcept {
+  try {
+    writeAnsi("\7");
+  } catch (...) {
+  }
+}
+
 void Terminal::writeLine() noexcept {
   init();
   cache_m &= ~(1 << 4);

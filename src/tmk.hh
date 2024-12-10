@@ -90,6 +90,9 @@ public:
   static void setFontColor(const RgbColor &color, Layer layer) noexcept;
   static void resetFontColors() noexcept;
   static Dimensions getWindowDimensions();
+  static void clearWindow() noexcept;
+  static void clearLine() noexcept;
+  static void ringBell() noexcept;
   static void writeLine() noexcept;
   static void writeErrorLine() noexcept;
 
