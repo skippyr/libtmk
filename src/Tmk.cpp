@@ -1,4 +1,4 @@
-#include "tmk.hh"
+#include "Tmk.h"
 #if defined(_WIN32)
 #include <Windows.h>
 #include <io.h>
@@ -15,90 +15,90 @@
 #define IS_STREAM_REDIRECTED(stream_a) (!isatty(stream_a) << stream_a)
 #endif
 
-namespace tmk
+namespace Tmk
 {
     RgbColor::RgbColor(uint8_t red, uint8_t green, uint8_t blue) noexcept
-        : red_m(red), green_m(green), blue_m(blue)
+        : m_red(red), m_green(green), m_blue(blue)
     {
     }
 
-    uint8_t RgbColor::getRed() const noexcept
+    uint8_t RgbColor::GetRed() const noexcept
     {
-        return red_m;
+        return m_red;
     }
 
-    void RgbColor::setRed(uint8_t red) noexcept
+    void RgbColor::SetRed(uint8_t red) noexcept
     {
-        red_m = red;
+        m_red = red;
     }
 
-    uint8_t RgbColor::getGreen() const noexcept
+    uint8_t RgbColor::GetGreen() const noexcept
     {
-        return green_m;
+        return m_green;
     }
 
-    void RgbColor::setGreen(uint8_t green) noexcept
+    void RgbColor::SetGreen(uint8_t green) noexcept
     {
-        green_m = green;
+        m_green = green;
     }
 
-    uint8_t RgbColor::getBlue() const noexcept
+    uint8_t RgbColor::GetBlue() const noexcept
     {
-        return blue_m;
+        return m_blue;
     }
 
-    void RgbColor::setBlue(uint8_t blue) noexcept
+    void RgbColor::SetBlue(uint8_t blue) noexcept
     {
-        blue_m = blue;
+        m_blue = blue;
     }
 
     Coordinate::Coordinate(uint16_t column, uint16_t row) noexcept
-        : column_m(column), row_m(row)
+        : m_column(column), m_row(row)
     {
     }
 
-    uint16_t Coordinate::getColumn() const noexcept
+    uint16_t Coordinate::GetColumn() const noexcept
     {
-        return column_m;
+        return m_column;
     }
 
-    void Coordinate::setColumn(uint16_t column) noexcept
+    void Coordinate::SetColumn(uint16_t column) noexcept
     {
-        column_m = column;
+        m_column = column;
     }
 
-    uint16_t Coordinate::getRow() const noexcept
+    uint16_t Coordinate::GetRow() const noexcept
     {
-        return row_m;
+        return m_row;
     }
 
-    void Coordinate::setRow(uint16_t row) noexcept
+    void Coordinate::SetRow(uint16_t row) noexcept
     {
-        row_m = row;
+        m_row = row;
     }
 
     Dimensions::Dimensions(uint16_t totalColumns, uint16_t totalRows) noexcept
-        : totalColumns_m(totalColumns), totalRows_m(totalRows)
+        : m_totalColumns(totalColumns), m_totalRows(totalRows)
     {
     }
 
-    uint16_t Dimensions::getTotalColumns() const noexcept
+    uint16_t Dimensions::GetTotalColumns() const noexcept
     {
-        return totalColumns_m;
+        return m_totalColumns;
     }
 
-    uint16_t Dimensions::getTotalRows() const noexcept
+    uint16_t Dimensions::GetTotalRows() const noexcept
     {
-        return totalRows_m;
+        return m_totalRows;
     }
 
-    uint32_t Dimensions::getArea() const noexcept
+    uint32_t Dimensions::GetArea() const noexcept
     {
-        return totalColumns_m * totalRows_m;
+        return m_totalColumns * m_totalRows;
     }
 
 #if defined(_WIN32)
-    std::string Encoding::convertUtf16ToUtf8(const std::wstring& utf16String)
+    std::string Encoding::ConvertUtf16ToUtf8(const std::wstring& utf16String)
     {
         int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.c_str(), -1, nullptr, 0, nullptr, nullptr);
         std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
@@ -106,7 +106,7 @@ namespace tmk
         return buffer.get();
     }
 
-    std::wstring Encoding::convertUtf8ToUtf16(const std::string& utf8String)
+    std::wstring Encoding::ConvertUtf8ToUtf16(const std::string& utf8String)
     {
         int size = MultiByteToWideChar(CP_UTF8, 0, utf8String.c_str(), -1, nullptr, 0);
         std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(size);
@@ -117,37 +117,37 @@ namespace tmk
 
 #if defined(_WIN32)
     MultiEncodingString::MultiEncodingString(const std::string& utf8String)
-        : utf8String_m(utf8String), utf16String_m(Encoding::convertUtf8ToUtf16(utf8String))
+        : m_utf8String(utf8String), m_utf16String(Encoding::ConvertUtf8ToUtf16(utf8String))
     {
     }
 
     MultiEncodingString::MultiEncodingString(const std::wstring& utf16String)
-        : utf8String_m(Encoding::convertUtf16ToUtf8(utf16String)), utf16String_m(utf16String)
+        : m_utf8String(Encoding::ConvertUtf16ToUtf8(utf16String)), m_utf16String(utf16String)
     {
     }
 #else
     MultiEncodingString::MultiEncodingString(const std::string& utf8String)
-        : utf8String_m(utf8String)
+        : m_utf8String(utf8String)
     {
     }
 #endif
 
-    const std::string& MultiEncodingString::asUtf8String() const
+    const std::string& MultiEncodingString::AsUtf8String() const
     {
-        return utf8String_m;
+        return m_utf8String;
     }
 
 #if defined(_WIN32)
-    const std::wstring& MultiEncodingString::asUtf16String() const
+    const std::wstring& MultiEncodingString::AsUtf16String() const
     {
-        return utf16String_m;
+        return m_utf16String;
     }
 #endif
 
-    uint8_t Terminal::cache_m = 0;
+    uint8_t Terminal::m_cache = 0;
 
 #if defined(_WIN32)
-    void Terminal::enableAnsiParse() noexcept
+    void Terminal::EnableAnsiParse() noexcept
     {
         HANDLE handle;
         DWORD mode;
@@ -156,7 +156,7 @@ namespace tmk
             SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
     }
 #else
-    void Terminal::setRawInput(bool isRaw) noexcept
+    void Terminal::SetRawInput(bool isRaw) noexcept
     {
         struct termios attributes;
         tcgetattr(STDIN_FILENO, &attributes);
@@ -166,115 +166,115 @@ namespace tmk
         tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
     }
 
-    void Terminal::setBlockingInput(bool isBlocking) noexcept
+    void Terminal::SetBlockingInput(bool isBlocking) noexcept
     {
         int flags = fcntl(STDIN_FILENO, F_GETFL);
         fcntl(STDIN_FILENO, F_SETFL, isBlocking ? flags & ~O_NONBLOCK : flags | O_NONBLOCK);
     }
 #endif
 
-    void Terminal::cacheStreamStates() noexcept
+    void Terminal::CacheStreamStates() noexcept
     {
-        cache_m |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
+        m_cache |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
     }
 
-    void Terminal::init() noexcept
+    void Terminal::Initialize() noexcept
     {
-        if (cache_m & 1 << 7)
+        if (m_cache & 1 << 7)
         {
             return;
         }
-        cache_m |= 1 << 7;
+        m_cache |= 1 << 7;
 #if defined(_WIN32)
         SetConsoleOutputCP(CP_UTF8);
-        enableAnsiParse();
+        EnableAnsiParse();
 #endif
-        cacheStreamStates();
+        CacheStreamStates();
     }
 
-    void Terminal::flushOutput() noexcept
+    void Terminal::FlushOutput() noexcept
     {
         std::fflush(stdout);
     }
 
-    void Terminal::clearInput() noexcept
+    void Terminal::ClearInput() noexcept
     {
 #if defined(_WIN32)
         FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
-        if (isInputRedirected())
+        if (IsInputRedirected())
         {
             return;
         }
-        setRawInput(true);
-        setBlockingInput(false);
+        SetRawInput(true);
+        SetBlockingInput(false);
         while (std::getchar() != EOF)
         {
         }
-        setBlockingInput(true);
-        setRawInput(false);
+        SetBlockingInput(true);
+        SetRawInput(false);
 #endif
     }
 
-    bool Terminal::isInputRedirected() noexcept
+    bool Terminal::IsInputRedirected() noexcept
     {
-        init();
-        return cache_m & 1;
+        Initialize();
+        return m_cache & 1;
     }
 
-    bool Terminal::isOutputRedirected() noexcept
+    bool Terminal::IsOutputRedirected() noexcept
     {
-        init();
-        return cache_m & 1 << 1;
+        Initialize();
+        return m_cache & 1 << 1;
     }
 
-    bool Terminal::isErrorRedirected() noexcept
+    bool Terminal::IsErrorRedirected() noexcept
     {
-        init();
-        return cache_m & 1 << 2;
+        Initialize();
+        return m_cache & 1 << 2;
     }
 
-    void Terminal::setFontColor(AnsiColor color, Layer layer) noexcept
+    void Terminal::SetFontColor(AnsiColor color, Layer layer) noexcept
     {
-        writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
+        WriteAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
     }
 
-    void Terminal::setFontColor(const RgbColor& color, Layer layer) noexcept
+    void Terminal::SetFontColor(const RgbColor& color, Layer layer) noexcept
     {
-        writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(), color.getGreen(), color.getBlue());
+        WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
-    void Terminal::resetFontColors() noexcept
+    void Terminal::ResetFontColors() noexcept
     {
-        writeAnsi("\x1b[39;49m");
+        WriteAnsi("\x1b[39;49m");
     }
 
-    void Terminal::setFontWeight(FontWeight weight) noexcept
+    void Terminal::SetFontWeight(FontWeight weight) noexcept
     {
-        writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
+        WriteAnsi("\x1b[22;{}m", static_cast<int>(weight));
     }
 
-    void Terminal::resetFontWeight() noexcept
+    void Terminal::ResetFontWeight() noexcept
     {
-        writeAnsi("\x1b[22m");
+        WriteAnsi("\x1b[22m");
     }
 
-    void Terminal::setCursorVisible(bool isVisible) noexcept
+    void Terminal::SetCursorVisible(bool isVisible) noexcept
     {
-        writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+        WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
     }
 
-    void Terminal::setCursorShape(CursorShape shape, bool shouldBlink) noexcept
+    void Terminal::SetCursorShape(CursorShape shape, bool shouldBlink) noexcept
     {
-        writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
+        WriteAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
     }
 
-    void Terminal::resetCursorShape() noexcept
+    void Terminal::ResetCursorShape() noexcept
     {
-        writeAnsi("\x1b[0 q");
+        WriteAnsi("\x1b[0 q");
     }
 
-    Coordinate Terminal::getCursorCoordinate()
+    Coordinate Terminal::GetCursorCoordinate()
     {
 #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -286,56 +286,56 @@ namespace tmk
         return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left,
                           bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
 #else
-        if (isInputRedirected() || (isOutputRedirected() && isErrorRedirected()))
+        if (IsInputRedirected() || (IsOutputRedirected() && IsErrorRedirected()))
         {
             throw StreamRedirectionException();
         }
-        clearInput();
-        setRawInput(true);
-        writeAnsi("\x1b[6n");
+        ClearInput();
+        SetRawInput(true);
+        WriteAnsi("\x1b[6n");
         uint16_t column;
         uint16_t row;
         scanf("\x1b[%hu;%huR", &row, &column);
-        setRawInput(false);
+        SetRawInput(false);
         return Coordinate(column - 1, row - 1);
 #endif
     }
 
-    void Terminal::setCursorCoordinate(Coordinate coordinate)
+    void Terminal::SetCursorCoordinate(Coordinate coordinate)
     {
-        Dimensions windowDimensions = getWindowDimensions();
-        if (coordinate.getColumn() >= windowDimensions.getTotalColumns() ||
-            coordinate.getRow() >= windowDimensions.getTotalRows())
+        Dimensions windowDimensions = GetWindowDimensions();
+        if (coordinate.GetColumn() >= windowDimensions.GetTotalColumns() ||
+            coordinate.GetRow() >= windowDimensions.GetTotalRows())
         {
             throw OutOfBoundsException();
         }
-        writeAnsi("\x1b[{};{}H", coordinate.getRow() + 1, coordinate.getColumn() + 1);
+        WriteAnsi("\x1b[{};{}H", coordinate.GetRow() + 1, coordinate.GetColumn() + 1);
     }
 
-    Coordinate Terminal::moveCursor(uint16_t steps, Direction direction)
+    Coordinate Terminal::MoveCursor(uint16_t steps, Direction direction)
     {
-        Coordinate cursorCoordinate = getCursorCoordinate();
+        Coordinate cursorCoordinate = GetCursorCoordinate();
         if (direction == Direction::Up)
         {
-            cursorCoordinate.setRow(cursorCoordinate.getRow() - steps);
+            cursorCoordinate.SetRow(cursorCoordinate.GetRow() - steps);
         }
         else if (direction == Direction::Down)
         {
-            cursorCoordinate.setRow(cursorCoordinate.getRow() + steps);
+            cursorCoordinate.SetRow(cursorCoordinate.GetRow() + steps);
         }
         else if (direction == Direction::Left)
         {
-            cursorCoordinate.setColumn(cursorCoordinate.getColumn() - steps);
+            cursorCoordinate.SetColumn(cursorCoordinate.GetColumn() - steps);
         }
         else
         {
-            cursorCoordinate.setColumn(cursorCoordinate.getColumn() + steps);
+            cursorCoordinate.SetColumn(cursorCoordinate.GetColumn() + steps);
         }
-        setCursorCoordinate(cursorCoordinate);
+        SetCursorCoordinate(cursorCoordinate);
         return cursorCoordinate;
     }
 
-    Dimensions Terminal::getWindowDimensions()
+    Dimensions Terminal::GetWindowDimensions()
     {
 #if defined(_WIN32)
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -357,32 +357,32 @@ namespace tmk
 #endif
     }
 
-    void Terminal::clearWindow() noexcept
+    void Terminal::ClearWindow() noexcept
     {
-        writeAnsi("\x1b[2J\x1b[1;1H");
+        WriteAnsi("\x1b[2J\x1b[1;1H");
     }
 
-    void Terminal::clearLine() noexcept
+    void Terminal::ClearLine() noexcept
     {
-        writeAnsi("\x1b[2K\x1b[1G");
+        WriteAnsi("\x1b[2K\x1b[1G");
     }
 
-    void Terminal::ringBell() noexcept
+    void Terminal::RingBell() noexcept
     {
-        writeAnsi("\7");
+        WriteAnsi("\7");
     }
 
-    void Terminal::openAlternateWindow() noexcept
+    void Terminal::OpenAlternateWindow() noexcept
     {
-        writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+        WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
     }
 
-    void Terminal::closeAlternateWindow() noexcept
+    void Terminal::CloseAlternateWindow() noexcept
     {
-        writeAnsi("\x1b[?1049l");
+        WriteAnsi("\x1b[?1049l");
     }
 
-    std::vector<MultiEncodingString> Terminal::getArguments(int totalMainArguments, const char** mainArguments)
+    std::vector<MultiEncodingString> Terminal::GetArguments(int totalMainArguments, const char** mainArguments)
     {
         std::vector<MultiEncodingString> arguments;
         if (totalMainArguments == 1)
@@ -406,10 +406,10 @@ namespace tmk
         return arguments;
     }
 
-    void Terminal::writeLine() noexcept
+    void Terminal::WriteLine() noexcept
     {
-        init();
-        cache_m &= ~(1 << 4);
+        Initialize();
+        m_cache &= ~(1 << 4);
         try
         {
             std::cout << std::endl;
@@ -419,13 +419,13 @@ namespace tmk
         }
     }
 
-    void Terminal::writeErrorLine() noexcept
+    void Terminal::WriteErrorLine() noexcept
     {
-        init();
-        if (cache_m & 1 << 4)
+        Initialize();
+        if (m_cache & 1 << 4)
         {
-            cache_m &= ~(1 << 4);
-            flushOutput();
+            m_cache &= ~(1 << 4);
+            FlushOutput();
         }
         try
         {
