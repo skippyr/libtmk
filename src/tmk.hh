@@ -79,7 +79,7 @@ public:
 class Encoding {
 public:
   Encoding() = delete;
-  static std::string convertfUtf16ToUtf8(std::wstring &utf16String);
+  static std::string convertUtf16ToUtf8(std::wstring &utf16String);
   static std::wstring convertUtf8ToUtf16(std::string &utf8String);
 };
 #endif
