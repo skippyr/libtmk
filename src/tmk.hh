@@ -61,7 +61,6 @@ public:
   void setColumn(uint16_t column) noexcept;
   uint16_t getRow() const noexcept;
   void setRow(uint16_t row) noexcept;
-  void move(uint16_t steps, Direction direction);
 };
 
 class Dimensions {
