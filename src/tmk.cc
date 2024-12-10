@@ -8,7 +8,6 @@
 #include <termios.h>
 #include <unistd.h>
 #endif
-#include <inttypes.h>
 
 #if defined(_WIN32)
 #define IS_STREAM_REDIRECTED(stream_a) (!_isatty(stream_a) << stream_a)
@@ -214,7 +213,7 @@ Coordinate Terminal::getCursorCoordinate() {
   writeAnsi("\x1b[6n");
   uint16_t column;
   uint16_t row;
-  scanf("\x1b[%" PRIu16 ";%" PRIu16 "R", &row, &column);
+  scanf("\x1b[%hu;%huR", &row, &column);
   setRawInput(false);
   return Coordinate(column - 1, row - 1);
 #endif

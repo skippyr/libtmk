@@ -2,6 +2,9 @@
 
 #include <format>
 #include <iostream>
+#if defined(__linux__)
+#include <cstdint>
+#endif
 
 namespace tmk {
 enum class Layer { Foreground = 3, Background };
@@ -148,6 +151,7 @@ public:
   static void ringBell() noexcept;
   static void openAlternateWindow() noexcept;
   static void closeAlternateWindow() noexcept;
+  static std::vector<MultiEncodingString> getArguments();
   static void writeLine() noexcept;
   static void writeErrorLine() noexcept;
 
