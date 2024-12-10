@@ -155,86 +155,74 @@ public:
   void SetBlue(uint8_t blue) noexcept;
 };
 
-/// <summary>
-/// Represents a coordinate within the terminal window cell grid.
-/// </summary>
+/** Represents a coordinate within the terminal window cell grid. */
 class Coordinate
 {
 private:
-  /// <summary>
-  /// The column component of the coordinate.
-  /// </summary>
+  /** The column component of the coordinate. */
   uint16_t m_column;
-  /// <summary>
-  /// The row component of the coordinate.
-  /// </summary>
+  /** The row component of the coordinate. */
   uint16_t m_row;
 
 public:
-  /// <summary>
-  /// Creates an instance of the Coordinate class with the given components.
-  /// </summary>
-  /// <param name="column">The column component of the coordinate.</param>
-  /// <param name="row">The row component of the coordinate.</param>
+  /**
+   * Creates an instance of the Coordinate class with the given components.
+   * @param column The column component of the coordinate.
+   * @param row The row component of the coordinate.
+   */
   Coordinate(uint16_t column, uint16_t row) noexcept;
-  /// <summary>
-  /// Gets the column component of the coordinate.
-  /// </summary>
-  /// <returns>The column component of the coordinate.</returns>
+  /**
+   * Gets the column component of the coordinate.
+   * @returns The column component of the coordinate.
+   */
   uint16_t GetColumn() const noexcept;
-  /// <summary>
-  /// Sets the column component of the coordinate.
-  /// </summary>
-  /// <param name="column">The column component to be set.</param>
+  /**
+   * Sets the column component of the coordinate.
+   * @param column The column component to be set.
+   */
   void SetColumn(uint16_t column) noexcept;
-  /// <summary>
-  /// Gets the row component of the coordinate.
-  /// </summary>
-  /// <returns>The row component of the coordinate.</returns>
+  /**
+   * Gets the row component of the coordinate.
+   * @returns The row component of the coordinate.
+   */
   uint16_t GetRow() const noexcept;
-  /// <summary>
-  /// Sets the row component of the coordinate.
-  /// </summary>
-  /// <param name="row">The row component to be set.</param>
+ /**
+   * Sets the row component of the coordinate.
+   * @param row The row component to be set.
+   */
   void SetRow(uint16_t row) noexcept;
 };
 
-/// <summary>
-/// Represents dimensions within the terminal window.
-/// </summary>
+/** Represents dimensions within the terminal window. */
 class Dimensions
 {
 private:
-  /// <summary>
-  /// The total columns in the dimensions.
-  /// </summary>
+  /** The total columns in the dimensions. */
   uint16_t m_totalColumns;
-  /// <summary>
-  /// The total rows in the dimensions.
-  /// </summary>
+  /** The total rows in the dimensions. */
   uint16_t m_totalRows;
 
 public:
-  /// <summary>
-  /// Creates an instance of the Dimensions class with the given values.
-  /// </summary>
-  /// <param name="totalColumns">The total columns in the dimensions.</param>
-  /// <param name="totalRows">The total rows in the dimensions.</param>
+  /**
+   * Creates an instance of the Dimensions class with the given values.
+   * @param totalColumns The total columns in the dimensions.
+   * @param totalRows The total rows in the dimensions.
+   */
   Dimensions(uint16_t totalColumns, uint16_t totalRows) noexcept;
-  /// <summary>
-  /// Gets the total columns in the dimensions.
-  /// </summary>
-  /// <returns>The total columns in the dimensions.</returns>
+  /**
+   * Gets the total columns in the dimensions.
+   * @returns The total columns in the dimensions.
+   */
   uint16_t GetTotalColumns() const noexcept;
-  /// <summary>
-  /// Gets the total rows in the dimensions.
-  /// </summary>
-  /// <returns>The total rows in the dimensions.</returns>
+  /**
+   * Gets the total rows in the dimensions.
+   * @returns The total rows in the dimensions.
+   */
   uint16_t GetTotalRows() const noexcept;
-  /// <summary>
-  /// Gets the area of the dimensions.
-  /// </summary>
-  /// <returns>The area of the dimensions.</returns>
+  /**
+   * Gets the area of the dimensions.
+   * @returns The area of the dimensions.
+   */
   uint32_t GetArea() const noexcept;
 };
 
