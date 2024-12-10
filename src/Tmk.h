@@ -99,7 +99,8 @@ enum class Direction
 class StreamRedirectionException : public std::exception
 {};
 
-/** Represents an exception thrown when a value is outside of its valid range.
+/**
+ * Represents an exception thrown when a value is outside of its valid range.
  */
 class OutOfBoundsException : public std::exception
 {};
@@ -186,7 +187,7 @@ public:
    * @returns The row component of the coordinate.
    */
   uint16_t GetRow() const noexcept;
- /**
+  /**
    * Sets the row component of the coordinate.
    * @param row The row component to be set.
    */
