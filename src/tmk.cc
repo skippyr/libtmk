@@ -8,6 +8,7 @@
 #include <termios.h>
 #include <unistd.h>
 #endif
+#include <inttypes.h>
 
 #if defined(_WIN32)
 #define IS_STREAM_REDIRECTED(stream_a) (!_isatty(stream_a) << stream_a)
@@ -30,6 +31,17 @@ void RgbColor::setGreen(uint8_t green) noexcept { green_m = green; }
 uint8_t RgbColor::getBlue() const noexcept { return blue_m; }
 
 void RgbColor::setBlue(uint8_t blue) noexcept { blue_m = blue; }
+
+Coordinate::Coordinate(uint16_t column, uint16_t row) noexcept
+    : column_m(column), row_m(row) {}
+
+uint16_t Coordinate::getColumn() const noexcept { return column_m; }
+
+void Coordinate::setColumn(uint16_t column) noexcept { column_m = column; }
+
+uint16_t Coordinate::getRow() const noexcept { return row_m; }
+
+void Coordinate::setRow(uint16_t row) noexcept { row_m = row; }
 
 Dimensions::Dimensions(uint16_t columns, uint16_t rows) noexcept
     : columns_m(columns), rows_m(rows) {}
@@ -119,61 +131,56 @@ bool Terminal::isErrorRedirected() noexcept {
 }
 
 void Terminal::setFontColor(AnsiColor color, Layer layer) noexcept {
-  try {
-    writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
-              static_cast<int>(color));
-  } catch (...) {
-  }
+  writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer), static_cast<int>(color));
 }
 
 void Terminal::setFontColor(const RgbColor &color, Layer layer) noexcept {
-  try {
-    writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
-              color.getGreen(), color.getBlue());
-  } catch (...) {
-  }
+  writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
+            color.getGreen(), color.getBlue());
 }
 
-void Terminal::resetFontColors() noexcept {
-  try {
-    writeAnsi("\x1b[39;49m");
-  } catch (...) {
-  }
-}
+void Terminal::resetFontColors() noexcept { writeAnsi("\x1b[39;49m"); }
 
 void Terminal::setFontWeight(FontWeight weight) noexcept {
-  try {
-    writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
-  } catch (...) {
-  }
+  writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
 }
 
-void Terminal::resetFontWeight() noexcept {
-  try {
-    writeAnsi("\x1b[22m");
-  } catch (...) {
-  }
-}
+void Terminal::resetFontWeight() noexcept { writeAnsi("\x1b[22m"); }
 
 void Terminal::setCursorVisible(bool isVisible) noexcept {
-  try {
-    writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
-  } catch (...) {
-  }
+  writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
 }
 
 void Terminal::setCursorShape(CursorShape shape, bool shouldBlink) noexcept {
-  try {
-    writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
-  } catch (...) {
-  }
+  writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
 }
 
-void Terminal::resetCursorShape() noexcept {
-  try {
-    writeAnsi("\x1b[0 q");
-  } catch (...) {
+void Terminal::resetCursorShape() noexcept { writeAnsi("\x1b[0 q"); }
+
+Coordinate Terminal::getCursorCoordinate() {
+#if defined(_WIN32)
+  CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
+                                  &bufferInfo) &&
+      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
+                                  &bufferInfo)) {
+    throw StreamRedirectionException();
   }
+  return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left,
+                    bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
+#else
+  if (isInputRedirected() || (isOutputRedirected() && isErrorRedirected())) {
+    throw StreamRedirectionException();
+  }
+  clearInput();
+  setRawInput(true);
+  writeAnsi("\x1b[6n");
+  uint16_t column;
+  uint16_t row;
+  scanf("\x1b[%" PRIu16 ";%" PRIu16 "R", &row, &column);
+  setRawInput(false);
+  return Coordinate(column - 1, row - 1);
+#endif
 }
 
 Dimensions Terminal::getWindowDimensions() {
@@ -185,53 +192,30 @@ Dimensions Terminal::getWindowDimensions() {
                                   &bufferInfo)) {
     throw StreamRedirectionException();
   }
-  return Dimensions(b.srWindow.Right - b.srWindow.Left + 1,
-                    b.srWindow.Bottom - b.srWindow.Top + 1)
+  return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1,
+                    bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1)
 #else
-  struct winsize w;
-  if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w) &&
-      ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) &&
-      ioctl(STDERR_FILENO, TIOCGWINSZ, &w)) {
+  struct winsize ioctlSize;
+  if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) &&
+      ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) &&
+      ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize)) {
     throw StreamRedirectionException();
   }
-  return Dimensions(w.ws_col, w.ws_row);
+  return Dimensions(ioctlSize.ws_col, ioctlSize.ws_row);
 #endif
 }
 
-void Terminal::clearWindow() noexcept {
-  try {
-    writeAnsi("\x1b[2J\x1b[1;1H");
-  } catch (...) {
-  }
-}
+void Terminal::clearWindow() noexcept { writeAnsi("\x1b[2J\x1b[1;1H"); }
 
-void Terminal::clearLine() noexcept {
-  try {
-    writeAnsi("\x1b[2K\x1b[1G");
-  } catch (...) {
-  }
-}
+void Terminal::clearLine() noexcept { writeAnsi("\x1b[2K\x1b[1G"); }
 
-void Terminal::ringBell() noexcept {
-  try {
-    writeAnsi("\7");
-  } catch (...) {
-  }
-}
+void Terminal::ringBell() noexcept { writeAnsi("\7"); }
 
 void Terminal::openAlternateWindow() noexcept {
-  try {
-    writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
-  } catch (...) {
-  }
+  writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
 }
 
-void Terminal::closeAlternateWindow() noexcept {
-  try {
-    writeAnsi("\x1b[?1049l");
-  } catch (...) {
-  }
-}
+void Terminal::closeAlternateWindow() noexcept { writeAnsi("\x1b[?1049l"); }
 
 void Terminal::writeLine() noexcept {
   init();

@@ -27,11 +27,7 @@ enum class AnsiColor {
 
 enum class FontWeight { Bold = 1, Light };
 
-enum class CursorShape {
-  Block = 2,
-  Underline = 4,
-  Bar = 6
-};
+enum class CursorShape { Block = 2, Underline = 4, Bar = 6 };
 
 class StreamRedirectionException : public std::exception {};
 
@@ -49,6 +45,19 @@ public:
   void setGreen(uint8_t green) noexcept;
   uint8_t getBlue() const noexcept;
   void setBlue(uint8_t blue) noexcept;
+};
+
+class Coordinate {
+private:
+  uint16_t column_m;
+  uint16_t row_m;
+
+public:
+  Coordinate(uint16_t column, uint16_t row) noexcept;
+  uint16_t getColumn() const noexcept;
+  void setColumn(uint16_t column) noexcept;
+  uint16_t getRow() const noexcept;
+  void setRow(uint16_t row) noexcept;
 };
 
 class Dimensions {
@@ -82,8 +91,6 @@ private:
       cache_m |= 1 << 4;
     } else if (!isErrorRedirected()) {
       writeError(format, arguments...);
-    } else {
-      throw StreamRedirectionException();
     }
   }
 
@@ -102,6 +109,7 @@ public:
   static void setCursorVisible(bool isVisible) noexcept;
   static void setCursorShape(CursorShape shape, bool shouldBlink) noexcept;
   static void resetCursorShape() noexcept;
+  static Coordinate getCursorCoordinate();
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;
