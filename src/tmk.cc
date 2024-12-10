@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <fcntl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -22,6 +24,21 @@ void Terminal::enableAnsiParse() noexcept {
   (GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) ||
    GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
       SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+}
+#else
+void Terminal::setRawInput(bool isRaw) noexcept {
+  struct termios attributes;
+  tcgetattr(STDIN_FILENO, &attributes);
+  attributes.c_lflag = isRaw ? attributes.c_lflag & ~(ICANON | ECHO | ISIG)
+                             : attributes.c_lflag | ICANON | ECHO | ISIG;
+  attributes.c_iflag =
+      isRaw ? attributes.c_iflag & ~IXON : attributes.c_iflag | IXON;
+  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+void Terminal::setBlockingInput(bool isBlocking) noexcept {
+  int flags = fcntl(STDIN_FILENO, F_GETFL);
+  fcntl(STDIN_FILENO, F_SETFL, isBlocking ? flags & ~O_NONBLOCK : flags | O_NONBLOCK);
 }
 #endif
 
@@ -43,6 +60,22 @@ void Terminal::init() noexcept {
 }
 
 void Terminal::flushOutput() noexcept { std::fflush(stdout); }
+
+void Terminal::clearInput() noexcept {
+#if defined(_WIN32)
+  FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+  if (isInputRedirected()) {
+    return;
+  }
+  setRawInput(true);
+  setBlockingInput(false);
+  while (std::getchar() != EOF) {
+  }
+  setBlockingInput(true);
+  setRawInput(false);
+#endif
+}
 
 bool Terminal::isInputRedirected() noexcept {
   init();

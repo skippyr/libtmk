@@ -33,6 +33,9 @@ private:
 
 #if defined(_WIN32)
   static void enableAnsiParse() noexcept;
+#else
+  static void setRawInput(bool isRaw) noexcept;
+  static void setBlockingInput(bool isBlocking) noexcept;
 #endif
   static void cacheStreamStates() noexcept;
 
@@ -51,6 +54,7 @@ private:
 public:
   static void init() noexcept;
   static void flushOutput() noexcept;
+  static void clearInput() noexcept;
   static bool isInputRedirected() noexcept;
   static bool isOutputRedirected() noexcept;
   static bool isErrorRedirected() noexcept;
