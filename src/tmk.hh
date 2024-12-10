@@ -25,6 +25,8 @@ enum class AnsiColor {
   LightWhite
 };
 
+enum class FontWeight { Bold = 1, Light };
+
 class StreamRedirectionException : public std::exception {};
 
 class RgbColor {
@@ -89,6 +91,8 @@ public:
   static void setFontColor(AnsiColor color, Layer layer) noexcept;
   static void setFontColor(const RgbColor &color, Layer layer) noexcept;
   static void resetFontColors() noexcept;
+  static void setFontWeight(FontWeight weight) noexcept;
+  static void resetFontWeight() noexcept;
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;

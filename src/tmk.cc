@@ -141,6 +141,18 @@ void Terminal::resetFontColors() noexcept {
   }
 }
 
+void Terminal::setFontWeight(FontWeight weight) noexcept {
+  try {
+    writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
+  } catch (...) {}
+}
+
+void Terminal::resetFontWeight() noexcept {
+  try {
+    writeAnsi("\x1b[22m");
+  } catch (...) {}
+}
+
 Dimensions Terminal::getWindowDimensions() {
 #ifdef _WIN32
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
