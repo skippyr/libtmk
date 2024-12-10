@@ -160,6 +160,7 @@ namespace Tmk
     class StreamRedirectionException : public std::exception
     {
     };
+
     /// <summary>
     /// Represents an exception thrown when a value is outside of its valid range.
     /// </summary>
@@ -167,20 +168,62 @@ namespace Tmk
     {
     };
 
+    /// <summary>
+    /// Represents a color in RGB format.
+    /// </summary>
     class RgbColor
     {
     private:
+        /// <summary>
+        /// The red component of the color.
+        /// </summary>
         uint8_t m_red;
+        /// <summary>
+        /// The green component of the color.
+        /// </summary>
         uint8_t m_green;
+        /// <summary>
+        /// The blue component of the color.
+        /// </summary>
         uint8_t m_blue;
 
     public:
+        /// <summary>
+        /// Creates an instance of the RGB color class with the given components.
+        /// </summary>
+        /// <param name="red">The red component of the color.</param>
+        /// <param name="green">The green component of the color.</param>
+        /// <param name="blue">The blue component of the color.</param>
         RgbColor(uint8_t red, uint8_t green, uint8_t blue) noexcept;
+        /// <summary>
+        /// Gets the red component of the color.
+        /// </summary>
+        /// <returns>The red component of the color.</returns>
         uint8_t GetRed() const noexcept;
+        /// <summary>
+        /// Sets the red component of the color.
+        /// </summary>
+        /// <param name="red">The red component to be set.</param>
         void SetRed(uint8_t red) noexcept;
+        /// <summary>
+        /// Gets the green component of the color.
+        /// </summary>
+        /// <returns>The green component of the color.</returns>
         uint8_t GetGreen() const noexcept;
+        /// <summary>
+        /// Sets the green component of the color.
+        /// </summary>
+        /// <param name="green">The green component to be set.</param>
         void SetGreen(uint8_t green) noexcept;
+        /// <summary>
+        /// Gets the blue component of the color.
+        /// </summary>
+        /// <returns>The blue component of the color.</returns>
         uint8_t GetBlue() const noexcept;
+        /// <summary>
+        /// Sets the blue component of the color.
+        /// </summary>
+        /// <param name="blue">The blue component to be set.</param>
         void SetBlue(uint8_t blue) noexcept;
     };
 
