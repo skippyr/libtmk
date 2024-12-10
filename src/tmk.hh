@@ -30,6 +30,7 @@ enum class FontWeight { Bold = 1, Light };
 enum class CursorShape { Block = 2, Underline = 4, Bar = 6 };
 
 class StreamRedirectionException : public std::exception {};
+class OutOfBoundsException : public std::exception {};
 
 class RgbColor {
 private:
@@ -110,6 +111,7 @@ public:
   static void setCursorShape(CursorShape shape, bool shouldBlink) noexcept;
   static void resetCursorShape() noexcept;
   static Coordinate getCursorCoordinate();
+  static void setCursorCoordinate(Coordinate coordinate);
   static Dimensions getWindowDimensions();
   static void clearWindow() noexcept;
   static void clearLine() noexcept;

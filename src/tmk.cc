@@ -183,6 +183,15 @@ Coordinate Terminal::getCursorCoordinate() {
 #endif
 }
 
+void Terminal::setCursorCoordinate(Coordinate coordinate) {
+  Dimensions windowDimensions = getWindowDimensions();
+  if (coordinate.getColumn() >= windowDimensions.getColumns() ||
+      coordinate.getRow() >= windowDimensions.getRows()) {
+    throw OutOfBoundsException();
+  }
+  writeAnsi("\x1b[{};{}H", coordinate.getRow() + 1, coordinate.getColumn() + 1);
+}
+
 Dimensions Terminal::getWindowDimensions() {
 #ifdef _WIN32
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
