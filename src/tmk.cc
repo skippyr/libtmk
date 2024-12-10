@@ -198,40 +198,40 @@ bool Terminal::isErrorRedirected() noexcept
     return cache_ & 1 << 2;
 }
 
-void Terminal::SetFontColor(AnsiColor color, Layer layer) noexcept
+void Terminal::setFontColor(AnsiColor color, Layer layer) noexcept
 {
     writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
               static_cast<int>(color));
 }
 
-void Terminal::SetFontColor(const RgbColor &color, Layer layer) noexcept
+void Terminal::setFontColor(const RgbColor &color, Layer layer) noexcept
 {
     writeAnsi("\x1b[{}8;2;{};{};{}m", static_cast<int>(layer), color.getRed(),
               color.getGreen(), color.getBlue());
 }
 
-void Terminal::ResetFontColors() noexcept { writeAnsi("\x1b[39;49m"); }
+void Terminal::resetFontColors() noexcept { writeAnsi("\x1b[39;49m"); }
 
-void Terminal::SetFontWeight(FontWeight weight) noexcept
+void Terminal::setFontWeight(FontWeight weight) noexcept
 {
     writeAnsi("\x1b[22;{}m", static_cast<int>(weight));
 }
 
-void Terminal::ResetFontWeight() noexcept { writeAnsi("\x1b[22m"); }
+void Terminal::resetFontWeight() noexcept { writeAnsi("\x1b[22m"); }
 
-void Terminal::SetCursorVisible(bool isVisible) noexcept
+void Terminal::setCursorVisible(bool isVisible) noexcept
 {
     writeAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
 }
 
-void Terminal::SetCursorShape(CursorShape shape, bool shouldBlink) noexcept
+void Terminal::setCursorShape(CursorShape shape, bool shouldBlink) noexcept
 {
     writeAnsi("\x1b[{} q", static_cast<int>(shape) - shouldBlink);
 }
 
-void Terminal::ResetCursorShape() noexcept { writeAnsi("\x1b[0 q"); }
+void Terminal::resetCursorShape() noexcept { writeAnsi("\x1b[0 q"); }
 
-Coordinate Terminal::GetCursorCoordinate()
+Coordinate Terminal::getCursorCoordinate()
 {
 #if defined(_WIN32)
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -258,9 +258,9 @@ Coordinate Terminal::GetCursorCoordinate()
 #endif
 }
 
-void Terminal::SetCursorCoordinate(Coordinate coordinate)
+void Terminal::setCursorCoordinate(Coordinate coordinate)
 {
-    Dimensions windowDimensions = GetWindowDimensions();
+    Dimensions windowDimensions = getWindowDimensions();
     if (coordinate.getColumn() >= windowDimensions.getTotalColumns() ||
         coordinate.getRow() >= windowDimensions.getTotalRows()) {
         throw OutOfBoundsException();
@@ -269,9 +269,9 @@ void Terminal::SetCursorCoordinate(Coordinate coordinate)
               coordinate.getColumn() + 1);
 }
 
-Coordinate Terminal::MoveCursor(uint16_t steps, Direction direction)
+Coordinate Terminal::moveCursor(uint16_t steps, Direction direction)
 {
-    Coordinate cursorCoordinate = GetCursorCoordinate();
+    Coordinate cursorCoordinate = getCursorCoordinate();
     if (direction == Direction::Up) {
         cursorCoordinate.setRow(cursorCoordinate.getRow() - steps);
     } else if (direction == Direction::Down) {
@@ -281,11 +281,11 @@ Coordinate Terminal::MoveCursor(uint16_t steps, Direction direction)
     } else {
         cursorCoordinate.setColumn(cursorCoordinate.getColumn() + steps);
     }
-    SetCursorCoordinate(cursorCoordinate);
+    setCursorCoordinate(cursorCoordinate);
     return cursorCoordinate;
 }
 
-Dimensions Terminal::GetWindowDimensions()
+Dimensions Terminal::getWindowDimensions()
 {
 #if defined(_WIN32)
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -308,21 +308,21 @@ Dimensions Terminal::GetWindowDimensions()
 #endif
 }
 
-void Terminal::ClearWindow() noexcept { writeAnsi("\x1b[2J\x1b[1;1H"); }
+void Terminal::clearWindow() noexcept { writeAnsi("\x1b[2J\x1b[1;1H"); }
 
-void Terminal::ClearLine() noexcept { writeAnsi("\x1b[2K\x1b[1G"); }
+void Terminal::clearLine() noexcept { writeAnsi("\x1b[2K\x1b[1G"); }
 
-void Terminal::RingBell() noexcept { writeAnsi("\7"); }
+void Terminal::ringBell() noexcept { writeAnsi("\7"); }
 
-void Terminal::OpenAlternateWindow() noexcept
+void Terminal::openAlternateWindow() noexcept
 {
     writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
 }
 
-void Terminal::CloseAlternateWindow() noexcept { writeAnsi("\x1b[?1049l"); }
+void Terminal::closeAlternateWindow() noexcept { writeAnsi("\x1b[?1049l"); }
 
 std::vector<MultiEncodingString>
-Terminal::GetArguments(int totalMainArguments, const char **mainArguments)
+Terminal::getArguments(int totalMainArguments, const char **mainArguments)
 {
     std::vector<MultiEncodingString> arguments;
     if (totalMainArguments == 1) {
@@ -345,7 +345,7 @@ Terminal::GetArguments(int totalMainArguments, const char **mainArguments)
     return arguments;
 }
 
-void Terminal::WriteLine() noexcept
+void Terminal::writeLine() noexcept
 {
     initialize();
     cache_ &= ~(1 << 4);
@@ -355,7 +355,7 @@ void Terminal::WriteLine() noexcept
     }
 }
 
-void Terminal::WriteErrorLine() noexcept
+void Terminal::writeErrorLine() noexcept
 {
     initialize();
     if (cache_ & 1 << 4) {

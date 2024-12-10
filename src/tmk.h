@@ -260,10 +260,10 @@ class Terminal {
     static void writeAnsi(std::string_view format, Args... arguments)
     {
         if (!isOutputRedirected()) {
-            Write(format, arguments...);
+            write(format, arguments...);
             cache_ |= 1 << 4;
         } else if (!isErrorRedirected()) {
-            WriteError(format, arguments...);
+            writeError(format, arguments...);
         }
     }
 
@@ -275,30 +275,30 @@ class Terminal {
     static bool isInputRedirected() noexcept;
     static bool isOutputRedirected() noexcept;
     static bool isErrorRedirected() noexcept;
-    static void SetFontColor(AnsiColor color, Layer layer) noexcept;
-    static void SetFontColor(const RgbColor &color, Layer layer) noexcept;
-    static void ResetFontColors() noexcept;
-    static void SetFontWeight(FontWeight weight) noexcept;
-    static void ResetFontWeight() noexcept;
-    static void SetCursorVisible(bool isVisible) noexcept;
-    static void SetCursorShape(CursorShape shape, bool shouldBlink) noexcept;
-    static void ResetCursorShape() noexcept;
-    static Coordinate GetCursorCoordinate();
-    static void SetCursorCoordinate(Coordinate coordinate);
-    static Coordinate MoveCursor(uint16_t steps, Direction direction);
-    static Dimensions GetWindowDimensions();
-    static void ClearWindow() noexcept;
-    static void ClearLine() noexcept;
-    static void RingBell() noexcept;
-    static void OpenAlternateWindow() noexcept;
-    static void CloseAlternateWindow() noexcept;
+    static void setFontColor(AnsiColor color, Layer layer) noexcept;
+    static void setFontColor(const RgbColor &color, Layer layer) noexcept;
+    static void resetFontColors() noexcept;
+    static void setFontWeight(FontWeight weight) noexcept;
+    static void resetFontWeight() noexcept;
+    static void setCursorVisible(bool isVisible) noexcept;
+    static void setCursorShape(CursorShape shape, bool shouldBlink) noexcept;
+    static void resetCursorShape() noexcept;
+    static Coordinate getCursorCoordinate();
+    static void setCursorCoordinate(Coordinate coordinate);
+    static Coordinate moveCursor(uint16_t steps, Direction direction);
+    static Dimensions getWindowDimensions();
+    static void clearWindow() noexcept;
+    static void clearLine() noexcept;
+    static void ringBell() noexcept;
+    static void openAlternateWindow() noexcept;
+    static void closeAlternateWindow() noexcept;
     static std::vector<MultiEncodingString>
-    GetArguments(int totalMainArguments, const char **mainArguments);
-    static void WriteLine() noexcept;
-    static void WriteErrorLine() noexcept;
+    getArguments(int totalMainArguments, const char **mainArguments);
+    static void writeLine() noexcept;
+    static void writeErrorLine() noexcept;
 
     template <typename... Args>
-    static void Write(std::string_view format, Args... arguments) noexcept
+    static void write(std::string_view format, Args... arguments) noexcept
     {
         initialize();
         try {
@@ -309,9 +309,9 @@ class Terminal {
     }
 
     template <typename... Args>
-    static void WriteLine(std::string_view format, Args... arguments)
+    static void writeLine(std::string_view format, Args... arguments)
     {
-        Write(format, arguments...);
+        write(format, arguments...);
         cache_ &= ~(1 << 4);
         try {
             std::cout << std::endl;
@@ -320,7 +320,7 @@ class Terminal {
     }
 
     template <typename... Args>
-    static void WriteError(std::string_view format, Args... arguments)
+    static void writeError(std::string_view format, Args... arguments)
     {
         initialize();
         if (cache_ & 1 << 4) {
@@ -335,9 +335,9 @@ class Terminal {
     }
 
     template <typename... Args>
-    static void WriteErrorLine(std::string_view format, Args... arguments)
+    static void writeErrorLine(std::string_view format, Args... arguments)
     {
-        WriteError(format, arguments...);
+        writeError(format, arguments...);
         try {
             std::cerr << std::endl;
         } catch (...) {
