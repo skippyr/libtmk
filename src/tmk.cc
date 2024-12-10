@@ -53,7 +53,7 @@ uint16_t Dimensions::getRows() const noexcept { return rows_m; }
 uint32_t Dimensions::getArea() const noexcept { return columns_m * rows_m; }
 
 #if defined(_WIN32)
-std::string Encoding::convertUtf16ToUtf8(std::wstring &utf16String) {
+std::string Encoding::convertUtf16ToUtf8(const std::wstring &utf16String) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.c_str(), -1, nullptr,
                                  0, nullptr, nullptr);
   std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
@@ -62,7 +62,7 @@ std::string Encoding::convertUtf16ToUtf8(std::wstring &utf16String) {
   return buffer.get();
 }
 
-std::wstring Encoding::convertUtf8ToUtf16(std::string &utf8String) {
+std::wstring Encoding::convertUtf8ToUtf16(const std::string &utf8String) {
   int size =
       MultiByteToWideChar(CP_UTF8, 0, utf8String.c_str(), -1, nullptr, 0);
   std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(size);
