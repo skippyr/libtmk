@@ -42,6 +42,8 @@ void Terminal::init() noexcept {
   cacheStreamStates();
 }
 
+void Terminal::flushOutput() noexcept { std::fflush(stdout); }
+
 bool Terminal::isInputRedirected() noexcept {
   init();
   return cache_m & 1;
@@ -55,5 +57,41 @@ bool Terminal::isOutputRedirected() noexcept {
 bool Terminal::isErrorRedirected() noexcept {
   init();
   return cache_m & 1 << 2;
+}
+
+void Terminal::setFontColor(AnsiColor color, Layer layer) noexcept {
+  try {
+    writeAnsi("\x1b[{}8;5;{}m", static_cast<int>(layer),
+              static_cast<int>(color));
+  } catch (...) {
+  }
+}
+
+void Terminal::resetFontColors() noexcept {
+  try {
+    writeAnsi("\x1b[39;49m");
+  } catch (...) {
+  }
+}
+
+void Terminal::writeLine() noexcept {
+  init();
+  cache_m &= ~(1 << 4);
+  try {
+    std::cout << std::endl;
+  } catch (...) {
+  }
+}
+
+void Terminal::writeErrorLine() noexcept {
+  init();
+  if (cache_m & 1 << 4) {
+    cache_m &= ~(1 << 4);
+    flushOutput();
+  }
+  try {
+    std::cerr << std::endl;
+  } catch (...) {
+  }
 }
 } // namespace tmk
