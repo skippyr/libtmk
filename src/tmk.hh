@@ -43,6 +43,18 @@ public:
   void setBlue(uint8_t blue) noexcept;
 };
 
+class Dimensions {
+private:
+  uint16_t columns_m;
+  uint16_t rows_m;
+
+public:
+  Dimensions(uint16_t columns, uint16_t rows) noexcept;
+  uint16_t getColumns() const noexcept;
+  uint16_t getRows() const noexcept;
+  uint32_t getArea() const noexcept;
+};
+
 class Terminal {
 private:
   static uint8_t cache_m;
@@ -77,6 +89,7 @@ public:
   static void setFontColor(AnsiColor color, Layer layer) noexcept;
   static void setFontColor(const RgbColor &color, Layer layer) noexcept;
   static void resetFontColors() noexcept;
+  static Dimensions getWindowDimensions();
   static void writeLine() noexcept;
   static void writeErrorLine() noexcept;
 

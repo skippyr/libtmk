@@ -4,6 +4,7 @@
 #include <io.h>
 #else
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 #endif
@@ -29,6 +30,15 @@ void RgbColor::setGreen(uint8_t green) noexcept { green_m = green; }
 uint8_t RgbColor::getBlue() const noexcept { return blue_m; }
 
 void RgbColor::setBlue(uint8_t blue) noexcept { blue_m = blue; }
+
+Dimensions::Dimensions(uint16_t columns, uint16_t rows) noexcept
+    : columns_m(columns), rows_m(rows) {}
+
+uint16_t Dimensions::getColumns() const noexcept { return columns_m; }
+
+uint16_t Dimensions::getRows() const noexcept { return rows_m; }
+
+uint32_t Dimensions::getArea() const noexcept { return columns_m * rows_m; }
 
 uint8_t Terminal::cache_m = 0;
 
@@ -129,6 +139,28 @@ void Terminal::resetFontColors() noexcept {
     writeAnsi("\x1b[39;49m");
   } catch (...) {
   }
+}
+
+Dimensions Terminal::getWindowDimensions() {
+#ifdef _WIN32
+  CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
+                                  &bufferInfo) &&
+      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
+                                  &bufferInfo)) {
+    throw StreamRedirectionException();
+  }
+  return Dimensions(b.srWindow.Right - b.srWindow.Left + 1,
+                    b.srWindow.Bottom - b.srWindow.Top + 1)
+#else
+  struct winsize w;
+  if (ioctl(STDIN_FILENO, TIOCGWINSZ, &w) &&
+      ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) &&
+      ioctl(STDERR_FILENO, TIOCGWINSZ, &w)) {
+    throw StreamRedirectionException();
+  }
+  return Dimensions(w.ws_col, w.ws_row);
+#endif
 }
 
 void Terminal::writeLine() noexcept {
