@@ -272,16 +272,42 @@ namespace Tmk
         void SetRow(uint16_t row) noexcept;
     };
 
+    /// <summary>
+    /// Represents dimensions within the terminal window.
+    /// </summary>
     class Dimensions
     {
     private:
+        /// <summary>
+        /// The total columns in the dimensions.
+        /// </summary>
         uint16_t m_totalColumns;
+        /// <summary>
+        /// The total rows in the dimensions.
+        /// </summary>
         uint16_t m_totalRows;
 
     public:
+        /// <summary>
+        /// Creates an instance of the Dimensions class with the given values.
+        /// </summary>
+        /// <param name="totalColumns">The total columns in the dimensions.</param>
+        /// <param name="totalRows">The total rows in the dimensions.</param>
         Dimensions(uint16_t totalColumns, uint16_t totalRows) noexcept;
+        /// <summary>
+        /// Gets the total columns in the dimensions.
+        /// </summary>
+        /// <returns>The total columns in the dimensions.</returns>
         uint16_t GetTotalColumns() const noexcept;
+        /// <summary>
+        /// Gets the total rows in the dimensions.
+        /// </summary>
+        /// <returns>The total rows in the dimensions.</returns>
         uint16_t GetTotalRows() const noexcept;
+        /// <summary>
+        /// Gets the area of the dimensions.
+        /// </summary>
+        /// <returns>The area of the dimensions.</returns>
         uint32_t GetArea() const noexcept;
     };
 
