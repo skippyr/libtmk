@@ -145,7 +145,8 @@ void Terminal::setBlockingInput(bool isBlocking) noexcept
 
 void Terminal::cacheStreamStates() noexcept
 {
-    cache_ |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) | IS_STREAM_REDIRECTED(2);
+    cache_ |= IS_STREAM_REDIRECTED(0) | IS_STREAM_REDIRECTED(1) |
+              IS_STREAM_REDIRECTED(2);
 }
 
 void Terminal::initialize() noexcept

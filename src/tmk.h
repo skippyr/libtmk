@@ -100,7 +100,7 @@ class OutOfBoundsException : public std::exception {};
 
 /** Represents a color in RGB format. */
 class RgbColor {
-  private:
+private:
     /** The red component of the color. */
     uint8_t red_;
     /** The green component of the color. */
@@ -108,7 +108,7 @@ class RgbColor {
     /** The blue component of the color. */
     uint8_t blue_;
 
-  public:
+public:
     /**
      * Creates an instance of the RgbColor class with the given components.
      * @param red The red component of the color.
@@ -150,13 +150,13 @@ class RgbColor {
 
 /** Represents a coordinate within the terminal window cell grid. */
 class Coordinate {
-  private:
+private:
     /** The column component of the coordinate. */
     uint16_t column_;
     /** The row component of the coordinate. */
     uint16_t row_;
 
-  public:
+public:
     /**
      * Creates an instance of the Coordinate class with the given components.
      * @param column The column component of the coordinate.
@@ -187,13 +187,13 @@ class Coordinate {
 
 /** Represents dimensions within the terminal window. */
 class Dimensions {
-  private:
+private:
     /** The total columns in the dimensions. */
     uint16_t totalColumns_;
     /** The total rows in the dimensions. */
     uint16_t totalRows_;
 
-  public:
+public:
     /**
      * Creates an instance of the Dimensions class with the given values.
      * @param totalColumns The total columns in the dimensions.
@@ -218,34 +218,66 @@ class Dimensions {
 };
 
 #if defined(_WIN32)
+/** Represents the text encoding. */
 class Encoding {
-  public:
+public:
     Encoding() = delete;
+    /**
+     * Converts an UTF-16 encoded string to UTF-8.
+     * @param utf16String The UTF-16 encoded string.
+     * @returns The UTF-8 encoded string.
+     */
     static std::string convertUtf16ToUtf8(const std::wstring &utf16String);
+    /**
+     * Converts an UTF-8 encoded string to UTF-16.
+     * @param utf8String The UTF-8 encoded string.
+     * @returns The UTF-16 encoded string.
+     */
     static std::wstring convertUtf8ToUtf16(const std::string &utf8String);
 };
 #endif
 
+/** Represents a string encoded in both UTF-8 and UTF-16. */
 class MultiEncodingString {
-  private:
+private:
+    /** The string encoded in UTF-8. */
     std::string utf8String_;
 #if defined(_WIN32)
+    /** The string encoded in UTF-16. */
     std::wstring utf16String_;
 #endif
 
-  public:
+public:
+    /**
+     * Creates an instance of the MultiEncodingString class from an UTF-8
+     * encoded string.
+     * @param utf8String The UTF-8 encoded string.
+     */
     MultiEncodingString(const std::string &utf8String);
 #if defined(_WIN32)
+    /**
+     * Creates an instance of the MultiEncodingString class from an UTF-16
+     * encoded string.
+     * @param utf8String The UTF-16 encoded string.
+     */
     MultiEncodingString(const std::wstring &utf16String);
 #endif
+    /**
+     * Gets the string encoded in UTF-8.
+     * @returns The string encoded in UTF-8.
+     */
     const std::string &asUtf8String() const;
 #if defined(_WIN32)
+    /**
+     * Gets the string encoded in UTF-16.
+     * @returns The string encoded in UTF-16.
+     */
     const std::wstring &asUtf16String() const;
 #endif
 };
 
 class Terminal {
-  private:
+private:
     static uint8_t cache_;
 
 #if defined(_WIN32)
@@ -267,7 +299,7 @@ class Terminal {
         }
     }
 
-  public:
+public:
     Terminal() = delete;
     static void initialize() noexcept;
     static void flushOutput() noexcept;
