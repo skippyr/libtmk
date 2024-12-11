@@ -276,18 +276,36 @@ public:
 #endif
 };
 
+/** Represents the terminal. */
 class Terminal {
 private:
+    /** A general purpose cache. */
     static uint8_t cache_;
 
 #if defined(_WIN32)
+    /** Enables the parse of ANSI escape sequences on Windows. */
     static void enableAnsiParse() noexcept;
 #else
+    /**
+     * Sets the state of raw input mode on POSIX compliant systems.
+     * @param isRaw A boolean that states the input should be in raw mode.
+     */
     static void setRawInput(bool isRaw) noexcept;
+    /**
+     * Sets the state of blocking input mode on POSIX compliant systems.
+     * @param isBlocking A boolean that states the input should be blocking.
+     */
     static void setBlockingInput(bool isBlocking) noexcept;
 #endif
+    /** Caches the TTY state of all terminal streams. */
     static void cacheStreamStates() noexcept;
 
+    /**
+     * Formats and writes an ANSI escape sequence to either the output or error terminal streams.
+     * @tparam Args A parameter pack containing the arguments to be formatted.
+     * @param format The format to be used. It accepts the same specifiers as the std::format function family.
+     * @param arguments The arguments to be formatted.
+     */
     template <typename... Args>
     static void writeAnsi(std::string_view format, Args... arguments)
     {
