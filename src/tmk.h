@@ -308,14 +308,40 @@ namespace tmk {
 
     public:
         Terminal() = delete;
+        /** Performs all the setup required for the first use of the terminal. */
         static void initialize() noexcept;
+        /** Flushes the terminal output buffer. */
         static void flushOutput() noexcept;
+        /** Clears the terminal input buffer. */
         static void clearInput() noexcept;
+        /**
+         * Checks if the terminal input stream is being redirected.
+         * @returns A boolean that states the input stream is being redirected.
+         */
         static bool isInputRedirected() noexcept;
+        /**
+         * Checks if the terminal output stream is being redirected.
+         * @returns A boolean that states the output stream is being redirected.
+         */
         static bool isOutputRedirected() noexcept;
+        /**
+         * Checks if the terminal error stream is being redirected.
+         * @returns A boolean that states the error stream is being redirected.
+         */
         static bool isErrorRedirected() noexcept;
+        /**
+         * Sets an ANSI color into a terminal font layer.
+         * @param color The color to be set.
+         * @param layer The layer to be affected.
+         */
         static void setFontColor(AnsiColor color, Layer layer) noexcept;
+        /**
+         * Sets an RGB color into a terminal font layer.
+         * @param color The color to be set.
+         * @param layer The layer to be affected.
+         */
         static void setFontColor(const RgbColor& color, Layer layer) noexcept;
+        /** Resets the terminal font colors back to default. */
         static void resetFontColors() noexcept;
         static void setFontWeight(FontWeight weight) noexcept;
         static void resetFontWeight() noexcept;
