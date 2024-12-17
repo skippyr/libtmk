@@ -122,6 +122,14 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
 	return 0;
 }
 
+void tmk_openAlternateWindow(void) {
+	writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+}
+
+void tmk_closeAlternateWindow(void) {
+	writeAnsi("\x1b[?1049l");
+}
+
 void tmk_writeArguments(const char *format, va_list arguments) {
 	initialize();
 	vprintf(format, arguments);

@@ -56,7 +56,7 @@ struct tmk_RgbColor {
 struct tmk_Dimensions {
 	unsigned short totalColumns;
 	unsigned short totalRows;
-	unsigned short area;
+	unsigned int area;
 };
 
 #if defined(__cplusplus)
@@ -71,6 +71,8 @@ void tmk_resetFontEffects(void);
 void tmk_setFontWeight(int weight);
 void tmk_resetFontWeight(void);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
+void tmk_openAlternateWindow(void);
+void tmk_closeAlternateWindow(void);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);
