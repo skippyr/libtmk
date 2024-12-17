@@ -3,6 +3,7 @@
 #if defined(_WIN32)
 #include <Windows.h>
 #else
+#include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
@@ -99,6 +100,26 @@ void tmk_setFontWeight(int weight) {
 
 void tmk_resetFontWeight(void) {
 	writeAnsi("\x1b[22m");
+}
+
+int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
+#if defined(_WIN32)
+	CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo)) {
+		return -1;
+	}
+	dimensions->totalColumns = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+	dimensions->totalRows = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+#else
+	struct winsize ioctlSize;
+	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize)) {
+		return -1;
+	}
+	dimensions->totalColumns = ioctlSize.ws_col;
+	dimensions->totalRows = ioctlSize.ws_row;
+#endif
+	dimensions->area = dimensions->totalColumns * dimensions->totalRows;
+	return 0;
 }
 
 void tmk_writeArguments(const char *format, va_list arguments) {
