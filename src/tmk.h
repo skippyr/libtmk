@@ -9,10 +9,43 @@ enum tmk_Stream {
 	tmk_Stream_Error
 };
 
+enum tmk_Layer {
+	tmk_Layer_Foreground = 3,
+	tmk_Layer_Background
+};
+
+enum tmk_AnsiColor {
+	tmk_AnsiColor_DarkBlack,
+	tmk_AnsiColor_DarkRed,
+	tmk_AnsiColor_DarkGreen,
+	tmk_AnsiColor_DarkYellow,
+	tmk_AnsiColor_DarkBlue,
+	tmk_AnsiColor_DarkMagenta,
+	tmk_AnsiColor_DarkCyan,
+	tmk_AnsiColor_DarkWhite,
+	tmk_AnsiColor_LightBlack,
+	tmk_AnsiColor_LightRed,
+	tmk_AnsiColor_LightGreen,
+	tmk_AnsiColor_LightYellow,
+	tmk_AnsiColor_LightBlue,
+	tmk_AnsiColor_LightMagenta,
+	tmk_AnsiColor_LightCyan,
+	tmk_AnsiColor_LightWhite
+};
+
+struct tmk_RgbColor {
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+};
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 int tmk_isStreamRedirected(int stream);
+void tmk_setFontAnsiColor(int color, int layer);
+void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer);
+void tmk_resetFontColors(void);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);

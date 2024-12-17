@@ -18,6 +18,7 @@
 static void enableAnsiParse(void);
 #endif
 static void cacheStreamStates(void);
+static int writeAnsi(const char *format, ...);
 static void initialize(void);
 
 static char cache_g = 0;
@@ -32,6 +33,23 @@ static void enableAnsiParse(void) {
 
 static void cacheStreamStates(void) {
 	cache_g |= IS_STREAM_REDIRECTED(tmk_Stream_Input) | IS_STREAM_REDIRECTED(tmk_Stream_Output) | IS_STREAM_REDIRECTED(tmk_Stream_Error);
+}
+
+static int writeAnsi(const char *format, ...) {
+	if (!tmk_isStreamRedirected(tmk_Stream_Output)) {
+		va_list arguments;
+		va_start(arguments, format);
+		tmk_writeArguments(format, arguments);
+		va_end(arguments);
+	} else if (!tmk_isStreamRedirected(tmk_Stream_Error)) {
+		va_list arguments;
+		va_start(arguments, format);
+		tmk_writeErrorArguments(format, arguments);
+		va_end(arguments);
+	} else {
+		return -1;
+	}
+	return 0;
 }
 
 static void initialize(void) {
@@ -49,6 +67,18 @@ static void initialize(void) {
 int tmk_isStreamRedirected(int stream) {
 	initialize();
 	return !!(cache_g & 1 << stream);
+}
+
+void tmk_setFontAnsiColor(int color, int layer) {
+	writeAnsi("\x1b[%d8;5;%dm", layer, color);
+}
+
+void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer) {
+	writeAnsi("\x1b[%d8;5;%d;%d;%dm", layer, color.red, color.green, color.blue);
+}
+
+void tmk_resetFontColors(void) {
+	writeAnsi("\x1b[39;49m");
 }
 
 void tmk_writeArguments(const char *format, va_list arguments) {
