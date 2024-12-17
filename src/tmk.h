@@ -33,18 +33,24 @@ enum tmk_AnsiColor {
 	tmk_AnsiColor_LightWhite
 };
 
-enum tmk_FontEffect {
-	tmk_FontEffect_Italic = 1 << 3,
-	tmk_FontEffect_Underline = 1 << 4,
-	tmk_FontEffect_Blinking = 1 << 5,
-	tmk_FontEffect_Negative = 1 << 7,
-	tmk_FontEffect_Hidden = 1 << 8,
-	tmk_FontEffect_Strikethrough = 1 << 9
+enum tmk_Effect {
+	tmk_Effect_Italic = 1 << 3,
+	tmk_Effect_Underline = 1 << 4,
+	tmk_Effect_Blinking = 1 << 5,
+	tmk_Effect_Negative = 1 << 7,
+	tmk_Effect_Hidden = 1 << 8,
+	tmk_Effect_Strikethrough = 1 << 9
 };
 
-enum tmk_FontWeight {
-	tmk_FontWeight_Bold = 1,
-	tmk_FontWeight_Light
+enum tmk_Weight {
+	tmk_Weight_Bold = 1,
+	tmk_Weight_Light
+};
+
+enum tmk_Shape {
+	tmk_Shape_Block = 2,
+	tmk_Shape_Underline = 4,
+	tmk_Shape_Bar = 6
 };
 
 struct tmk_RgbColor {
@@ -85,6 +91,8 @@ void tmk_setFontEffects(int effectsMask);
 void tmk_resetFontEffects(void);
 void tmk_setFontWeight(int weight);
 void tmk_resetFontWeight(void);
+void tmk_setCursorShape(int shape, int shouldBlink);
+void tmk_resetCursorShape(void);
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
 void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);

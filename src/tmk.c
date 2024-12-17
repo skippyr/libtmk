@@ -165,6 +165,14 @@ void tmk_resetFontWeight(void) {
 	writeAnsi("\x1b[22m");
 }
 
+void tmk_setCursorShape(int shape, int shouldBlink) {
+	writeAnsi("\x1b[%d q", shape - !!shouldBlink);
+}
+
+void tmk_resetCursorShape(void) {
+	writeAnsi("\x1b[39m");
+}
+
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
 #if defined(_WIN32)
 	CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
