@@ -17,6 +17,7 @@
 
 #if defined(_WIN32)
 static void enableAnsiParse(void);
+static char *convertUtf16ToUtf8(const wchar_t *utf16String);
 #endif
 static void cacheStreamStates(void);
 static int writeAnsi(const char *format, ...);
@@ -29,6 +30,13 @@ static void enableAnsiParse(void) {
 	HANDLE handle;
 	DWORD mode;
 	(GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) || GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+}
+
+static char *convertUtf16ToUtf8(const wchar_t *utf16String) {
+	int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL, NULL);
+	char *buffer = malloc(size);
+	WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
+	return buffer;
 }
 #endif
 
@@ -128,6 +136,29 @@ void tmk_openAlternateWindow(void) {
 
 void tmk_closeAlternateWindow(void) {
 	writeAnsi("\x1b[?1049l");
+}
+
+void tmk_getCommandLineArguments(int totalMainArguments, const char **mainArguments, struct tmk_CommandLineArguments *commandLineArguments) {
+#if defined(_WIN32)
+	commandLineArguments->asUtf16 = CommandLineToArgvW(GetCommandLineW(), &commandLineArguments->total);
+	commandLineArguments->asUtf8 = malloc(commandLineArguments->total * sizeof(void *));
+	for (int offset = 0; offset < commandLineArguments->total; ++offset) {
+		commandLineArguments->asUtf8[offset] = convertUtf16ToUtf8(commandLineArguments->asUtf16[offset]);
+	}
+#else
+	commandLineArguments->total = totalMainArguments;
+	commandLineArguments->asUtf8 = mainArguments;
+#endif
+}
+
+void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments *commandLineArguments) {
+#if defined(_WIN32)
+	LocalFree(commandLineArguments->asUtf16);
+	for (int offset = 0; offset < commandLineArguments->total; ++offset) {
+		free(commandLineArguments->asUtf8[offset]);
+	}
+	free(commandLineArguments->asUtf8);
+#endif
 }
 
 void tmk_writeArguments(const char *format, va_list arguments) {

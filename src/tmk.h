@@ -59,6 +59,19 @@ struct tmk_Dimensions {
 	unsigned int area;
 };
 
+struct tmk_Coordinate {
+	unsigned short column;
+	unsigned short row;
+};
+
+struct tmk_CommandLineArguments {
+	int total;
+	const char **asUtf8;
+#if defined(_WIN32)
+	const wchar_t **asUtf16;
+#endif
+};
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -73,6 +86,8 @@ void tmk_resetFontWeight(void);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 void tmk_openAlternateWindow(void);
 void tmk_closeAlternateWindow(void);
+void tmk_getCommandLineArguments(int totalMainArguments, const char **mainArguments, struct tmk_CommandLineArguments *commandLineArguments);
+void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments *arguments);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);
