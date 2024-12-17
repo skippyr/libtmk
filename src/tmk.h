@@ -76,6 +76,8 @@ struct tmk_CommandLineArguments {
 extern "C" {
 #endif
 int tmk_isStreamRedirected(int stream);
+void tmk_flushOutputBuffer(void);
+void tmk_clearInputBuffer(void);
 void tmk_setFontAnsiColor(int color, int layer);
 void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer);
 void tmk_resetFontColors(void);

@@ -3,7 +3,9 @@
 #if defined(_WIN32)
 #include <Windows.h>
 #else
+#include <fcntl.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -12,12 +14,19 @@
 #if defined(_WIN32)
 #define IS_STREAM_REDIRECTED(stream_p) (!_isatty(stream_p) << stream_p)
 #else
+#define RAW_MODE_C_LFLAGS (ICANON | ECHO | ISIG)
+#define RAW_MODE_C_IFLAGS (IXON)
 #define IS_STREAM_REDIRECTED(stream_p) (!isatty(stream_p) << stream_p)
 #endif
 
 #if defined(_WIN32)
 static void enableAnsiParse(void);
 static char *convertUtf16ToUtf8(const wchar_t *utf16String);
+#else
+static void enableRawMode(void);
+static void disableRawMode(void);
+static void enableBlockingInput(void);
+static void disableBlockingInput(void);
 #endif
 static void cacheStreamStates(void);
 static int writeAnsi(const char *format, ...);
@@ -37,6 +46,32 @@ static char *convertUtf16ToUtf8(const wchar_t *utf16String) {
 	char *buffer = malloc(size);
 	WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
 	return buffer;
+}
+#else
+static void enableRawMode(void) {
+	struct termios attributes;
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag &= ~RAW_MODE_C_LFLAGS;
+	attributes.c_iflag &= ~RAW_MODE_C_IFLAGS;
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void disableRawMode(void) {
+	struct termios attributes;
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag |= RAW_MODE_C_LFLAGS;
+	attributes.c_iflag |= RAW_MODE_C_IFLAGS;
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void enableBlockingInput(void) {
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags &~ O_NONBLOCK);
+}
+
+static void disableBlockingInput(void) {
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 }
 #endif
 
@@ -76,6 +111,26 @@ static void initialize(void) {
 int tmk_isStreamRedirected(int stream) {
 	initialize();
 	return !!(cache_g & 1 << stream);
+}
+
+void tmk_flushOutputBuffer(void) {
+	fflush(stdout);
+}
+
+void tmk_clearInputBuffer(void) {
+#if defined(_WIN32)
+	FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+	if (tmk_isStreamRedirected(tmk_Stream_Input)) {
+		return;
+	}
+	enableRawMode();
+	disableBlockingInput();
+	while (getchar() != EOF) {
+	}
+	enableBlockingInput();
+	disableRawMode();
+#endif
 }
 
 void tmk_setFontAnsiColor(int color, int layer) {
@@ -155,7 +210,7 @@ void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments *commandLineAr
 #if defined(_WIN32)
 	LocalFree(commandLineArguments->asUtf16);
 	for (int offset = 0; offset < commandLineArguments->total; ++offset) {
-		free(commandLineArguments->asUtf8[offset]);
+		free((void *)commandLineArguments->asUtf8[offset]);
 	}
 	free(commandLineArguments->asUtf8);
 #endif
