@@ -85,6 +85,8 @@ void tmk_setFontEffects(int effectsMask);
 void tmk_resetFontEffects(void);
 void tmk_setFontWeight(int weight);
 void tmk_resetFontWeight(void);
+int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
+void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 void tmk_openAlternateWindow(void);
 void tmk_closeAlternateWindow(void);

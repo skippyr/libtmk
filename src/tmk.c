@@ -165,6 +165,33 @@ void tmk_resetFontWeight(void) {
 	writeAnsi("\x1b[22m");
 }
 
+int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
+#if defined(_WIN32)
+	CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+	if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &bufferInfo) && !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &bufferInfo)) {
+		return -1;
+	}
+	coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
+	coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
+#else
+	if (tmk_isStreamRedirected(tmk_Stream_Input) || (tmk_isStreamRedirected(tmk_Stream_Output) && tmk_isStreamRedirected(tmk_Stream_Error))) {
+		return -1;
+	}
+	tmk_clearInputBuffer();
+	writeAnsi("\x1b[6n");
+	enableRawMode();
+	scanf("\x1b[%hu;%huR", &coordinate->row, &coordinate->column);
+	disableRawMode();
+	--coordinate->row;
+	--coordinate->column;
+#endif
+	return 0;
+}
+
+void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
+	writeAnsi("\x1b[%d;%dH", coordinate.row + 1, coordinate.column + 1);
+}
+
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
 #if defined(_WIN32)
 	CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
