@@ -33,6 +33,15 @@ enum tmk_AnsiColor {
 	tmk_AnsiColor_LightWhite
 };
 
+enum tmk_FontEffect {
+	tmk_FontEffect_Italic = 1 << 3,
+	tmk_FontEffect_Underline = 1 << 4,
+	tmk_FontEffect_Blinking = 1 << 5,
+	tmk_FontEffect_Negative = 1 << 7,
+	tmk_FontEffect_Hidden = 1 << 8,
+	tmk_FontEffect_Strikethrough = 1 << 9
+};
+
 struct tmk_RgbColor {
 	unsigned char red;
 	unsigned char green;
@@ -46,6 +55,8 @@ int tmk_isStreamRedirected(int stream);
 void tmk_setFontAnsiColor(int color, int layer);
 void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer);
 void tmk_resetFontColors(void);
+void tmk_setFontEffects(int effectsMask);
+void tmk_resetFontEffects(void);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);

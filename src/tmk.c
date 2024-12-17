@@ -81,6 +81,18 @@ void tmk_resetFontColors(void) {
 	writeAnsi("\x1b[39;49m");
 }
 
+void tmk_setFontEffects(int effectsMask) {
+	for (int effect = 3; effect < 10; ++effect) {
+		if (effectsMask & 1 << effect && writeAnsi("\x1b[%dm", effect)) {
+			return;
+		}
+	}
+}
+
+void tmk_resetFontEffects(void) {
+	writeAnsi("\x1b[23;24;25;27;28;29m");
+}
+
 void tmk_writeArguments(const char *format, va_list arguments) {
 	initialize();
 	vprintf(format, arguments);
