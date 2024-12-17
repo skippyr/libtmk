@@ -165,6 +165,10 @@ void tmk_resetFontWeight(void) {
 	writeAnsi("\x1b[22m");
 }
 
+void tmk_setCursorVisible(int isVisible) {
+	writeAnsi("\x1b[?25%c", isVisible ? 'h' : 'l');
+}
+
 void tmk_setCursorShape(int shape, int shouldBlink) {
 	writeAnsi("\x1b[%d q", shape - !!shouldBlink);
 }

@@ -91,6 +91,7 @@ void tmk_setFontEffects(int effectsMask);
 void tmk_resetFontEffects(void);
 void tmk_setFontWeight(int weight);
 void tmk_resetFontWeight(void);
+void tmk_setCursorVisible(int isVisible);
 void tmk_setCursorShape(int shape, int shouldBlink);
 void tmk_resetCursorShape(void);
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
