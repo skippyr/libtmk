@@ -89,6 +89,7 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 void tmk_openAlternateWindow(void);
 void tmk_closeAlternateWindow(void);
 void tmk_setWindowTitle(const char *title);
+void tmk_ringBell(void);
 void tmk_getCommandLineArguments(int totalMainArguments, const char **mainArguments, struct tmk_CommandLineArguments *commandLineArguments);
 void tmk_freeCommandLineArguments(struct tmk_CommandLineArguments *arguments);
 void tmk_writeArguments(const char *format, va_list arguments);

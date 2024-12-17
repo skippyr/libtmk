@@ -197,6 +197,10 @@ void tmk_setWindowTitle(const char *title) {
 	writeAnsi("\x1b]0;%s\7", title);
 }
 
+void tmk_ringBell(void) {
+	writeAnsi("\7");
+}
+
 void tmk_getCommandLineArguments(int totalMainArguments, const char **mainArguments, struct tmk_CommandLineArguments *commandLineArguments) {
 #if defined(_WIN32)
 	commandLineArguments->asUtf16 = CommandLineToArgvW(GetCommandLineW(), &commandLineArguments->total);
