@@ -42,6 +42,11 @@ enum tmk_FontEffect {
 	tmk_FontEffect_Strikethrough = 1 << 9
 };
 
+enum tmk_FontWeight {
+	tmk_FontWeight_Bold = 1,
+	tmk_FontWeight_Light
+};
+
 struct tmk_RgbColor {
 	unsigned char red;
 	unsigned char green;
@@ -57,6 +62,8 @@ void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer);
 void tmk_resetFontColors(void);
 void tmk_setFontEffects(int effectsMask);
 void tmk_resetFontEffects(void);
+void tmk_setFontWeight(int weight);
+void tmk_resetFontWeight(void);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);

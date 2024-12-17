@@ -93,6 +93,14 @@ void tmk_resetFontEffects(void) {
 	writeAnsi("\x1b[23;24;25;27;28;29m");
 }
 
+void tmk_setFontWeight(int weight) {
+	writeAnsi("\x1b[22;%dm", weight);
+}
+
+void tmk_resetFontWeight(void) {
+	writeAnsi("\x1b[22m");
+}
+
 void tmk_writeArguments(const char *format, va_list arguments) {
 	initialize();
 	vprintf(format, arguments);
