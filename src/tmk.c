@@ -1,4 +1,5 @@
 #include "tmk.h"
+#include <stdio.h>
 #if defined(_WIN32)
 #include <Windows.h>
 #else
@@ -48,4 +49,52 @@ static void initialize(void) {
 int tmk_isStreamRedirected(int stream) {
 	initialize();
 	return !!(cache_g & 1 << stream);
+}
+
+void tmk_writeArguments(const char *format, va_list arguments) {
+	initialize();
+	vprintf(format, arguments);
+}
+
+void tmk_writeArgumentsLine(const char *format, va_list arguments) {
+	tmk_writeArguments(format, arguments);
+	tmk_write("\n");
+}
+
+void tmk_write(const char *format, ...) {
+	va_list arguments;
+	va_start(arguments, format);
+	tmk_writeArguments(format, arguments);
+	va_end(arguments);
+}
+
+void tmk_writeLine(const char *format, ...) {
+	va_list arguments;
+	va_start(arguments, format);
+	tmk_writeArgumentsLine(format, arguments);
+	va_end(arguments);
+}
+
+void tmk_writeErrorArguments(const char *format, va_list arguments) {
+	initialize();
+	vfprintf(stderr, format, arguments);
+}
+
+void tmk_writeErrorArgumentsLine(const char *format, va_list arguments) {
+	tmk_writeErrorArguments(format, arguments);
+	tmk_writeError("\n");
+}
+
+void tmk_writeError(const char *format, ...) {
+	va_list arguments;
+	va_start(arguments, format);
+	tmk_writeErrorArguments(format, arguments);
+	va_end(arguments);
+}
+
+void tmk_writeErrorLine(const char *format, ...) {
+	va_list arguments;
+	va_start(arguments, format);
+	tmk_writeErrorArgumentsLine(format, arguments);
+	va_end(arguments);
 }
