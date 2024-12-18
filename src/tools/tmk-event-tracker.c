@@ -1,23 +1,29 @@
 #include <tmk.h>
 #include <string.h>
 
-#define SOFTWARE_NAME "tmk-evttracker"
+#define SOFTWARE_NAME "tmk-event-tracker"
 #define SOFTWARE_VERSION "v1.0.0"
+#define SOFTWARE_AUTHOR "Sherman Rofeman"
+#define SOFTWARE_AUTHOR_EMAIL "skippyr.developer@icloud.com"
+#define SOFTWARE_AUTHOR_NICKNAME "skippyr"
+#define SOFTWARE_REPOSITORY_URL "https://github.com/" SOFTWARE_AUTHOR_NICKNAME "/" SOFTWARE_PACKAGE
+#define SOFTWARE_CREATION_YEAR "2024"
+#define SOFTWARE_LICENSE "BSD-3-Clause License"
+#define SOFTWARE_PACKAGE "libtmk"
 
 static void writeError(const char *format, ...);
 static void writeHelp(void);
 static void writeVersion(void);
 static int isLowerCaseLetter(char byte);
 static int isOption(const char *argument);
+static void trackEvents(void);
 
 static void writeError(const char *format, ...) {
 	va_list arguments;
 	va_start(arguments, format);
-	tmk_writeError("%s ", SOFTWARE_NAME);
-	tmk_setFontAnsiColor(tmk_AnsiColor_LightBlack, tmk_Layer_Foreground);
-	tmk_write("(exit code 1)");
-	tmk_resetFontColors();
-	tmk_write(": ");
+	tmk_setFontWeight(tmk_Weight_Bold);
+	tmk_writeError("%s: ", SOFTWARE_NAME);
+	tmk_resetFontWeight();
 	tmk_writeErrorArguments(format, arguments);
 	tmk_writeErrorLine(" Use -h or --help for help instructions.");
 	va_end(arguments);
@@ -43,7 +49,22 @@ static void writeHelp(void) {
 }
 
 static void writeVersion(void) {
-	tmk_writeLine("%s %s", SOFTWARE_NAME, SOFTWARE_VERSION);
+	tmk_setFontWeight(tmk_Weight_Bold);
+	tmk_write(SOFTWARE_NAME);
+	tmk_resetFontWeight();
+	tmk_writeLine(" %s", SOFTWARE_VERSION);
+	tmk_write("%s. Copyright (c) %s %s <", SOFTWARE_LICENSE, SOFTWARE_CREATION_YEAR, SOFTWARE_AUTHOR);
+	tmk_setFontEffects(tmk_Effect_Underline);
+	tmk_write(SOFTWARE_AUTHOR_EMAIL);
+	tmk_resetFontEffects();
+	tmk_writeLine(">.");
+	tmk_writeLine("");
+	tmk_write("Software repository available at: <");
+	tmk_setFontEffects(tmk_Effect_Underline);
+	tmk_write(SOFTWARE_REPOSITORY_URL);
+	tmk_resetFontEffects();
+	tmk_writeLine(">.");
+	tmk_writeLine("Distributed as part of %s.", SOFTWARE_PACKAGE);
 }
 
 static int parseCommandLineArguments(struct tmk_CommandLineArguments *commandLineArguments) {
