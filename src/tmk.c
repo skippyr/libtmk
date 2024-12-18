@@ -85,6 +85,7 @@ static int writeAnsi(const char *format, ...) {
 		va_start(arguments, format);
 		tmk_writeArguments(format, arguments);
 		va_end(arguments);
+		cache_g |= HAS_CACHED_ANSI_FLAG;
 	} else if (!tmk_isStreamRedirected(tmk_Stream_Error)) {
 		va_list arguments;
 		va_start(arguments, format);
@@ -115,6 +116,7 @@ int tmk_isStreamRedirected(int stream) {
 
 void tmk_flushOutputBuffer(void) {
 	fflush(stdout);
+	cache_g &= ~HAS_CACHED_ANSI_FLAG;
 }
 
 void tmk_clearInputBuffer(void) {
@@ -271,6 +273,7 @@ void tmk_writeArguments(const char *format, va_list arguments) {
 void tmk_writeArgumentsLine(const char *format, va_list arguments) {
 	tmk_writeArguments(format, arguments);
 	tmk_write("\n");
+	cache_g &= ~HAS_CACHED_ANSI_FLAG;
 }
 
 void tmk_write(const char *format, ...) {
@@ -289,6 +292,9 @@ void tmk_writeLine(const char *format, ...) {
 
 void tmk_writeErrorArguments(const char *format, va_list arguments) {
 	initialize();
+	if (cache_g & HAS_CACHED_ANSI_FLAG) {
+		tmk_flushOutputBuffer();
+	}
 	vfprintf(stderr, format, arguments);
 }
 
