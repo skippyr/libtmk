@@ -242,6 +242,30 @@ void tmk_ringBell(void) {
 	writeAnsi("\7");
 }
 
+void tmk_clearUntilBegginingOfLine(void) {
+	writeAnsi("\x1b[1K");
+}
+
+void tmk_clearUntilEndOfLine(void) {
+	writeAnsi("\x1b[K");
+}
+
+void tmk_clearUntilBegginingOfWindow(void) {
+	writeAnsi("\x1b[1J");
+}
+
+void tmk_clearUntilEndOfWindow(void) {
+	writeAnsi("\x1b[J");
+}
+
+void tmk_clearWindow(void) {
+	writeAnsi("\x1b[2J\x1b[1;1H");
+}
+
+void tmk_clearLine(void) {
+	writeAnsi("\x1b[2K\x1b[1G");
+}
+
 void tmk_getCommandLineArguments(int totalMainArguments, const char **mainArguments, struct tmk_CommandLineArguments *commandLineArguments) {
 #if defined(_WIN32)
 	commandLineArguments->asUtf16 = CommandLineToArgvW(GetCommandLineW(), &commandLineArguments->total);
