@@ -7,7 +7,7 @@
 #include <unistd.h>
 #endif
 
-#define SOFTWARE_NAME "tmk-event-tracker"
+#define SOFTWARE_NAME "tmk-event-logger"
 #define SOFTWARE_VERSION "v1.0.0"
 #define SOFTWARE_AUTHOR "Sherman Rofeman"
 #define SOFTWARE_AUTHOR_EMAIL "skippyr.developer@icloud.com"
