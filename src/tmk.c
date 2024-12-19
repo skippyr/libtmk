@@ -167,6 +167,10 @@ void tmk_resetFontWeight(void) {
 	writeAnsi("\x1b[22m");
 }
 
+void tmk_resetFontStyles(void) {
+	writeAnsi("\x1b[0m");
+}
+
 void tmk_setCursorVisible(int isVisible) {
 	writeAnsi("\x1b[?25%c", isVisible ? 'h' : 'l');
 }
@@ -177,6 +181,16 @@ void tmk_setCursorShape(int shape, int shouldBlink) {
 
 void tmk_resetCursorShape(void) {
 	writeAnsi("\x1b[39m");
+}
+
+void tmk_resetCursorStyle(void) {
+	tmk_setCursorVisible(1);
+	tmk_resetCursorShape();
+}
+
+void tmk_resetStyles(void) {
+	tmk_resetFontStyles();
+	tmk_resetCursorStyle();
 }
 
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
