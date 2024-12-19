@@ -53,6 +53,13 @@ enum tmk_Shape {
 	tmk_Shape_Bar = 6
 };
 
+enum tmk_Direction {
+	tmk_Direction_Up = 'A',
+	tmk_Direction_Down,
+	tmk_Direction_Right,
+	tmk_Direction_Left
+};
+
 struct tmk_RgbColor {
 	unsigned char red;
 	unsigned char green;
@@ -96,9 +103,10 @@ void tmk_setCursorShape(int shape, int shouldBlink);
 void tmk_resetCursorShape(void);
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
 void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
+void tmk_moveCursor(unsigned short steps, int direction);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
-void tmk_openAlternateWindow(void);
-void tmk_closeAlternateWindow(void);
+void tmk_openAlternativeWindow(void);
+void tmk_closeAlternativeWindow(void);
 void tmk_setWindowTitle(const char *title);
 void tmk_ringBell(void);
 void tmk_clearUntilBegginingOfLine(void);
