@@ -1,9 +1,11 @@
+#include <tmk.h>
+#if !defined(_WIN32)
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <termios.h>
-#include <tmk.h>
 #include <unistd.h>
+#endif
 
 #define SOFTWARE_NAME "tmk-event-tracker"
 #define SOFTWARE_VERSION "v1.0.0"
@@ -14,21 +16,79 @@
 #define SOFTWARE_CREATION_YEAR "2024"
 #define SOFTWARE_LICENSE "BSD-3-Clause License"
 #define SOFTWARE_PACKAGE "libtmk"
+#if !defined(_WIN32)
 #define RAW_MODE_C_LFLAGS (ICANON | ECHO | ISIG)
 #define RAW_MODE_C_IFLAGS (IXON)
+#endif
 
+#if !defined(_WIN32)
+static void enableRawMode(void);
+static void disableRawMode(void);
+static void enableBlockingInput(void);
+static void disableBlockingInput(void);
+static void enableFocusCapture(void);
+static void disableFocusCapture(void);
+#endif
+static void enableMouseCapture(void);
+static void disableMouseCapture(void);
 static void writeError(const char *format, ...);
 static void writeHelp(void);
 static void writeVersion(void);
 static int isLowerCaseLetter(char byte);
 static int isOption(const char *argument);
-static void enableRawMode(void);
-static void disableRawMode(void);
-static void enableBlockingInput(void);
-static void disableBlockingInput(void);
 static void trackEvents(void);
 
 static int allowsMouseCapture_g = 0;
+
+#if !defined(_WIN32)
+static void enableRawMode(void) {
+	struct termios attributes;
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag &= ~RAW_MODE_C_LFLAGS;
+	attributes.c_iflag &= ~RAW_MODE_C_IFLAGS;
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void disableRawMode(void) {
+	struct termios attributes;
+	tcgetattr(STDIN_FILENO, &attributes);
+	attributes.c_lflag |= RAW_MODE_C_LFLAGS;
+	attributes.c_iflag |= RAW_MODE_C_IFLAGS;
+	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void enableBlockingInput(void) {
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags &~ O_NONBLOCK);
+}
+
+static void disableBlockingInput(void) {
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+}
+
+static void enableFocusCapture(void) {
+	tmk_write("\x1b[?1004h");
+}
+
+static void disableFocusCapture(void) {
+	tmk_write("\x1b[?1004l");
+}
+#endif
+
+static void enableMouseCapture(void) {
+#if defined(_WIN32)
+#else
+	tmk_write("\x1b[?1003;1015h");
+#endif
+}
+
+static void disableMouseCapture(void) {
+#if defined(_WIN32)
+#else
+	tmk_write("\x1b[?1003;1015l");
+#endif
+}
 
 static void writeError(const char *format, ...) {
 	va_list arguments;
@@ -88,7 +148,7 @@ static int parseCommandLineArguments(struct tmk_CommandLineArguments *commandLin
 		} else if (!strcmp(argument, "-v") || !strcmp(argument, "--version")) {
 			writeVersion();
 			return 1;
-		} else if (!strcmp(argument, "--allow-mouse-capture")) {
+		} else if (!strcmp(argument, "--capture-mouse")) {
 			allowsMouseCapture_g = 1;
 		} else {
 			writeError(isOption(argument) ? "unrecognized option \"%s\"." : "malformed option \"%s\".", argument);
@@ -107,32 +167,6 @@ static int isOption(const char *argument) {
 	return (length == 2 && argument[0] == '-' && isLowerCaseLetter(argument[1])) || (length > 2 && argument[0] == '-' && argument[1] == '-' && isLowerCaseLetter(argument[2]));
 }
 
-static void enableRawMode(void) {
-	struct termios attributes;
-	tcgetattr(STDIN_FILENO, &attributes);
-	attributes.c_lflag &= ~RAW_MODE_C_LFLAGS;
-	attributes.c_iflag &= ~RAW_MODE_C_IFLAGS;
-	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-}
-
-static void disableRawMode(void) {
-	struct termios attributes;
-	tcgetattr(STDIN_FILENO, &attributes);
-	attributes.c_lflag |= RAW_MODE_C_LFLAGS;
-	attributes.c_iflag |= RAW_MODE_C_IFLAGS;
-	tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
-}
-
-static void enableBlockingInput(void) {
-	int flags = fcntl(STDIN_FILENO, F_GETFL);
-	fcntl(STDIN_FILENO, F_SETFL, flags &~ O_NONBLOCK);
-}
-
-static void disableBlockingInput(void) {
-	int flags = fcntl(STDIN_FILENO, F_GETFL);
-	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-}
-
 static void trackEvents(void) {
 	tmk_write("Press the ");
 	tmk_setFontWeight(tmk_Weight_Bold);
@@ -141,13 +175,19 @@ static void trackEvents(void) {
 	tmk_writeLine(" key to exit the program.");
 	tmk_writeLine("Awaiting for terminal events to log...");
 	tmk_writeLine("");
-	int offset = 0;
+#if defined(_WIN32)
+#else
+	enableFocusCapture();
+	if (allowsMouseCapture_g) {
+		enableMouseCapture();
+	}
+	int index = 1;
 	tmk_setCursorShape(tmk_Shape_Underline, 0);
 	tmk_setCursorVisible(0);
-	for (; 1; ++offset) {
+	for (; 1; ++index) {
 		struct tmk_Coordinate coordinate;
 		tmk_setFontWeight(tmk_Weight_Bold);
-		tmk_write("Event %d: ", offset);
+		tmk_write("Event %d: ", index);
 		tmk_resetFontWeight();
 		tmk_getCursorCoordinate(&coordinate);
 		tmk_setFontAnsiColor(tmk_AnsiColor_LightBlack, tmk_Layer_Foreground);
@@ -177,12 +217,21 @@ static void trackEvents(void) {
 	tmk_resetCursorShape();
 	tmk_writeLine("");
 	tmk_writeLine("");
-	tmk_writeLine("Exited after read %d %s.", offset, offset == 1 ? "event" : "events");
+	tmk_writeLine("Exited after read %d %s.", index, index == 1 ? "event" : "events");
 	enableBlockingInput();
 	disableRawMode();
+	disableFocusCapture();
+	if (allowsMouseCapture_g) {
+		disableMouseCapture();
+	}
+#endif
 }
 
 int main(int totalMainArguments, const char **mainArguments) {
+	if (tmk_isStreamRedirected(tmk_Stream_Input) || tmk_isStreamRedirected(tmk_Stream_Output) || tmk_isStreamRedirected(tmk_Stream_Error)) {
+		writeError("no stream must be redirected.");
+		return 1;
+	}
 	struct tmk_CommandLineArguments commandLineArguments;
 	tmk_getCommandLineArguments(totalMainArguments, mainArguments, &commandLineArguments);
 	int parseResult = parseCommandLineArguments(&commandLineArguments);
