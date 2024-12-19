@@ -1,6 +1,5 @@
 #if !defined(_tmk_H)
 #define _tmk_H
-
 #include <stdarg.h>
 
 enum tmk_Stream {
@@ -77,6 +76,13 @@ struct tmk_Coordinate {
 	unsigned short row;
 };
 
+struct tmk_Region {
+	struct tmk_Coordinate topLeftCorner;
+	struct tmk_Coordinate topRightCorner;
+	struct tmk_Coordinate bottomLeftCorner;
+	struct tmk_Coordinate bottomRightCorner;
+};
+
 struct tmk_CommandLineArguments {
 	int total;
 	const char **asUtf8;
@@ -111,6 +117,7 @@ int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 void tmk_openAlternativeWindow(void);
 void tmk_closeAlternativeWindow(void);
 void tmk_setWindowTitle(const char *title);
+int tmk_doesRegionContainsCoordinate(struct tmk_Region *region, struct tmk_Coordinate coordinate);
 void tmk_ringBell(void);
 void tmk_clearUntilBegginingOfLine(void);
 void tmk_clearUntilEndOfLine(void);

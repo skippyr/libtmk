@@ -256,6 +256,10 @@ void tmk_setWindowTitle(const char *title) {
 	writeAnsi("\x1b]0;%s\7", title);
 }
 
+int tmk_doesRegionContainsCoordinate(struct tmk_Region *region, struct tmk_Coordinate coordinate) {
+	return coordinate.column >= region->topLeftCorner.column && coordinate.column <= region->topRightCorner.column && coordinate.row >= region->topLeftCorner.row && coordinate.row <= region->bottomLeftCorner.row;
+}
+
 void tmk_ringBell(void) {
 	writeAnsi("\7");
 }
