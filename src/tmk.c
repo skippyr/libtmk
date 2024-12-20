@@ -1,6 +1,6 @@
 #include "tmk.h"
 #include <stdio.h>
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
 #include <Windows.h>
 #else
 #include <fcntl.h>
@@ -10,7 +10,7 @@
 
 #define HAS_CACHED_ANSI_FLAG (1 << 4)
 #define HAS_INITIALIZED_FLAG (1 << 7)
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
 #define REDIRECTION_CACHE(stream_p) (!_isatty(stream_p) << stream_p)
 #else
 #define RAW_MODE_C_LFLAGS (ICANON | ECHO | ISIG)
@@ -18,7 +18,7 @@
 #define REDIRECTION_CACHE(stream_p) (!isatty(stream_p) << stream_p)
 #endif
 
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
 static void enableAnsiParse(void);
 #else
 static void enableRawMode(void);
@@ -31,7 +31,7 @@ static void initialize(void);
 
 static char cache_g = 0;
 
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
 static void enableAnsiParse(void) {
     HANDLE handle;
     DWORD mode;
@@ -78,7 +78,7 @@ static void initialize(void) {
     return;
   }
   cache_g |= HAS_INITIALIZED_FLAG;
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
   SetConsoleOutputCP(CP_UTF8);
   enableAnsiParse();
 #endif
@@ -95,7 +95,7 @@ void tmk_flushOutputBuffer(void) {
 }
 
 void tmk_clearInputBuffer(void) {
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
   FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
   enableRawMode();
@@ -107,7 +107,7 @@ void tmk_clearInputBuffer(void) {
 #endif
 }
 
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
                                  NULL);
