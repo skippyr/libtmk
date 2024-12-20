@@ -147,10 +147,31 @@ enum tmk_Effect {
   tmk_Effect_Strikethrough = 1 << 9
 };
 
+enum tmk_Shape {
+  tmk_Shape_BlinkingBlock = 1,
+  tmk_Shape_SteadyBlock,
+  tmk_Shape_BlinkingUnderline,
+  tmk_Shape_SteadyUnderline,
+  tmk_Shape_BlinkingBar,
+  tmk_Shape_SteadyBar
+};
+
+enum tmk_Direction {
+  tmk_Direction_Up = 'A',
+  tmk_Direction_Down,
+  tmk_Direction_Right,
+  tmk_Direction_Left
+};
+
 struct tmk_RgbColor {
   unsigned char red;
   unsigned char green;
   unsigned char blue;
+};
+
+struct tmk_Coordinate {
+  unsigned short column;
+  unsigned short row;
 };
 
 struct tmk_Arguments {
@@ -174,6 +195,12 @@ void tmk_setFontWeight(int weight);
 void tmk_resetFontWeight(void);
 void tmk_setFontEffects(int effects);
 void tmk_resetFontEffects(void);
+void tmk_setCursorVisible(int isVisible);
+void tmk_setCursorShape(int shape);
+void tmk_resetCursorShape(void);
+int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
+void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
+void tmk_moveCursor(unsigned short steps, int direction);
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);

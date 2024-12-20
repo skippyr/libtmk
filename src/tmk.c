@@ -159,6 +159,49 @@ void tmk_resetFontEffects(void) {
   writeAnsi("\x1b[23;24;25;27;28;29m");
 }
 
+void tmk_setCursorVisible(int isVisible) {
+  writeAnsi("\x1b[?25%c", isVisible ? 'h' : 'l');
+}
+
+void tmk_setCursorShape(int shape) {
+  writeAnsi("\x1b[%d q", shape);
+}
+
+void tmk_resetCursorShape(void) {
+  writeAnsi("\x1b[0 q");
+}
+
+int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
+#if tmk_IS_WINDOWS_OS
+  CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
+                                  &bufferInfo) &&
+      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
+                                  &bufferInfo)) {
+      return -1;
+  }
+  coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
+  coordinate->row = bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top;
+#else
+  tmk_clearInputBuffer();
+  writeAnsi("\x1b[6n");
+  enableRawMode();
+  scanf("\x1b[%hu;%huR", &coordinate->row, &coordinate->column);
+  disableRawMode();
+  --coordinate->row;
+  --coordinate->column;
+#endif
+  return 0;
+}
+
+void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
+  writeAnsi("\x1b[%d;%dH", coordinate.row + 1, coordinate.column + 1);
+}
+
+void tmk_moveCursor(unsigned short steps, int direction) {
+  writeAnsi("\x1b[%d%c", steps, direction);
+}
+
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
