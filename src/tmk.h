@@ -109,6 +109,14 @@ enum tmk_Stream {
   tmk_Stream_Error
 };
 
+struct tmk_Arguments {
+  int total;
+  const char **asUtf8;
+#if defined(_WIN32)
+  const wchar_t **asUtf16;
+#endif
+};
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -119,6 +127,9 @@ void tmk_clearInputBuffer(void);
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
 #endif
+void tmk_getArguments(int argc, const char **argv,
+                      struct tmk_Arguments *arguments);
+void tmk_freeArguments(struct tmk_Arguments *arguments);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);

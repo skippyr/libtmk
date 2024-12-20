@@ -150,6 +150,31 @@ wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
 }
 #endif
 
+void tmk_getArguments(int argc, const char **argv,
+                      struct tmk_Arguments *arguments) {
+#if defined(_WIN32)
+  arguments->asUtf16 = CommandLineToArgvW(GetCommandLineW(), &arguments->total);
+  arguments->asUtf8 = malloc(arguments->total * sizeof(void *));
+  for (int offset = 0; offset < arguments->total; ++offset) {
+    arguments->asUtf8[offset] =
+        tmk_convertUtf16ToUtf8(arguments->asUtf16[offset]);
+  }
+#else
+  arguments->total = argc;
+  arguments->asUtf8 = argv;
+#endif
+}
+
+void tmk_freeArguments(struct tmk_Arguments *arguments) {
+#if defined(_WIN32)
+  LocalFree(arguments->asUtf16);
+  for (int offset = 0; offset < arguments->total; ++offset) {
+    free((void *)arguments->asUtf8[offset]);
+  }
+  free(arguments->asUtf8);
+#endif
+}
+
 void tmk_writeArguments(const char *format, va_list arguments) {
   initialize();
   vprintf(format, arguments);
