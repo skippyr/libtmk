@@ -106,3 +106,26 @@ void tmk_clearInputBuffer(void) {
   disableRawMode();
 #endif
 }
+
+#if defined(_WIN32)
+char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
+  int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
+                                 NULL);
+  char *buffer = malloc(size);
+  WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
+  if (length) {
+    *length = size - 1;
+  }
+  return buffer;
+}
+
+wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
+  int size = MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, NULL, 0);
+  wchar_t *buffer = malloc(size * sizeof(wchar_t));
+  MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, buffer, size);
+  if (length) {
+    *length = size - 1;
+  }
+  return buffer;
+}
+#endif

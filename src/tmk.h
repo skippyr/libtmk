@@ -14,6 +14,10 @@ extern "C" {
 int tmk_isStreamRedirected(int stream);
 void tmk_flushOutputBuffer(void);
 void tmk_clearInputBuffer(void);
+#if defined(_WIN32)
+char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
+wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
+#endif
 #if defined(__cplusplus)
 }
 #endif
