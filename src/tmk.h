@@ -112,7 +112,7 @@ enum tmk_Stream {
 struct tmk_Arguments {
   int total;
   const char **asUtf8;
-#if defined(_WIN32)
+#if tmk_IS_WINDOWS_OS
   const wchar_t **asUtf16;
 #endif
 };
