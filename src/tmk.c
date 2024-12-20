@@ -80,7 +80,7 @@ static int writeAnsi(const char *format, ...) {
     va_start(arguments, format);
     tmk_writeArguments(format, arguments);
     va_end(arguments);
-    cache |= HAS_CACHED_ANSI_FLAG;
+    cache_g |= HAS_CACHED_ANSI_FLAG;
   } else if (!tmk_isStreamRedirected(tmk_Stream_Error)) {
     va_list arguments;
     va_start(arguments, format);
