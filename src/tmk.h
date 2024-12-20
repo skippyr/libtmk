@@ -43,7 +43,7 @@
 #define tmk_IS_MAC_OS 0
 #define tmk_IS_UNKNOWN_OS 0
 #elif defined(__APPLE__)
-#define tmk_OS "MacOS"
+#define tmk_OS "macOS"
 #define tmk_IS_WINDOWS_OS 0
 #define tmk_IS_LINUX_OS 0
 #define tmk_IS_MAC_OS 1
@@ -207,9 +207,15 @@ void tmk_resetCursorShape(void);
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
 void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 void tmk_moveCursor(unsigned short steps, int direction);
+void tmk_clearLine(void);
+void tmk_clearUntilBegginingOfLine(void);
+void tmk_clearUntilEndOfLine(void);
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
 void tmk_openAlternateWindow(void);
 void tmk_closeAlternateWindow(void);
+void tmk_clearWindow(void);
+void tmk_clearUntilBegginingOfWindow(void);
+void tmk_clearUntilEndOfWindow(void);
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);

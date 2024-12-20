@@ -207,6 +207,18 @@ void tmk_moveCursor(unsigned short steps, int direction) {
   writeAnsi("\x1b[%d%c", steps, direction);
 }
 
+void tmk_clearLine(void) {
+  writeAnsi("\x1b[2K\x1b[1G");
+}
+
+void tmk_clearUntilBegginingOfLine(void) {
+  writeAnsi("\x1b[1K");
+}
+
+void tmk_clearUntilEndOfLine(void) {
+  writeAnsi("\x1b[K");
+}
+
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
 #if tmk_IS_WINDOWS_OS
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
@@ -237,6 +249,18 @@ void tmk_openAlternateWindow(void) {
 
 void tmk_closeAlternateWindow(void) {
   writeAnsi("\x1b[?1049l");
+}
+
+void tmk_clearWindow(void) {
+  writeAnsi("\x1b[2J\x1b[H");
+}
+
+void tmk_clearUntilBegginingOfWindow(void) {
+  writeAnsi("\x1b[1J");
+}
+
+void tmk_clearUntilEndOfWindow(void) {
+  writeAnsi("\x1b[J");
 }
 
 #if tmk_IS_WINDOWS_OS
