@@ -119,6 +119,14 @@ void tmk_clearInputBuffer(void);
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
 #endif
+void tmk_writeArguments(const char *format, va_list arguments);
+void tmk_writeArgumentsLine(const char *format, va_list arguments);
+void tmk_write(const char *format, ...);
+void tmk_writeLine(const char *format, ...);
+void tmk_writeErrorArguments(const char *format, va_list arguments);
+void tmk_writeErrorArgumentsLine(const char *format, va_list arguments);
+void tmk_writeError(const char *format, ...);
+void tmk_writeErrorLine(const char *format, ...);
 #if defined(__cplusplus)
 }
 #endif

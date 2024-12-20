@@ -27,6 +27,7 @@ static void enableBlockingInput(void);
 static void disableBlockingInput(void);
 #endif
 static void cacheStreamRedirections(void);
+static int writeAnsi(const char *format, ...);
 static void initialize(void);
 
 static char cache_g = 0;
@@ -73,6 +74,24 @@ static void cacheStreamRedirections(void) {
              REDIRECTION_CACHE(tmk_Stream_Error);
 }
 
+static int writeAnsi(const char *format, ...) {
+  if (!tmk_isStreamRedirected(tmk_Stream_Output)) {
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_writeArguments(format, arguments);
+    va_end(arguments);
+    cache |= HAS_CACHED_ANSI_FLAG;
+  } else if (!tmk_isStreamRedirected(tmk_Stream_Error)) {
+    va_list arguments;
+    va_start(arguments, format);
+    tmk_writeErrorArguments(format, arguments);
+    va_end(arguments);
+  } else {
+    return -1;
+  }
+  return 0;
+}
+
 static void initialize(void) {
   if (cache_g & HAS_INITIALIZED_FLAG) {
     return;
@@ -92,6 +111,7 @@ int tmk_isStreamRedirected(int stream) {
 
 void tmk_flushOutputBuffer(void) {
   fflush(stdout);
+  cache_g &= ~HAS_CACHED_ANSI_FLAG;
 }
 
 void tmk_clearInputBuffer(void) {
@@ -129,3 +149,55 @@ wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
   return buffer;
 }
 #endif
+
+void tmk_writeArguments(const char *format, va_list arguments) {
+  initialize();
+  vprintf(format, arguments);
+}
+
+void tmk_writeArgumentsLine(const char *format, va_list arguments) {
+  tmk_writeArguments(format, arguments);
+  tmk_write("\n");
+  cache_g &= ~HAS_CACHED_ANSI_FLAG;
+}
+
+void tmk_write(const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_writeArguments(format, arguments);
+  va_end(arguments);
+}
+
+void tmk_writeLine(const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_writeArgumentsLine(format, arguments);
+  va_end(arguments);
+}
+
+void tmk_writeErrorArguments(const char *format, va_list arguments) {
+  initialize();
+  if (cache_g & HAS_CACHED_ANSI_FLAG) {
+    tmk_flushOutputBuffer();
+  }
+  vfprintf(stderr, format, arguments);
+}
+
+void tmk_writeErrorArgumentsLine(const char *format, va_list arguments) {
+  tmk_writeErrorArguments(format, arguments);
+  tmk_writeError("\n");
+}
+
+void tmk_writeError(const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_writeErrorArguments(format, arguments);
+  va_end(arguments);
+}
+
+void tmk_writeErrorLine(const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_writeErrorArgumentsLine(format, arguments);
+  va_end(arguments);
+}
