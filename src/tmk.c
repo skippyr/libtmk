@@ -15,11 +15,23 @@
 
 #if defined(_WIN32)
 static void enableAnsiParse(void);
+#else
 #endif
 static void cacheStreamRedirections(void);
 static void initialize(void);
 
 static char cache_g = 0;
+
+#if defined(_WIN32)
+static void enableAnsiParse(void) {
+    HANDLE handle;
+    DWORD mode;
+    (GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) ||
+     GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
+        SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+}
+#else
+#endif
 
 static void cacheStreamRedirections(void) {
   cache_g |= REDIRECTION_CACHE(tmk_Stream_Input) |
