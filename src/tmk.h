@@ -12,6 +12,8 @@ enum tmk_Stream {
 extern "C" {
 #endif
 int tmk_isStreamRedirected(int stream);
+void tmk_flushOutputBuffer(void);
+void tmk_clearInputBuffer(void);
 #if defined(__cplusplus)
 }
 #endif

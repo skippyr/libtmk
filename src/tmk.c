@@ -1,7 +1,10 @@
 #include "tmk.h"
+#include <stdio.h>
 #if defined(_WIN32)
 #include <Windows.h>
 #else
+#include <fcntl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -10,12 +13,18 @@
 #if defined(_WIN32)
 #define REDIRECTION_CACHE(stream_p) (!_isatty(stream_p) << stream_p)
 #else
+#define RAW_MODE_C_LFLAGS (ICANON | ECHO | ISIG)
+#define RAW_MODE_C_IFLAGS IXON
 #define REDIRECTION_CACHE(stream_p) (!isatty(stream_p) << stream_p)
 #endif
 
 #if defined(_WIN32)
 static void enableAnsiParse(void);
 #else
+static void enableRawMode(void);
+static void disableRawMode(void);
+static void enableBlockingInput(void);
+static void disableBlockingInput(void);
 #endif
 static void cacheStreamRedirections(void);
 static void initialize(void);
@@ -31,6 +40,31 @@ static void enableAnsiParse(void) {
         SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 #else
+static void enableRawMode(void) {
+  struct termios attributes;
+  tcgetattr(STDIN_FILENO, &attributes);
+  attributes.c_lflag &= ~RAW_MODE_C_LFLAGS;
+  attributes.c_iflag &= ~RAW_MODE_C_IFLAGS;
+  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void disableRawMode(void) {
+  struct termios attributes;
+  tcgetattr(STDIN_FILENO, &attributes);
+  attributes.c_lflag |= RAW_MODE_C_LFLAGS;
+  attributes.c_iflag |= RAW_MODE_C_IFLAGS;
+  tcsetattr(STDIN_FILENO, TCSANOW, &attributes);
+}
+
+static void enableBlockingInput(void) {
+  int flags = fcntl(STDIN_FILENO, F_GETFL);
+  fcntl(STDIN_FILENO, F_SETFL, flags & ~O_NONBLOCK);
+}
+
+static void disableBlockingInput(void) {
+  int flags = fcntl(STDIN_FILENO, F_GETFL);
+  fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+}
 #endif
 
 static void cacheStreamRedirections(void) {
@@ -54,4 +88,21 @@ static void initialize(void) {
 int tmk_isStreamRedirected(int stream) {
   initialize();
   return !!(cache_g & 1 << stream);
+}
+
+void tmk_flushOutputBuffer(void) {
+  fflush(stdout);
+}
+
+void tmk_clearInputBuffer(void) {
+#if defined(_WIN32)
+  FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+#else
+  enableRawMode();
+  disableBlockingInput();
+  while (getchar() != EOF) {
+  }
+  enableBlockingInput();
+  disableRawMode();
+#endif
 }
