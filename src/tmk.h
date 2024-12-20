@@ -109,6 +109,50 @@ enum tmk_Stream {
   tmk_Stream_Error
 };
 
+enum tmk_Layer {
+  tmk_Layer_Foreground = 3,
+  tmk_Layer_Background
+};
+
+enum tmk_AnsiColor {
+  tmk_AnsiColor_DarkBlack,
+  tmk_AnsiColor_DarkRed,
+  tmk_AnsiColor_DarkGreen,
+  tmk_AnsiColor_DarkYellow,
+  tmk_AnsiColor_DarkBlue,
+  tmk_AnsiColor_DarkMagenta,
+  tmk_AnsiColor_DarkCyan,
+  tmk_AnsiColor_DarkWhite,
+  tmk_AnsiColor_LightBlack,
+  tmk_AnsiColor_LightRed,
+  tmk_AnsiColor_LightGreen,
+  tmk_AnsiColor_LightYellow,
+  tmk_AnsiColor_LightBlue,
+  tmk_AnsiColor_LightMagenta,
+  tmk_AnsiColor_LightCyan,
+  tmk_AnsiColor_LightWhite
+};
+
+enum tmk_Weight {
+  tmk_Weight_Bold = 1,
+  tmk_Weight_Dim
+};
+
+enum tmk_Effect {
+  tmk_Effect_Italic = 1 << 3,
+  tmk_Effect_Underline = 1 << 4,
+  tmk_Effect_Blinking = 1 << 5,
+  tmk_Effect_Negative = 1 << 7,
+  tmk_Effect_Conceal = 1 << 8,
+  tmk_Effect_Strikethrough = 1 << 9
+};
+
+struct tmk_RgbColor {
+  unsigned char red;
+  unsigned char green;
+  unsigned char blue;
+};
+
 struct tmk_Arguments {
   int total;
   const char **asUtf8;
@@ -123,6 +167,13 @@ extern "C" {
 int tmk_isStreamRedirected(int stream);
 void tmk_flushOutputBuffer(void);
 void tmk_clearInputBuffer(void);
+void tmk_setFontAnsiColor(int color, int layer);
+void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer);
+void tmk_resetFontColors(void);
+void tmk_setFontWeight(int weight);
+void tmk_resetFontWeight(void);
+void tmk_setFontEffects(int effects);
+void tmk_resetFontEffects(void);
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);

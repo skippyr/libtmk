@@ -127,6 +127,38 @@ void tmk_clearInputBuffer(void) {
 #endif
 }
 
+void tmk_setFontAnsiColor(int color, int layer) {
+  writeAnsi("\x1b[%d8;5;%dm", layer, color);
+}
+
+void tmk_setFontRgbColor(struct tmk_RgbColor color, int layer) {
+  writeAnsi("\x1b[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
+}
+
+void tmk_resetFontColors(void) {
+  writeAnsi("\x1b[39;49m");
+}
+
+void tmk_setFontWeight(int weight) {
+  writeAnsi("\x1b[22;%dm", weight);
+}
+
+void tmk_resetFontWeight(void) {
+  writeAnsi("\x1b[22m");
+}
+
+void tmk_setFontEffects(int effects) {
+  for (int offset = 3; offset < 10; ++offset) {
+    if (effects & 1 << offset && writeAnsi("\x1b[%dm", offset)) {
+      return;
+    }
+  }
+}
+
+void tmk_resetFontEffects(void) {
+  writeAnsi("\x1b[23;24;25;27;28;29m");
+}
+
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
