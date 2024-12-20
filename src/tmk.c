@@ -4,6 +4,7 @@
 #include <Windows.h>
 #else
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
 #endif
@@ -20,6 +21,7 @@
 
 #if tmk_IS_WINDOWS_OS
 static void enableAnsiParse(void);
+static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info);
 #else
 static void enableRawMode(void);
 static void disableRawMode(void);
@@ -39,6 +41,12 @@ static void enableAnsiParse(void) {
     (GetConsoleMode((handle = GetStdHandle(STD_OUTPUT_HANDLE)), &mode) ||
      GetConsoleMode((handle = GetStdHandle(STD_ERROR_HANDLE)), &mode)) &&
         SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+}
+
+static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info) {
+  return -(!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
+                                       &info) &&
+           !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &info));
 }
 #else
 static void enableRawMode(void) {
@@ -174,10 +182,7 @@ void tmk_resetCursorShape(void) {
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
 #if tmk_IS_WINDOWS_OS
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-  if (!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
-                                  &bufferInfo) &&
-      !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE),
-                                  &bufferInfo)) {
+  if (getBufferInfo(&bufferInfo)) {
       return -1;
   }
   coordinate->column = bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left;
@@ -200,6 +205,38 @@ void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate) {
 
 void tmk_moveCursor(unsigned short steps, int direction) {
   writeAnsi("\x1b[%d%c", steps, direction);
+}
+
+int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
+#if tmk_IS_WINDOWS_OS
+    CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+    if (getBufferInfo(&bufferInfo)) {
+        return -1;
+    }
+    dimensions->totalColumns =
+        bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+    dimensions->totalRows =
+        bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+#else
+    struct winsize ioctlSize;
+    if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ioctlSize) &&
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &ioctlSize) &&
+        ioctl(STDERR_FILENO, TIOCGWINSZ, &ioctlSize)) {
+        return -1;
+    }
+    dimensions->totalColumns = ioctlSize.ws_col;
+    dimensions->totalRows = ioctlSize.ws_row;
+#endif
+    dimensions->area = dimensions->totalColumns * dimensions->totalRows;
+    return 0;
+}
+
+void tmk_openAlternateWindow(void) {
+  writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+}
+
+void tmk_closeAlternateWindow(void) {
+  writeAnsi("\x1b[?1049l");
 }
 
 #if tmk_IS_WINDOWS_OS

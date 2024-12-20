@@ -174,6 +174,12 @@ struct tmk_Coordinate {
   unsigned short row;
 };
 
+struct tmk_Dimensions {
+  unsigned short totalColumns;
+  unsigned short totalRows;
+  unsigned int area;
+};
+
 struct tmk_Arguments {
   int total;
   const char **asUtf8;
@@ -201,6 +207,9 @@ void tmk_resetCursorShape(void);
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate);
 void tmk_setCursorCoordinate(struct tmk_Coordinate coordinate);
 void tmk_moveCursor(unsigned short steps, int direction);
+int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions);
+void tmk_openAlternateWindow(void);
+void tmk_closeAlternateWindow(void);
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
