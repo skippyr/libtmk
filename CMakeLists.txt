@@ -5,3 +5,8 @@ project(tmk)
 add_library(tmk "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.c"
                 "${CMAKE_CURRENT_SOURCE_DIR}/src/tmk.h")
 target_include_directories(tmk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+if (UNIX AND TMK_BUILD_TOOLS)
+  add_executable(tmk-event-logger
+                 "${CMAKE_CURRENT_SOURCE_DIR}/tools/tmk-event-logger.c")
+  target_link_libraries(tmk-event-logger tmk)
+endif ()

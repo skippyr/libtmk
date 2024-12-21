@@ -224,6 +224,12 @@ wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
 void tmk_getArguments(int argc, const char **argv,
                       struct tmk_Arguments *arguments);
 void tmk_freeArguments(struct tmk_Arguments *arguments);
+void tmk_streamWriteArguments(int stream, const char *format,
+                              va_list arguments);
+void tmk_streamWriteArgumentsLine(int stream, const char *format,
+                                  va_list arguments);
+void tmk_streamWrite(int stream, const char *format, ...);
+void tmk_streamWriteLine(int stream, const char *format, ...);
 void tmk_writeArguments(const char *format, va_list arguments);
 void tmk_writeArgumentsLine(const char *format, va_list arguments);
 void tmk_write(const char *format, ...);

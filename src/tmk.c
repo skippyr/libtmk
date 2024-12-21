@@ -10,6 +10,7 @@
 #endif
 
 #define HAS_CACHED_ANSI_FLAG (1 << 4)
+#define ANSI_TARGETS_OUTPUT_FLAG (1 << 5)
 #define HAS_INITIALIZED_FLAG (1 << 7)
 #if tmk_IS_WINDOWS_OS
 #define REDIRECTION_CACHE(stream_p) (!_isatty(stream_p) << stream_p)
@@ -83,19 +84,22 @@ static void cacheStreamRedirections(void) {
 }
 
 static int writeAnsi(const char *format, ...) {
-  if (!tmk_isStreamRedirected(tmk_Stream_Output)) {
-    va_list arguments;
-    va_start(arguments, format);
-    tmk_writeArguments(format, arguments);
-    va_end(arguments);
-    cache_g |= HAS_CACHED_ANSI_FLAG;
-  } else if (!tmk_isStreamRedirected(tmk_Stream_Error)) {
-    va_list arguments;
-    va_start(arguments, format);
-    tmk_writeErrorArguments(format, arguments);
-    va_end(arguments);
-  } else {
+  if (tmk_isStreamRedirected(tmk_Stream_Output) &&
+      tmk_isStreamRedirected(tmk_Stream_Error)) {
     return -1;
+  }
+  int stream = 
+    cache_g & ANSI_TARGETS_OUTPUT_FLAG
+      ? !tmk_isStreamRedirected(tmk_Stream_Output) ? tmk_Stream_Output
+        : tmk_Stream_Error
+      : !tmk_isStreamRedirected(tmk_Stream_Error) ? tmk_Stream_Error
+        : tmk_Stream_Output;
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_streamWriteArguments(stream, format, arguments);
+  va_end(arguments);
+  if (stream == tmk_Stream_Output) {
+    cache_g |= HAS_CACHED_ANSI_FLAG;
   }
   return 0;
 }
@@ -315,15 +319,49 @@ void tmk_freeArguments(struct tmk_Arguments *arguments) {
 #endif
 }
 
-void tmk_writeArguments(const char *format, va_list arguments) {
+void tmk_streamWriteArguments(int stream, const char *format,
+                              va_list arguments) {
   initialize();
-  vprintf(format, arguments);
+  if (stream == tmk_Stream_Error && cache_g & HAS_CACHED_ANSI_FLAG) {
+    tmk_flushOutputBuffer();
+  }
+  vfprintf(stream == tmk_Stream_Output ? stdout : stderr, format, arguments);
+  if (stream == tmk_Stream_Output) {
+    cache_g |= ANSI_TARGETS_OUTPUT_FLAG;
+  } else {
+    cache_g &= ~ANSI_TARGETS_OUTPUT_FLAG;
+  }
+}
+
+void tmk_streamWriteArgumentsLine(int stream, const char *format,
+                                  va_list arguments) {
+  tmk_streamWriteArguments(stream, format, arguments);
+  tmk_streamWrite(stream, "\n");
+  if (stream == tmk_Stream_Output) {
+    cache_g &= ~HAS_CACHED_ANSI_FLAG;
+  }
+}
+
+void tmk_streamWrite(int stream, const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_streamWriteArguments(stream, format, arguments);
+  va_end(arguments);
+}
+
+void tmk_streamWriteLine(int stream, const char *format, ...) {
+  va_list arguments;
+  va_start(arguments, format);
+  tmk_streamWriteArgumentsLine(stream, format, arguments);
+  va_end(arguments);
+}
+
+void tmk_writeArguments(const char *format, va_list arguments) {
+  tmk_streamWriteArguments(tmk_Stream_Output, format, arguments);
 }
 
 void tmk_writeArgumentsLine(const char *format, va_list arguments) {
-  tmk_writeArguments(format, arguments);
-  tmk_write("\n");
-  cache_g &= ~HAS_CACHED_ANSI_FLAG;
+  tmk_streamWriteArgumentsLine(tmk_Stream_Output, format, arguments);
 }
 
 void tmk_write(const char *format, ...) {
@@ -341,16 +379,11 @@ void tmk_writeLine(const char *format, ...) {
 }
 
 void tmk_writeErrorArguments(const char *format, va_list arguments) {
-  initialize();
-  if (cache_g & HAS_CACHED_ANSI_FLAG) {
-    tmk_flushOutputBuffer();
-  }
-  vfprintf(stderr, format, arguments);
+  tmk_streamWriteArguments(tmk_Stream_Error, format, arguments);
 }
 
 void tmk_writeErrorArgumentsLine(const char *format, va_list arguments) {
-  tmk_writeErrorArguments(format, arguments);
-  tmk_writeError("\n");
+  tmk_streamWriteArgumentsLine(tmk_Stream_Error, format, arguments);
 }
 
 void tmk_writeError(const char *format, ...) {
