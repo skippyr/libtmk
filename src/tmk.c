@@ -23,7 +23,7 @@
 #if defined(_WIN32)
 static void enableAnsiParse(void);
 static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info);
-char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
+char *convertUtf16ToUtf8(const wchar_t *utf16String);
 #else
 static void enableRawMode(void);
 static void disableRawMode(void);
@@ -47,8 +47,8 @@ static void enableAnsiParse(void) {
 
 static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info) {
   return -(!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
-                                       &info) &&
-           !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &info));
+                                       info) &&
+           !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), info));
 }
 
 char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
@@ -56,9 +56,6 @@ char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
                                  NULL);
   char *buffer = malloc(size);
   WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
-  if (length) {
-    *length = size - 1;
-  }
   return buffer;
 }
 #else
