@@ -24,7 +24,6 @@
 static void enableAnsiParse(void);
 static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info);
 char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
-#endif
 #else
 static void enableRawMode(void);
 static void disableRawMode(void);
