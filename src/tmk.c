@@ -219,6 +219,10 @@ void tmk_clearUntilEndOfLine(void) {
   writeAnsi("\x1b[K");
 }
 
+void tmk_ringBell(void) {
+  writeAnsi("\7");
+}
+
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
 #if tmk_IS_WINDOWS_OS
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;

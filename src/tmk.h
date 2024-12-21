@@ -216,6 +216,7 @@ void tmk_closeAlternateWindow(void);
 void tmk_clearWindow(void);
 void tmk_clearUntilBegginingOfWindow(void);
 void tmk_clearUntilEndOfWindow(void);
+void tmk_ringBell(void);
 #if tmk_IS_WINDOWS_OS
 char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
 wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length);
