@@ -1,6 +1,6 @@
 #include "tmk.h"
 #include <stdio.h>
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
 #include <Windows.h>
 #else
 #include <fcntl.h>
@@ -12,7 +12,7 @@
 #define HAS_CACHED_ANSI_FLAG (1 << 4)
 #define ANSI_PRIORITIZES_OUTPUT_FLAG (1 << 5)
 #define HAS_INITIALIZED_FLAG (1 << 7)
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
 #define REDIRECTION_CACHE(stream_p) (!_isatty(stream_p) << stream_p)
 #else
 #define RAW_MODE_C_LFLAGS (ICANON | ECHO | ISIG)
@@ -20,9 +20,11 @@
 #define REDIRECTION_CACHE(stream_p) (!isatty(stream_p) << stream_p)
 #endif
 
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
 static void enableAnsiParse(void);
 static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info);
+char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length);
+#endif
 #else
 static void enableRawMode(void);
 static void disableRawMode(void);
@@ -35,7 +37,7 @@ static void initialize(void);
 
 static char cache_g = 0;
 
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
 static void enableAnsiParse(void) {
     HANDLE handle;
     DWORD mode;
@@ -48,6 +50,17 @@ static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info) {
   return -(!GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE),
                                        &info) &&
            !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), &info));
+}
+
+char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
+  int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
+                                 NULL);
+  char *buffer = malloc(size);
+  WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
+  if (length) {
+    *length = size - 1;
+  }
+  return buffer;
 }
 #else
 static void enableRawMode(void) {
@@ -109,7 +122,7 @@ static void initialize(void) {
     return;
   }
   cache_g |= HAS_INITIALIZED_FLAG;
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
   SetConsoleOutputCP(CP_UTF8);
   enableAnsiParse();
 #endif
@@ -127,7 +140,7 @@ void tmk_flushOutputBuffer(void) {
 }
 
 void tmk_clearInputBuffer(void) {
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
   FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 #else
   enableRawMode();
@@ -184,7 +197,7 @@ void tmk_resetCursorShape(void) {
 }
 
 int tmk_getCursorCoordinate(struct tmk_Coordinate *coordinate) {
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
   CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
   if (getBufferInfo(&bufferInfo)) {
       return -1;
@@ -228,7 +241,7 @@ void tmk_ringBell(void) {
 }
 
 int tmk_getWindowDimensions(struct tmk_Dimensions *dimensions) {
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
     CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
     if (getBufferInfo(&bufferInfo)) {
         return -1;
@@ -255,6 +268,10 @@ void tmk_openAlternateWindow(void) {
   writeAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
 }
 
+void tmk_setWindowTitle(const char *title) {
+  writeAnsi("\x1b]0;%s\7", title);
+}
+
 void tmk_closeAlternateWindow(void) {
   writeAnsi("\x1b[?1049l");
 }
@@ -271,37 +288,13 @@ void tmk_clearUntilEndOfWindow(void) {
   writeAnsi("\x1b[J");
 }
 
-#if tmk_IS_WINDOWS_OS
-char *tmk_convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
-  int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
-                                 NULL);
-  char *buffer = malloc(size);
-  WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, buffer, size, NULL, NULL);
-  if (length) {
-    *length = size - 1;
-  }
-  return buffer;
-}
-
-wchar_t *tmk_convertUtf8ToUtf16(const char *utf8String, size_t *length) {
-  int size = MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, NULL, 0);
-  wchar_t *buffer = malloc(size * sizeof(wchar_t));
-  MultiByteToWideChar(CP_UTF8, 0, utf8String, -1, buffer, size);
-  if (length) {
-    *length = size - 1;
-  }
-  return buffer;
-}
-#endif
-
 void tmk_getArguments(int argc, const char **argv,
                       struct tmk_Arguments *arguments) {
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
   arguments->asUtf16 = CommandLineToArgvW(GetCommandLineW(), &arguments->total);
   arguments->asUtf8 = malloc(arguments->total * sizeof(void *));
   for (int offset = 0; offset < arguments->total; ++offset) {
-    arguments->asUtf8[offset] =
-        tmk_convertUtf16ToUtf8(arguments->asUtf16[offset]);
+    arguments->asUtf8[offset] = convertUtf16ToUtf8(arguments->asUtf16[offset]);
   }
 #else
   arguments->total = argc;
@@ -310,7 +303,7 @@ void tmk_getArguments(int argc, const char **argv,
 }
 
 void tmk_freeArguments(struct tmk_Arguments *arguments) {
-#if tmk_IS_WINDOWS_OS
+#if defined(_WIN32)
   LocalFree(arguments->asUtf16);
   for (int offset = 0; offset < arguments->total; ++offset) {
     free((void *)arguments->asUtf8[offset]);
