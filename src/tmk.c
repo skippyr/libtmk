@@ -10,7 +10,7 @@
 #endif
 
 #define HAS_CACHED_ANSI_FLAG (1 << 4)
-#define ANSI_TARGETS_OUTPUT_FLAG (1 << 5)
+#define ANSI_PRIORITIZES_OUTPUT_FLAG (1 << 5)
 #define HAS_INITIALIZED_FLAG (1 << 7)
 #if tmk_IS_WINDOWS_OS
 #define REDIRECTION_CACHE(stream_p) (!_isatty(stream_p) << stream_p)
@@ -88,12 +88,12 @@ static int writeAnsi(const char *format, ...) {
       tmk_isStreamRedirected(tmk_Stream_Error)) {
     return -1;
   }
-  int stream = 
-    cache_g & ANSI_TARGETS_OUTPUT_FLAG
+  int stream =
+    cache_g & ANSI_PRIORITIZES_OUTPUT_FLAG
       ? !tmk_isStreamRedirected(tmk_Stream_Output) ? tmk_Stream_Output
-        : tmk_Stream_Error
+                                                   : tmk_Stream_Error
       : !tmk_isStreamRedirected(tmk_Stream_Error) ? tmk_Stream_Error
-        : tmk_Stream_Output;
+                                                  : tmk_Stream_Output;
   va_list arguments;
   va_start(arguments, format);
   tmk_streamWriteArguments(stream, format, arguments);
@@ -327,9 +327,9 @@ void tmk_streamWriteArguments(int stream, const char *format,
   }
   vfprintf(stream == tmk_Stream_Output ? stdout : stderr, format, arguments);
   if (stream == tmk_Stream_Output) {
-    cache_g |= ANSI_TARGETS_OUTPUT_FLAG;
+    cache_g |= ANSI_PRIORITIZES_OUTPUT_FLAG;
   } else {
-    cache_g &= ~ANSI_TARGETS_OUTPUT_FLAG;
+    cache_g &= ~ANSI_PRIORITIZES_OUTPUT_FLAG;
   }
 }
 
