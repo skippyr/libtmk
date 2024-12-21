@@ -51,7 +51,7 @@ static int getBufferInfo(CONSOLE_SCREEN_BUFFER_INFO *info) {
            !GetConsoleScreenBufferInfo(GetStdHandle(STD_ERROR_HANDLE), info));
 }
 
-char *convertUtf16ToUtf8(const wchar_t *utf16String, size_t *length) {
+char *convertUtf16ToUtf8(const wchar_t *utf16String) {
   int size = WideCharToMultiByte(CP_UTF8, 0, utf16String, -1, NULL, 0, NULL,
                                  NULL);
   char *buffer = malloc(size);
