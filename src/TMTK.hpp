@@ -63,6 +63,17 @@ namespace TMTK
         StaticBar
     };
 
+    enum class ClearRegion
+    {
+        Line,
+        UntilLineEnd,
+        UntilLineStart,
+        Screen,
+        UntilScreenEnd,
+        UntilScreenStart,
+        ScrollbackBuffer
+    };
+
     class RGBColor final
     {
         std::uint8_t m_red;
@@ -113,6 +124,7 @@ namespace TMTK
         static bool s_isInputRedirected;
         static bool s_isOutputRedirected;
         static bool s_isErrorRedirected;
+        static bool s_allowsTextStyles;
 #ifdef _WIN32
         static HANDLE s_inputHandle;
         static HANDLE s_outputHandle;
@@ -173,22 +185,26 @@ namespace TMTK
     public:
         Terminal() = delete;
 
+        [[nodiscard]]
         static bool IsInputRedirected();
+        [[nodiscard]]
         static bool IsOutputRedirected();
+        [[nodiscard]]
         static bool IsErrorRedirected();
-        static void FlushOutputBuffer();
-        static void SetTextForeground(std::uint8_t ansiColor);
-        static void SetTextForeground(ANSIColor color);
-        static void SetTextForeground(RGBColor color);
-        static void SetTextBackground(std::uint8_t ansiColor);
-        static void SetTextBackground(ANSIColor color);
-        static void SetTextBackground(RGBColor color);
+        static void FlushOutput();
+        static void SetAllowsTextStyle(bool allowsTextStyle);
+        static void SetForeground(std::uint8_t ansiColor);
+        static void SetForeground(ANSIColor color);
+        static void SetForeground(RGBColor color);
+        static void SetBackground(std::uint8_t ansiColor);
+        static void SetBackground(ANSIColor color);
+        static void SetBackground(RGBColor color);
         static void SetTextStyles(int styles);
         static void SetTextStyles(TextStyle style);
-        static void ResetTextColors();
+        static void ResetColors();
         static void ResetTextStyles();
-        static void OpenAlternateWindow();
-        static void CloseAlternateWindow();
+        static void EnterAlternateScreen();
+        static void ExitAlternateScreen();
         [[nodiscard]]
         static std::uint16_t GetWidth();
         [[nodiscard]]
@@ -199,6 +215,9 @@ namespace TMTK
         static void SetCursorStyle(CursorStyle style);
         static void ResetCursorStyle();
         static void RingBell();
+        static void Clear();
+        static void ClearLine();
+        static void ClearHistory();
 
         template <typename... Arguments>
         static void Write(const std::string_view& format, Arguments... arguments)
@@ -238,7 +257,7 @@ namespace TMTK
             Init();
             if (s_hasANSICache)
             {
-                FlushOutputBuffer();
+                FlushOutput();
             }
             std::cerr << std::vformat(format, std::make_format_args(arguments...));
             s_ansiPrefersStdOut = false;

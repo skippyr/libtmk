@@ -21,6 +21,7 @@ namespace TMTK
     bool Terminal::s_isInputRedirected;
     bool Terminal::s_isOutputRedirected;
     bool Terminal::s_isErrorRedirected;
+    bool Terminal::s_allowsTextStyles;
 #ifdef _WIN32
     HANDLE Terminal::s_inputHandle;
     HANDLE Terminal::s_outputHandle;
@@ -41,6 +42,8 @@ namespace TMTK
         s_isInputRedirected = IS_STREAM_REDIRECTED(INPUT_STREAM);
         s_isOutputRedirected = IS_STREAM_REDIRECTED(OUTPUT_STREAM);
         s_isErrorRedirected = IS_STREAM_REDIRECTED(ERROR_STREAM);
+        const char* term;
+        s_allowsTextStyles = std::getenv("NO_COLOR") != nullptr || ((term = std::getenv("TERM")) && !std::strcmp(term, "dumb"));
 #ifdef _WIN32
         if (!SetConsoleOutputCP(CP_UTF8))
         {
@@ -105,38 +108,57 @@ namespace TMTK
         return s_isErrorRedirected;
     }
 
-    void Terminal::FlushOutputBuffer()
+    void Terminal::FlushOutput()
     {
+        Init();
         std::cout << std::flush;
         s_hasANSICache = false;
     }
 
-    void Terminal::SetTextForeground(std::uint8_t ansiColor)
+    void Terminal::SetAllowsTextStyle(bool allowsTextStyle)
     {
-        WriteAnsi("\x1b[38;5;{}m", ansiColor);
+        Init();
+        s_allowsTextStyles = allowsTextStyle;
     }
 
-    void Terminal::SetTextForeground(ANSIColor color)
+    void Terminal::SetForeground(std::uint8_t ansiColor)
     {
-        SetTextForeground(static_cast<std::uint8_t>(color));
+        Init();
+        if (s_allowsTextStyles)
+        {
+            WriteAnsi("\x1b[38;5;{}m", ansiColor);
+        }
     }
 
-    void Terminal::SetTextForeground(RGBColor color)
+    void Terminal::SetForeground(ANSIColor color)
     {
-        WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        Init();
+        if (s_allowsTextStyles)
+        {
+            SetForeground(static_cast<std::uint8_t>(color));
+        }
     }
 
-    void Terminal::SetTextBackground(std::uint8_t ansiColor)
+    void Terminal::SetForeground(RGBColor color)
+    {
+        Init();
+        if (s_allowsTextStyles)
+        {
+            WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+    }
+
+    void Terminal::SetBackground(std::uint8_t ansiColor)
     {
         WriteAnsi("\x1b[48;5;{}m", ansiColor);
     }
 
-    void Terminal::SetTextBackground(ANSIColor color)
+    void Terminal::SetBackground(ANSIColor color)
     {
-        SetTextBackground(static_cast<std::uint8_t>(color));
+        SetBackground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetTextBackground(RGBColor color)
+    void Terminal::SetBackground(RGBColor color)
     {
         WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
     }
@@ -188,7 +210,7 @@ namespace TMTK
         SetTextStyles(static_cast<int>(style));
     }
 
-    void Terminal::ResetTextColors()
+    void Terminal::ResetColors()
     {
         WriteAnsi("\x1b[39;49m");
     }
@@ -198,12 +220,12 @@ namespace TMTK
         WriteAnsi("\x1b[22;23;24;25;27;28;29m");
     }
 
-    void Terminal::OpenAlternateWindow()
+    void Terminal::EnterAlternateScreen()
     {
         WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
     }
 
-    void Terminal::CloseAlternateWindow()
+    void Terminal::ExitAlternateScreen()
     {
         WriteAnsi("\x1b[?1049l");
     }
@@ -280,6 +302,22 @@ namespace TMTK
     {
         WriteAnsi("\7");
     }
+
+    void Terminal::Clear()
+    {
+        WriteAnsi("\x1b[H\x1b[2J");
+    }
+
+    void Terminal::ClearLine()
+    {
+        WriteAnsi("\x1b[G\x1b[2K");
+    }
+
+    void Terminal::ClearHistory()
+    {
+        WriteAnsi("\x1b[H\x1b[3J");
+    }
+
 
     int operator|(TextStyle style0, TextStyle style1)
     {
