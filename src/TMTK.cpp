@@ -220,12 +220,12 @@ namespace TMTK
         WriteAnsi("\x1b[22;23;24;25;27;28;29m");
     }
 
-    void Terminal::EnterAlternateScreen()
+    void Terminal::OpenAlternateScreen()
     {
         WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
     }
 
-    void Terminal::ExitAlternateScreen()
+    void Terminal::CloseAlternateScreen()
     {
         WriteAnsi("\x1b[?1049l");
     }
@@ -283,6 +283,24 @@ namespace TMTK
         return width * height;
     }
 
+    void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
+    {
+        std::uint16_t columns;
+        std::uint16_t rows;
+        GetDimensions(columns, rows);
+        if (coordinate.GetColumn() >= columns || coordinate.GetRow() >= rows)
+        {
+            throw OutOfRangeException();
+        }
+        try
+        {
+            WriteAnsi("\x1b[{};{}H", coordinate.GetRow() + 1, coordinate.GetColumn() + 1);
+        }
+        catch (...)
+        {
+        }
+    }
+
     void Terminal::SetCursorVisible(bool isVisible)
     {
         WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
@@ -317,7 +335,6 @@ namespace TMTK
     {
         WriteAnsi("\x1b[H\x1b[3J");
     }
-
 
     int operator|(TextStyle style0, TextStyle style1)
     {

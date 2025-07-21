@@ -21,6 +21,10 @@ namespace TMTK
     {
     };
 
+    class OutOfRangeException final : std::exception
+    {
+    };
+
     enum class ANSIColor
     {
         DarkBlack,
@@ -119,6 +123,40 @@ namespace TMTK
         }
     };
 
+    class Coordinate final
+    {
+    private:
+        std::uint16_t m_column;
+        std::uint16_t m_row;
+
+    public:
+        constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column(column), m_row(row)
+        {
+        }
+
+        [[nodiscard]]
+        constexpr std::uint16_t GetColumn() const noexcept
+        {
+            return m_column;
+        }
+
+        [[nodiscard]]
+        constexpr std::uint16_t GetRow() const noexcept
+        {
+            return m_row;
+        }
+
+        void SetColumn(std::uint16_t column) noexcept
+        {
+            m_column = column;
+        }
+
+        void SetRow(std::uint16_t row) noexcept
+        {
+            m_row = row;
+        }
+    };
+
     class Terminal final
     {
         static bool s_isInputRedirected;
@@ -203,14 +241,16 @@ namespace TMTK
         static void SetTextStyles(TextStyle style);
         static void ResetColors();
         static void ResetTextStyles();
-        static void EnterAlternateScreen();
-        static void ExitAlternateScreen();
+        static void OpenAlternateScreen();
+        static void CloseAlternateScreen();
         [[nodiscard]]
         static std::uint16_t GetWidth();
         [[nodiscard]]
         static std::uint16_t GetHeight();
         [[nodiscard]]
         static std::uint32_t GetArea();
+        static Coordinate GetCursorCoordinate();
+        static void SetCursorCoordinate(const Coordinate& coordinate);
         static void SetCursorVisible(bool isVisible);
         static void SetCursorStyle(CursorStyle style);
         static void ResetCursorStyle();
