@@ -1,4 +1,4 @@
-#include "Tmtk.hpp"
+#include "TMTK.hpp"
 #ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
@@ -15,7 +15,7 @@
 #define IS_STREAM_REDIRECTED(stream) (!isatty(stream) << stream)
 #endif
 
-namespace Tmtk
+namespace TMTK
 {
     bool Terminal::s_isInputRedirected;
     bool Terminal::s_isOutputRedirected;
@@ -50,7 +50,7 @@ namespace Tmtk
         s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
         if (!EnableAnsiParse(s_outputHandle) && !EnableAnsiParse(s_errorHandle))
         {
-            throw NoAnsiSupportException();
+            throw NoANSISupportException();
         }
 #endif
     }
@@ -102,12 +102,12 @@ namespace Tmtk
         WriteAnsi("\x1b[{}8;5;{}m", static_cast<std::uint8_t>(layer), ansiColor);
     }
 
-    void Terminal::SetFontColor(AnsiColor color, Layer layer)
+    void Terminal::SetFontColor(ANSIColor color, Layer layer)
     {
         SetFontColor(static_cast<std::uint8_t>(color), layer);
     }
 
-    void Terminal::SetFontColor(RgbColor color, Layer layer)
+    void Terminal::SetFontColor(RGBColor color, Layer layer)
     {
         WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<std::uint8_t>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
     }

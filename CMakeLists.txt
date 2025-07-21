@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 23)
-project(Tmtk)
-add_library(Tmtk "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmtk.cpp"
-                "${CMAKE_CURRENT_SOURCE_DIR}/src/Tmtk.hpp")
-target_include_directories(Tmtk PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+project(TMTK)
+add_library(TMTK "${CMAKE_CURRENT_SOURCE_DIR}/src/TMTK.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/TMTK.hpp")
+target_include_directories(TMTK PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")

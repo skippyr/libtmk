@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-namespace Tmtk
+namespace TMTK
 {
 #ifdef _WIN32
     class CannotSetOutputCPException final : std::exception
@@ -12,7 +12,7 @@ namespace Tmtk
     {
     };
 
-    class NoAnsiSupportException final : std::exception
+    class NoANSISupportException final : std::exception
     {
     };
 #endif
@@ -27,7 +27,7 @@ namespace Tmtk
         Background
     };
 
-    enum class AnsiColor
+    enum class ANSIColor
     {
         DarkBlack,
         DarkRed,
@@ -53,7 +53,7 @@ namespace Tmtk
         Dim
     };
 
-    class RgbColor final
+    class RGBColor final
     {
     private:
         std::uint8_t m_red;
@@ -61,7 +61,7 @@ namespace Tmtk
         std::uint8_t m_blue;
 
     public:
-        constexpr RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept
+        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept
             : m_red(red), m_green(green), m_blue(blue)
         {}
 
@@ -160,8 +160,8 @@ namespace Tmtk
         static bool IsErrorRedirected();
         static void FlushOutputBuffer();
         static void SetFontColor(std::uint8_t ansiColor, Layer layer);
-        static void SetFontColor(AnsiColor color, Layer layer);
-        static void SetFontColor(RgbColor color, Layer layer);
+        static void SetFontColor(ANSIColor color, Layer layer);
+        static void SetFontColor(RGBColor color, Layer layer);
         static void SetFontWeight(FontWeight weight);
         static void UnsetFontColor(Layer layer);
         static void UnsetFontWeight();
