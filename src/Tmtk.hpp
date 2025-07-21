@@ -61,9 +61,9 @@ namespace TMTK
         std::uint8_t m_blue;
 
     public:
-        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept
-            : m_red(red), m_green(green), m_blue(blue)
-        {}
+        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red(red), m_green(green), m_blue(blue)
+        {
+        }
 
         constexpr std::uint8_t GetRed() const noexcept
         {
@@ -183,11 +183,23 @@ namespace TMTK
             }
         }
 
+        template <typename T>
+        static void Write(const T& argument)
+        {
+            Write("{}", argument);
+        }
+
         template <typename... Arguments>
         static void WriteLine(const std::string_view& format, Arguments... arguments)
         {
             Write(format, arguments...);
             Write("\n");
+        }
+
+        template <typename T>
+        static void WriteLine(const T& argument)
+        {
+            WriteLine("{}", argument);
         }
 
         template <typename... Arguments>
@@ -202,11 +214,23 @@ namespace TMTK
             s_ansiPrefersStdOut = false;
         }
 
+        template <typename T>
+        static void WriteError(const T& argument)
+        {
+            WriteError("{}", argument);
+        }
+
         template <typename... Arguments>
         static void WriteErrorLine(const std::string_view& format, Arguments... arguments)
         {
             WriteError(format, arguments...);
             WriteError("\n");
+        }
+
+        template <typename T>
+        static void WriteErrorLine(const T& argument)
+        {
+            WriteErrorLine("{}", argument);
         }
     };
 }
