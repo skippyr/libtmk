@@ -1,85 +1,174 @@
 #pragma once
 #include <iostream>
 
+namespace Tmtk
+{
 #ifdef _WIN32
-class CannotSetOutputCPException final : std::exception
-{
-};
-
-class InvalidHandleValueException final : std::exception
-{
-};
-
-class NoAnsiSupportException final : std::exception
-{
-};
-#endif
-
-class Terminal final
-{
-private:
-    static bool s_isInputRedirected;
-    static bool s_isOutputRedirected;
-    static bool s_isErrorRedirected;
-#ifdef _WIN32
-    static HANDLE s_inputHandle;
-    static HANDLE s_outputHandle;
-    static HANDLE s_errorHandle;
-#endif
-    static bool s_hasInit;
-    static bool s_hasAnsiCache;
-    static bool s_ansiPrefersStdOut;
-
-    static void Init();
-#ifdef _WIN32
-    static HANDLE GetHandle(DWORD id);
-    static bool EnableAnsiParse(HANDLE handle);
-#endif
-
-    Terminal() = delete;
-
-public:
-    static bool IsInputRedirected();
-    static bool IsOutputRedirected();
-    static bool IsErrorRedirected();
-    static void FlushOutputBuffer();
-
-    template <typename... Arguments>
-    static void Write(const std::string_view& format, Arguments... arguments)
+    class CannotSetOutputCPException final : std::exception
     {
-        Init();
-        std::string result = std::vformat(format, std::make_format_args(arguments...));
-        std::cout << result;
-        s_ansiPrefersStdOut = true;
-        if (s_hasAnsiCache && result.contains('\n'))
+    };
+
+    class InvalidHandleValueException final : std::exception
+    {
+    };
+
+    class NoAnsiSupportException final : std::exception
+    {
+    };
+#endif
+
+    class StreamRedirectionException final : std::exception
+    {
+    };
+
+    enum class Layer
+    {
+        Foreground = 3,
+        Background
+    };
+
+    enum class AnsiColor
+    {
+        DarkBlack,
+        DarkRed,
+        DarkGreen,
+        DarkYellow,
+        DarkBlue,
+        DarkMagenta,
+        DarkCyan,
+        DarkWhite,
+        LightBlack,
+        LightRed,
+        LightGreen,
+        LightYellow,
+        LightBlue,
+        LightMagenta,
+        LightCyan,
+        LightWhite
+    };
+
+    class RgbColor final
+    {
+    private:
+        std::uint8_t m_red;
+        std::uint8_t m_green;
+        std::uint8_t m_blue;
+
+    public:
+        RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept;
+        std::uint8_t GetRed() const noexcept;
+        std::uint8_t GetGreen() const noexcept;
+        std::uint8_t GetBlue() const noexcept;
+        void SetRed(std::uint8_t red) noexcept;
+        void SetGreen(std::uint8_t green) noexcept;
+        void SetBlue(std::uint8_t blue) noexcept;
+    };
+
+    class Terminal final
+    {
+    private:
+        static bool s_isInputRedirected;
+        static bool s_isOutputRedirected;
+        static bool s_isErrorRedirected;
+#ifdef _WIN32
+        static HANDLE s_inputHandle;
+        static HANDLE s_outputHandle;
+        static HANDLE s_errorHandle;
+#endif
+        static bool s_hasInit;
+        static bool s_hasAnsiCache;
+        static bool s_ansiPrefersStdOut;
+
+        static void Init();
+#ifdef _WIN32
+        static HANDLE GetHandle(DWORD id);
+        static bool EnableAnsiParse(HANDLE handle);
+#endif
+
+        template <typename... Arguments>
+        static void WriteAnsi(const std::string_view& format, Arguments... arguments)
         {
-            s_hasAnsiCache = false;
+            if (s_ansiPrefersStdOut)
+            {
+                if (!s_isOutputRedirected)
+                {
+                    Write(format, arguments...);
+                }
+                else if (!s_isErrorRedirected)
+                {
+                    WriteError(format, arguments...);
+                }
+                else
+                {
+                    throw StreamRedirectionException();
+                }
+            }
+            else
+            {
+                if (!s_isErrorRedirected)
+                {
+                    WriteError(format, arguments...);
+                }
+                else if (!s_isOutputRedirected)
+                {
+                    Write(format, arguments...);
+                }
+                else
+                {
+                    throw StreamRedirectionException();
+                }
+            }
         }
-    }
 
-    template <typename... Arguments>
-    static void WriteLine(const std::string_view& format, Arguments... arguments)
-    {
-        Write(format, arguments...);
-        Write("\n");
-    }
+        Terminal() = delete;
 
-    template <typename... Arguments>
-    static void WriteError(const std::string_view& format, Arguments... arguments)
-    {
-        Init();
-        if (s_hasAnsiCache)
+    public:
+        static bool IsInputRedirected();
+        static bool IsOutputRedirected();
+        static bool IsErrorRedirected();
+        static void FlushOutputBuffer();
+        static void SetFontColor(AnsiColor color, Layer layer);
+        static void SetFontColor(RgbColor color, Layer layer);
+        static void UnsetFontColor(Layer layer);
+        static void UnsetFontStyles();
+
+        template <typename... Arguments>
+        static void Write(const std::string_view& format, Arguments... arguments)
         {
-            FlushOutputBuffer();
+            Init();
+            std::string result = std::vformat(format, std::make_format_args(arguments...));
+            std::cout << result;
+            s_ansiPrefersStdOut = true;
+            if (s_hasAnsiCache && result.contains('\n'))
+            {
+                s_hasAnsiCache = false;
+            }
         }
-        std::cerr << std::vformat(format, std::make_format_args(arguments...));
-        s_ansiPrefersStdOut = false;
-    }
 
-    template <typename... Arguments>
-    static void WriteErrorLine(const std::string_view& format, Arguments... arguments)
-    {
-        WriteError(format, arguments...);
-        WriteError("\n");
-    }
-};
+        template <typename... Arguments>
+        static void WriteLine(const std::string_view& format, Arguments... arguments)
+        {
+            Write(format, arguments...);
+            Write("\n");
+        }
+
+        template <typename... Arguments>
+        static void WriteError(const std::string_view& format, Arguments... arguments)
+        {
+            Init();
+            if (s_hasAnsiCache)
+            {
+                FlushOutputBuffer();
+            }
+            std::cerr << std::vformat(format, std::make_format_args(arguments...));
+            s_ansiPrefersStdOut = false;
+        }
+
+        template <typename... Arguments>
+        static void WriteErrorLine(const std::string_view& format, Arguments... arguments)
+        {
+            WriteError(format, arguments...);
+            WriteError("\n");
+        }
+    };
+}

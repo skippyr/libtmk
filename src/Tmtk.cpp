@@ -15,82 +15,139 @@
 #define IS_STREAM_REDIRECTED(stream) (!isatty(stream) << stream)
 #endif
 
-bool Terminal::s_isInputRedirected;
-bool Terminal::s_isOutputRedirected;
-bool Terminal::s_isErrorRedirected;
+namespace Tmtk
+{
+    RgbColor::RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+        noexcept : m_red(red), m_green(green), m_blue(blue)
+    {}
+
+    std::uint8_t RgbColor::GetRed() const noexcept
+    {
+        return m_red;
+    }
+
+    std::uint8_t RgbColor::GetGreen() const noexcept
+    {
+        return m_green;
+    }
+
+    std::uint8_t RgbColor::GetBlue() const noexcept
+    {
+        return m_blue;
+    }
+
+    void RgbColor::SetRed(std::uint8_t red) noexcept
+    {
+        m_red = red;
+    }
+
+    void RgbColor::SetGreen(std::uint8_t green) noexcept
+    {
+        m_green = green;
+    }
+
+    void RgbColor::SetBlue(std::uint8_t blue) noexcept
+    {
+        m_blue = blue;
+    }
+
+    bool Terminal::s_isInputRedirected;
+    bool Terminal::s_isOutputRedirected;
+    bool Terminal::s_isErrorRedirected;
 #ifdef _WIN32
-HANDLE Terminal::s_inputHandle;
-HANDLE Terminal::s_outputHandle;
-HANDLE Terminal::s_errorHandle;
+    HANDLE Terminal::s_inputHandle;
+    HANDLE Terminal::s_outputHandle;
+    HANDLE Terminal::s_errorHandle;
 #endif
-bool Terminal::s_hasInit = false;
-bool Terminal::s_hasAnsiCache = false;
-// NOTE: stderr is unbuffered, thus prefered by default.
-bool Terminal::s_ansiPrefersStdOut = false;
+    bool Terminal::s_hasInit = false;
+    bool Terminal::s_hasAnsiCache = false;
+    // NOTE: stderr is unbuffered, thus prefered by default.
+    bool Terminal::s_ansiPrefersStdOut = false;
 
-void Terminal::Init()
-{
-    if (s_hasInit)
+    void Terminal::Init()
     {
-        return;
-    }
-    s_hasInit = true;
-    s_isInputRedirected = IS_STREAM_REDIRECTED(INPUT_STREAM);
-    s_isOutputRedirected = IS_STREAM_REDIRECTED(OUTPUT_STREAM);
-    s_isErrorRedirected = IS_STREAM_REDIRECTED(ERROR_STREAM);
+        if (s_hasInit)
+        {
+            return;
+        }
+        s_hasInit = true;
+        s_isInputRedirected = IS_STREAM_REDIRECTED(INPUT_STREAM);
+        s_isOutputRedirected = IS_STREAM_REDIRECTED(OUTPUT_STREAM);
+        s_isErrorRedirected = IS_STREAM_REDIRECTED(ERROR_STREAM);
 #ifdef _WIN32
-    if (!SetConsoleOutputCP(CP_UTF8))
-    {
-        throw CannotSetOutputCPException();
-    }
-    s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
-    s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
-    if (!EnableAnsiParse(s_outputHandle) && !EnableAnsiParse(s_errorHandle))
-    {
-        throw NoAnsiSupportException();
-    }
+        if (!SetConsoleOutputCP(CP_UTF8))
+        {
+            throw CannotSetOutputCPException();
+        }
+        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
+        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
+        if (!EnableAnsiParse(s_outputHandle) && !EnableAnsiParse(s_errorHandle))
+        {
+            throw NoAnsiSupportException();
+        }
 #endif
-}
+    }
 
 #ifdef _WIN32
-HANDLE Terminal::GetHandle(DWORD id)
-{
-    HANDLE handle = GetStdHandle(id);
-    if (handle == INVALID_HANDLE_VALUE)
+    HANDLE Terminal::GetHandle(DWORD id)
     {
-        throw InvalidHandleValueException();
+        HANDLE handle = GetStdHandle(id);
+        if (handle == INVALID_HANDLE_VALUE)
+        {
+            throw InvalidHandleValueException();
+        }
+        return handle;
     }
-    return handle;
-}
 
-bool Terminal::EnableAnsiParse(HANDLE handle)
-{
-    DWORD mode;
-    return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
-}
+    bool Terminal::EnableAnsiParse(HANDLE handle)
+    {
+        DWORD mode;
+        return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
 #endif
 
-bool Terminal::IsInputRedirected()
-{
-    Init();
-    return s_isInputRedirected;
-}
+    bool Terminal::IsInputRedirected()
+    {
+        Init();
+        return s_isInputRedirected;
+    }
 
-bool Terminal::IsOutputRedirected()
-{
-    Init();
-    return s_isOutputRedirected;
-}
+    bool Terminal::IsOutputRedirected()
+    {
+        Init();
+        return s_isOutputRedirected;
+    }
 
-bool Terminal::IsErrorRedirected()
-{
-    Init();
-    return s_isErrorRedirected;
-}
+    bool Terminal::IsErrorRedirected()
+    {
+        Init();
+        return s_isErrorRedirected;
+    }
 
-void Terminal::FlushOutputBuffer()
-{
-    std::cout << std::flush;
-    s_hasAnsiCache = false;
+    void Terminal::FlushOutputBuffer()
+    {
+        std::cout << std::flush;
+        s_hasAnsiCache = false;
+    }
+
+    void Terminal::SetFontColor(AnsiColor color, Layer layer)
+    {
+        WriteAnsi("\x1b[{}8;5;{}m", static_cast<std::uint8_t>(layer), static_cast<std::uint8_t>(color));
+    }
+
+    void Terminal::SetFontColor(RgbColor color, Layer layer)
+    {
+        WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<std::uint8_t>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+    }
+
+    void Terminal::UnsetFontColor(Layer layer)
+    {
+        WriteAnsi("\x1b[{}9m", static_cast<std::uint8_t>(layer));
+    }
+
+    void Terminal::UnsetFontStyles()
+    {
+        WriteAnsi("\x1b[0m");
+    }
 }
