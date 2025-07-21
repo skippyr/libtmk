@@ -112,9 +112,20 @@ namespace Tmtk
         WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<std::uint8_t>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
+    void Terminal::SetFontWeight(FontWeight weight)
+    {
+        // NOTE: some terminals may allow both bold and dim weights at the same time. For consistent behavior, it always get reset first.
+        WriteAnsi("\x1b[22;{}m", static_cast<std::uint8_t>(weight));
+    }
+
     void Terminal::UnsetFontColor(Layer layer)
     {
         WriteAnsi("\x1b[{}9m", static_cast<std::uint8_t>(layer));
+    }
+
+    void Terminal::UnsetFontWeight()
+    {
+        WriteAnsi("\x1b[22m");
     }
 
     void Terminal::UnsetFontStyles()

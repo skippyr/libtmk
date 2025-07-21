@@ -47,6 +47,12 @@ namespace Tmtk
         LightWhite
     };
 
+    enum class FontWeight
+    {
+        Bold = 1,
+        Dim
+    };
+
     class RgbColor final
     {
     private:
@@ -156,7 +162,9 @@ namespace Tmtk
         static void SetFontColor(std::uint8_t ansiColor, Layer layer);
         static void SetFontColor(AnsiColor color, Layer layer);
         static void SetFontColor(RgbColor color, Layer layer);
+        static void SetFontWeight(FontWeight weight);
         static void UnsetFontColor(Layer layer);
+        static void UnsetFontWeight();
         static void UnsetFontStyles();
         static void OpenAlternateWindow();
         static void CloseAlternateWindow();
