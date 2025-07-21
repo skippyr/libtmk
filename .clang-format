@@ -1,5 +1,6 @@
 AccessModifierOffset: -4
 BasedOnStyle: Microsoft
+BreakAfterAttributes: Always
 BreakTemplateDeclarations: Yes
 ColumnLimit: 180
 FixNamespaceComments: false

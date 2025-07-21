@@ -21,12 +21,6 @@ namespace TMTK
     {
     };
 
-    enum class Layer
-    {
-        Foreground = 3,
-        Background
-    };
-
     enum class ANSIColor
     {
         DarkBlack,
@@ -47,10 +41,16 @@ namespace TMTK
         LightWhite
     };
 
-    enum class FontWeight
+    enum class TextStyle
     {
         Bold = 1,
-        Dim
+        Dim =  1 << 1,
+        Italic = 1 << 2,
+        Underline = 1 << 3,
+        Strikethrough = 1 << 4,
+        Blinking = 1 << 5,
+        InvertedColors = 1 << 6,
+        Hidden = 1 << 7,
     };
 
     class RGBColor final
@@ -64,16 +64,19 @@ namespace TMTK
         {
         }
 
+        [[nodiscard]]
         constexpr std::uint8_t GetRed() const noexcept
         {
             return m_red;
         }
 
+        [[nodiscard]]
         constexpr std::uint8_t GetGreen() const noexcept
         {
             return m_green;
         }
 
+        [[nodiscard]]
         constexpr std::uint8_t GetBlue() const noexcept
         {
             return m_blue;
@@ -150,22 +153,23 @@ namespace TMTK
             }
         }
 
+    public:
         Terminal() = delete;
 
-    public:
         static bool IsInputRedirected();
         static bool IsOutputRedirected();
         static bool IsErrorRedirected();
         static void FlushOutputBuffer();
-        static void SetFontForeground(std::uint8_t ansiColor);
-        static void SetFontForeground(ANSIColor color);
-        static void SetFontForeground(RGBColor color);
-        static void SetFontBackground(std::uint8_t ansiColor);
-        static void SetFontBackground(ANSIColor color);
-        static void SetFontBackground(RGBColor color);
-        static void SetFontWeight(FontWeight weight);
-        static void ResetFontColors();
-        static void ResetFontWeight();
+        static void SetTextForeground(std::uint8_t ansiColor);
+        static void SetTextForeground(ANSIColor color);
+        static void SetTextForeground(RGBColor color);
+        static void SetTextBackground(std::uint8_t ansiColor);
+        static void SetTextBackground(ANSIColor color);
+        static void SetTextBackground(RGBColor color);
+        static void SetTextStyles(int styles);
+        static void SetTextStyles(TextStyle style);
+        static void ResetTextColors();
+        static void ResetTextStyles();
         static void OpenAlternateWindow();
         static void CloseAlternateWindow();
         static void RingBell();
@@ -233,4 +237,7 @@ namespace TMTK
             WriteErrorLine("{}", argument);
         }
     };
+
+    int operator|(TextStyle style0, TextStyle style1);
+    int operator|(int styles, TextStyle style);
 }

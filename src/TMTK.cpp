@@ -27,7 +27,7 @@ namespace TMTK
 #endif
     bool Terminal::s_hasInit = false;
     bool Terminal::s_hasANSICache = false;
-    // NOTE: stderr is unbuffered, thus prefered by default.
+    // NOTE: stderr is unbuffered, thus preferred by default.
     bool Terminal::s_ansiPrefersStdOut = false;
 
     void Terminal::Init()
@@ -73,18 +73,21 @@ namespace TMTK
     }
 #endif
 
+    [[nodiscard]]
     bool Terminal::IsInputRedirected()
     {
         Init();
         return s_isInputRedirected;
     }
 
+    [[nodiscard]]
     bool Terminal::IsOutputRedirected()
     {
         Init();
         return s_isOutputRedirected;
     }
 
+    [[nodiscard]]
     bool Terminal::IsErrorRedirected()
     {
         Init();
@@ -97,50 +100,88 @@ namespace TMTK
         s_hasANSICache = false;
     }
 
-    void Terminal::SetFontForeground(std::uint8_t ansiColor)
+    void Terminal::SetTextForeground(std::uint8_t ansiColor)
     {
         WriteAnsi("\x1b[38;5;{}m", ansiColor);
     }
 
-    void Terminal::SetFontForeground(ANSIColor color)
+    void Terminal::SetTextForeground(ANSIColor color)
     {
-        SetFontForeground(static_cast<std::uint8_t>(color));
+        SetTextForeground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetFontForeground(RGBColor color)
+    void Terminal::SetTextForeground(RGBColor color)
     {
         WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
-    void Terminal::SetFontBackground(std::uint8_t ansiColor)
+    void Terminal::SetTextBackground(std::uint8_t ansiColor)
     {
         WriteAnsi("\x1b[48;5;{}m", ansiColor);
     }
 
-    void Terminal::SetFontBackground(ANSIColor color)
+    void Terminal::SetTextBackground(ANSIColor color)
     {
-        SetFontBackground(static_cast<std::uint8_t>(color));
+        SetTextBackground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetFontBackground(RGBColor color)
+    void Terminal::SetTextBackground(RGBColor color)
     {
         WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
-    void Terminal::SetFontWeight(FontWeight weight)
+    void Terminal::SetTextStyles(int styles)
     {
-        // NOTE: some terminals may allow both bold and dim weights at the same time. For consistent behavior, it always get reset first.
-        WriteAnsi("\x1b[22;{}m", static_cast<std::uint8_t>(weight));
+        for (int offset = 0; offset < 8; ++offset)
+        {
+            if (styles & 1 << offset)
+            {
+                switch (offset)
+                {
+                case 0: /* Bold */
+                    WriteAnsi("\x1b[22;1m");
+                    break;
+                case 1: /* Dim */
+                    WriteAnsi("\x1b[22;2m");
+                    break;
+                case 2: /* Italic */
+                    WriteAnsi("\x1b[3m");
+                    break;
+                case 3: /* Underline */
+                    WriteAnsi("\x1b[4m");
+                    break;
+                case 4: /* Strikethrough */
+                    WriteAnsi("\x1b[9m");
+                    break;
+                case 5: /* Blinking */
+                    WriteAnsi("\x1b[5m");
+                    break;
+                case 6: /* InvertedColors */
+                    WriteAnsi("\x1b[7m");
+                    break;
+                case 7: /* Hidden */
+                    WriteAnsi("\x1b[8m");
+                    break;
+                default:;
+                }
+            }
+        }
     }
 
-    void Terminal::ResetFontColors()
+    void Terminal::SetTextStyles(TextStyle style)
+    {
+        SetTextStyles(static_cast<int>(style));
+    }
+
+
+    void Terminal::ResetTextColors()
     {
         WriteAnsi("\x1b[39;49m");
     }
 
-    void Terminal::ResetFontWeight()
+    void Terminal::ResetTextStyles()
     {
-        WriteAnsi("\x1b[22m");
+        WriteAnsi("\x1b[22;23;24;25;27;28;29m");
     }
 
     void Terminal::OpenAlternateWindow()
@@ -156,5 +197,15 @@ namespace TMTK
     void Terminal::RingBell()
     {
         WriteAnsi("\7");
+    }
+
+    int operator|(TextStyle style0, TextStyle style1)
+    {
+        return static_cast<int>(style0) | static_cast<int>(style1);
+    }
+
+    int operator|(int styles, TextStyle style)
+    {
+        return static_cast<int>(style) | styles;
     }
 }
