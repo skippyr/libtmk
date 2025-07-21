@@ -17,40 +17,6 @@
 
 namespace Tmtk
 {
-    RgbColor::RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
-        noexcept : m_red(red), m_green(green), m_blue(blue)
-    {}
-
-    std::uint8_t RgbColor::GetRed() const noexcept
-    {
-        return m_red;
-    }
-
-    std::uint8_t RgbColor::GetGreen() const noexcept
-    {
-        return m_green;
-    }
-
-    std::uint8_t RgbColor::GetBlue() const noexcept
-    {
-        return m_blue;
-    }
-
-    void RgbColor::SetRed(std::uint8_t red) noexcept
-    {
-        m_red = red;
-    }
-
-    void RgbColor::SetGreen(std::uint8_t green) noexcept
-    {
-        m_green = green;
-    }
-
-    void RgbColor::SetBlue(std::uint8_t blue) noexcept
-    {
-        m_blue = blue;
-    }
-
     bool Terminal::s_isInputRedirected;
     bool Terminal::s_isOutputRedirected;
     bool Terminal::s_isErrorRedirected;

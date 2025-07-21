@@ -55,13 +55,39 @@ namespace Tmtk
         std::uint8_t m_blue;
 
     public:
-        RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept;
-        std::uint8_t GetRed() const noexcept;
-        std::uint8_t GetGreen() const noexcept;
-        std::uint8_t GetBlue() const noexcept;
-        void SetRed(std::uint8_t red) noexcept;
-        void SetGreen(std::uint8_t green) noexcept;
-        void SetBlue(std::uint8_t blue) noexcept;
+        constexpr RgbColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept
+            : m_red(red), m_green(green), m_blue(blue)
+        {}
+
+        constexpr std::uint8_t GetRed() const noexcept
+        {
+            return m_red;
+        }
+
+        constexpr std::uint8_t GetGreen() const noexcept
+        {
+            return m_green;
+        }
+
+        constexpr std::uint8_t GetBlue() const noexcept
+        {
+            return m_blue;
+        }
+
+        constexpr void SetRed(std::uint8_t red) noexcept
+        {
+            m_red = red;
+        }
+
+        constexpr void SetGreen(std::uint8_t green) noexcept
+        {
+            m_green = green;
+        }
+
+        constexpr void SetBlue(std::uint8_t blue) noexcept
+        {
+            m_blue = blue;
+        }
     };
 
     class Terminal final
