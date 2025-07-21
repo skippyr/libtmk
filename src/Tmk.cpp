@@ -83,5 +83,5 @@ bool Terminal::IsOutputRedirected()
 bool Terminal::IsErrorRedirected()
 {
     Init();
-    return s_isErrorRedirected();
+    return s_isErrorRedirected;
 }
