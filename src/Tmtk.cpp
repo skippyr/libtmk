@@ -26,7 +26,7 @@ namespace TMTK
     HANDLE Terminal::s_errorHandle;
 #endif
     bool Terminal::s_hasInit = false;
-    bool Terminal::s_hasAnsiCache = false;
+    bool Terminal::s_hasANSICache = false;
     // NOTE: stderr is unbuffered, thus prefered by default.
     bool Terminal::s_ansiPrefersStdOut = false;
 
@@ -48,7 +48,7 @@ namespace TMTK
         s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
         s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
-        if (!EnableAnsiParse(s_outputHandle) && !EnableAnsiParse(s_errorHandle))
+        if (!EnableANSIParse(s_outputHandle) && !EnableANSIParse(s_errorHandle))
         {
             throw NoANSISupportException();
         }
@@ -66,7 +66,7 @@ namespace TMTK
         return handle;
     }
 
-    bool Terminal::EnableAnsiParse(HANDLE handle)
+    bool Terminal::EnableANSIParse(HANDLE handle)
     {
         DWORD mode;
         return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
@@ -94,7 +94,7 @@ namespace TMTK
     void Terminal::FlushOutputBuffer()
     {
         std::cout << std::flush;
-        s_hasAnsiCache = false;
+        s_hasANSICache = false;
     }
 
     void Terminal::SetFontColor(std::uint8_t ansiColor, Layer layer)

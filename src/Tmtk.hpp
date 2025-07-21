@@ -108,13 +108,13 @@ namespace TMTK
         static HANDLE s_errorHandle;
 #endif
         static bool s_hasInit;
-        static bool s_hasAnsiCache;
+        static bool s_hasANSICache;
         static bool s_ansiPrefersStdOut;
 
         static void Init();
 #ifdef _WIN32
         static HANDLE GetHandle(DWORD id);
-        static bool EnableAnsiParse(HANDLE handle);
+        static bool EnableANSIParse(HANDLE handle);
 #endif
 
         template <typename... Arguments>
@@ -177,9 +177,9 @@ namespace TMTK
             std::string result = std::vformat(format, std::make_format_args(arguments...));
             std::cout << result;
             s_ansiPrefersStdOut = true;
-            if (s_hasAnsiCache && result.contains('\n'))
+            if (s_hasANSICache && result.contains('\n'))
             {
-                s_hasAnsiCache = false;
+                s_hasANSICache = false;
             }
         }
 
@@ -194,7 +194,7 @@ namespace TMTK
         static void WriteError(const std::string_view& format, Arguments... arguments)
         {
             Init();
-            if (s_hasAnsiCache)
+            if (s_hasANSICache)
             {
                 FlushOutputBuffer();
             }
