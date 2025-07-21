@@ -1,4 +1,4 @@
-#include "Tmk.hpp"
+#include "Tmtk.hpp"
 #ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
@@ -24,6 +24,9 @@ HANDLE Terminal::s_outputHandle;
 HANDLE Terminal::s_errorHandle;
 #endif
 bool Terminal::s_hasInit = false;
+bool Terminal::s_hasAnsiCache = false;
+// NOTE: stderr is unbuffered, thus prefered by default.
+bool Terminal::s_ansiPrefersStdOut = false;
 
 void Terminal::Init()
 {
@@ -84,4 +87,10 @@ bool Terminal::IsErrorRedirected()
 {
     Init();
     return s_isErrorRedirected;
+}
+
+void Terminal::FlushOutputBuffer()
+{
+    std::cout << std::flush;
+    s_hasAnsiCache = false;
 }
