@@ -30,7 +30,7 @@ private:
     static void Init();
 #ifdef _WIN32
     static HANDLE GetHandle(DWORD id);
-    static bool EnableAnsiParse(DWORD handle);
+    static bool EnableAnsiParse(HANDLE handle);
 #endif
 
     Terminal() = delete;
