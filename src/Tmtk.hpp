@@ -132,6 +132,7 @@ namespace Tmtk
         static void SetFontColor(RgbColor color, Layer layer);
         static void UnsetFontColor(Layer layer);
         static void UnsetFontStyles();
+        static void RingBell();
 
         template <typename... Arguments>
         static void Write(const std::string_view& format, Arguments... arguments)

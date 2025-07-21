@@ -155,4 +155,9 @@ namespace Tmtk
     {
         WriteAnsi("\x1b[0m");
     }
+
+    void Terminal::RingBell()
+    {
+        WriteAnsi("\7");
+    }
 }
