@@ -250,6 +250,7 @@ namespace TMTK
         [[nodiscard]]
         static std::uint32_t GetArea();
         static Coordinate GetCursorCoordinate();
+        static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
         static void SetCursorCoordinate(const Coordinate& coordinate);
         static void SetCursorVisible(bool isVisible);
         static void SetCursorStyle(CursorStyle style);

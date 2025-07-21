@@ -283,23 +283,29 @@ namespace TMTK
         return width * height;
     }
 
-    void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
+    void Terminal::SetCursorCoordinate(std::uint16_t column, std::uint16_t row)
     {
         std::uint16_t columns;
         std::uint16_t rows;
         GetDimensions(columns, rows);
-        if (coordinate.GetColumn() >= columns || coordinate.GetRow() >= rows)
+        if (column >= columns || row >= rows)
         {
             throw OutOfRangeException();
         }
         try
         {
-            WriteAnsi("\x1b[{};{}H", coordinate.GetRow() + 1, coordinate.GetColumn() + 1);
+            WriteAnsi("\x1b[{};{}H",  row + 1, column + 1);
         }
         catch (...)
         {
         }
     }
+
+    void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
+    {
+        SetCursorCoordinate(coordinate.GetColumn(), coordinate.GetRow());
+    }
+
 
     void Terminal::SetCursorVisible(bool isVisible)
     {
