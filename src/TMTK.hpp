@@ -44,7 +44,7 @@ namespace TMTK
     enum class TextStyle
     {
         Bold = 1,
-        Dim =  1 << 1,
+        Dim = 1 << 1,
         Italic = 1 << 2,
         Underline = 1 << 3,
         Strikethrough = 1 << 4,
@@ -117,6 +117,7 @@ namespace TMTK
         static HANDLE GetHandle(DWORD id);
         static bool EnableANSIParse(HANDLE handle);
 #endif
+        static void GetDimensions(std::uint16_t* width, std::uint16_t* height);
 
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
@@ -172,6 +173,12 @@ namespace TMTK
         static void ResetTextStyles();
         static void OpenAlternateWindow();
         static void CloseAlternateWindow();
+        [[nodiscard]]
+        static std::uint16_t GetWidth();
+        [[nodiscard]]
+        static std::uint16_t GetHeight();
+        [[nodiscard]]
+        static std::uint32_t GetArea();
         static void RingBell();
 
         template <typename... Arguments>
@@ -240,4 +247,5 @@ namespace TMTK
 
     int operator|(TextStyle style0, TextStyle style1);
     int operator|(int styles, TextStyle style);
+    int operator|(TextStyle style, int styles);
 }

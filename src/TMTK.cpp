@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <io.h>
 #else
+#include <sys/ioctl.h>
 #include <unistd.h>
 #endif
 
@@ -138,6 +139,10 @@ namespace TMTK
             {
                 switch (offset)
                 {
+                    /*
+                     * NOTE: some terminals may apply both bold and dim effects at the same time, but technically, as they refer to the same property "text brightness", that should
+                     * not be allowed. For consistent behavior, it always gets reset before applied.
+                     */
                 case 0: /* Bold */
                     WriteAnsi("\x1b[22;1m");
                     break;
@@ -173,7 +178,6 @@ namespace TMTK
         SetTextStyles(static_cast<int>(style));
     }
 
-
     void Terminal::ResetTextColors()
     {
         WriteAnsi("\x1b[39;49m");
@@ -194,6 +198,48 @@ namespace TMTK
         WriteAnsi("\x1b[?1049l");
     }
 
+    void Terminal::GetDimensions(std::uint16_t* width, std::uint16_t* height)
+    {
+#ifdef _WIN32
+#else
+        winsize windowSize;
+        if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
+        {
+            throw StreamRedirectionException();
+        }
+        if (width)
+        {
+            *width = windowSize.ws_col;
+        }
+        if (height)
+        {
+            *height = windowSize.ws_row;
+        }
+#endif
+    }
+
+    std::uint16_t Terminal::GetWidth()
+    {
+        std::uint16_t width;
+        GetDimensions(&width, nullptr);
+        return width;
+    }
+
+    std::uint16_t Terminal::GetHeight()
+    {
+        std::uint16_t height;
+        GetDimensions(nullptr, &height);
+        return height;
+    }
+
+    std::uint32_t Terminal::GetArea()
+    {
+        std::uint16_t width;
+        std::uint16_t height;
+        GetDimensions(&width, &height);
+        return width * height;
+    }
+
     void Terminal::RingBell()
     {
         WriteAnsi("\7");
@@ -205,6 +251,11 @@ namespace TMTK
     }
 
     int operator|(int styles, TextStyle style)
+    {
+        return static_cast<int>(style) | styles;
+    }
+
+    int operator|(TextStyle style, int styles)
     {
         return static_cast<int>(style) | styles;
     }
