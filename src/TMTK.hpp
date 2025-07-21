@@ -124,10 +124,14 @@ namespace TMTK
 
         static void Init();
 #ifdef _WIN32
+        [[nodiscard]]
         static HANDLE GetHandle(DWORD id);
+        [[nodiscard]]
         static bool EnableANSIParse(HANDLE handle);
+        [[nodiscard]]
+        static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 #endif
-        static void GetDimensions(std::uint16_t* width, std::uint16_t* height);
+        static void GetDimensions(std::optional<std::reference_wrapper<std::uint16_t>> width, std::optional<std::reference_wrapper<std::uint16_t>> height);
 
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
@@ -137,6 +141,7 @@ namespace TMTK
                 if (!s_isOutputRedirected)
                 {
                     Write(format, arguments...);
+                    s_hasANSICache = true;
                 }
                 else if (!s_isErrorRedirected)
                 {
@@ -156,6 +161,7 @@ namespace TMTK
                 else if (!s_isOutputRedirected)
                 {
                     Write(format, arguments...);
+                    s_hasANSICache = true;
                 }
                 else
                 {

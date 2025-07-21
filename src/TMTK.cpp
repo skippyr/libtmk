@@ -72,6 +72,16 @@ namespace TMTK
         DWORD mode;
         return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
     }
+
+    CONSOLE_SCREEN_BUFFER_INFO Terminal::GetScreenBufferInfo()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
+        if (!GetConsoleScreenBufferInfo(s_outputHandle, &bufferInfo) && !GetConsoleScreenBufferInfo(s_errorHandle, &bufferInfo))
+        {
+            throw StreamRedirectionException();
+        }
+        return bufferInfo;
+    }
 #endif
 
     [[nodiscard]]
@@ -198,9 +208,20 @@ namespace TMTK
         WriteAnsi("\x1b[?1049l");
     }
 
-    void Terminal::GetDimensions(std::uint16_t* width, std::uint16_t* height)
+    void Terminal::GetDimensions(std::optional<std::reference_wrapper<std::uint16_t>> width, std::optional<std::reference_wrapper<std::uint16_t>> height)
     {
+        Init();
 #ifdef _WIN32
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
+        if (width)
+        {
+            (*width).get() = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
+        }
+        if (heigth)
+        {
+            (*height).get() = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
+        }
+
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
@@ -209,11 +230,11 @@ namespace TMTK
         }
         if (width)
         {
-            *width = windowSize.ws_col;
+            (*width).get() = windowSize.ws_col;
         }
         if (height)
         {
-            *height = windowSize.ws_row;
+            (*height).get() = windowSize.ws_row;
         }
 #endif
     }
@@ -221,14 +242,14 @@ namespace TMTK
     std::uint16_t Terminal::GetWidth()
     {
         std::uint16_t width;
-        GetDimensions(&width, nullptr);
+        GetDimensions(width, std::nullopt);
         return width;
     }
 
     std::uint16_t Terminal::GetHeight()
     {
         std::uint16_t height;
-        GetDimensions(nullptr, &height);
+        GetDimensions(std::nullopt, height);
         return height;
     }
 
@@ -236,7 +257,7 @@ namespace TMTK
     {
         std::uint16_t width;
         std::uint16_t height;
-        GetDimensions(&width, &height);
+        GetDimensions(width, height);
         return width * height;
     }
 
