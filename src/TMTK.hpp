@@ -55,7 +55,6 @@ namespace TMTK
 
     class RGBColor final
     {
-    private:
         std::uint8_t m_red;
         std::uint8_t m_green;
         std::uint8_t m_blue;
@@ -98,7 +97,6 @@ namespace TMTK
 
     class Terminal final
     {
-    private:
         static bool s_isInputRedirected;
         static bool s_isOutputRedirected;
         static bool s_isErrorRedirected;
@@ -159,9 +157,12 @@ namespace TMTK
         static bool IsOutputRedirected();
         static bool IsErrorRedirected();
         static void FlushOutputBuffer();
-        static void SetFontColor(std::uint8_t ansiColor, Layer layer);
-        static void SetFontColor(ANSIColor color, Layer layer);
-        static void SetFontColor(RGBColor color, Layer layer);
+        static void SetFontForeground(std::uint8_t ansiColor);
+        static void SetFontForeground(ANSIColor color);
+        static void SetFontForeground(RGBColor color);
+        static void SetFontBackground(std::uint8_t ansiColor);
+        static void SetFontBackground(ANSIColor color);
+        static void SetFontBackground(RGBColor color);
         static void SetFontWeight(FontWeight weight);
         static void UnsetFontColor(Layer layer);
         static void UnsetFontWeight();

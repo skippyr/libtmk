@@ -97,19 +97,34 @@ namespace TMTK
         s_hasANSICache = false;
     }
 
-    void Terminal::SetFontColor(std::uint8_t ansiColor, Layer layer)
+    void Terminal::SetFontForeground(std::uint8_t ansiColor)
     {
-        WriteAnsi("\x1b[{}8;5;{}m", static_cast<std::uint8_t>(layer), ansiColor);
+        WriteAnsi("\x1b[38;5;{}m", ansiColor);
     }
 
-    void Terminal::SetFontColor(ANSIColor color, Layer layer)
+    void Terminal::SetFontForeground(ANSIColor color)
     {
-        SetFontColor(static_cast<std::uint8_t>(color), layer);
+        SetFontForeground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetFontColor(RGBColor color, Layer layer)
+    void Terminal::SetFontForeground(RGBColor color)
     {
-        WriteAnsi("\x1b[{}8;2;{};{};{}m", static_cast<std::uint8_t>(layer), color.GetRed(), color.GetGreen(), color.GetBlue());
+        WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+    }
+
+    void Terminal::SetFontBackground(std::uint8_t ansiColor)
+    {
+        WriteAnsi("\x1b[48;5;{}m", ansiColor);
+    }
+
+    void Terminal::SetFontBackground(ANSIColor color)
+    {
+        SetFontBackground(static_cast<std::uint8_t>(color));
+    }
+
+    void Terminal::SetFontBackground(RGBColor color)
+    {
+        WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
     void Terminal::SetFontWeight(FontWeight weight)
