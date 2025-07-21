@@ -50,7 +50,17 @@ namespace TMTK
         Strikethrough = 1 << 4,
         Blinking = 1 << 5,
         InvertedColors = 1 << 6,
-        Hidden = 1 << 7,
+        Hidden = 1 << 7
+    };
+
+    enum class CursorStyle
+    {
+        BlinkingBlock = 1,
+        StaticBlock,
+        BlinkingUnderline,
+        StaticUnderline,
+        BlinkingBar,
+        StaticBar
     };
 
     class RGBColor final
@@ -179,6 +189,9 @@ namespace TMTK
         static std::uint16_t GetHeight();
         [[nodiscard]]
         static std::uint32_t GetArea();
+        static void SetCursorVisible(bool isVisible);
+        static void SetCursorStyle(CursorStyle style);
+        static void ResetCursorStyle();
         static void RingBell();
 
         template <typename... Arguments>

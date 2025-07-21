@@ -240,6 +240,21 @@ namespace TMTK
         return width * height;
     }
 
+    void Terminal::SetCursorVisible(bool isVisible)
+    {
+        WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+    }
+
+    void Terminal::SetCursorStyle(CursorStyle style)
+    {
+        WriteAnsi("\x1b[{} q", static_cast<std::uint8_t>(style));
+    }
+
+    void Terminal::ResetCursorStyle()
+    {
+        WriteAnsi("\x1b[0 q");
+    }
+
     void Terminal::RingBell()
     {
         WriteAnsi("\7");
