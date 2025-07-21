@@ -164,9 +164,8 @@ namespace TMTK
         static void SetFontBackground(ANSIColor color);
         static void SetFontBackground(RGBColor color);
         static void SetFontWeight(FontWeight weight);
-        static void UnsetFontColor(Layer layer);
-        static void UnsetFontWeight();
-        static void UnsetFontStyles();
+        static void ResetFontColors();
+        static void ResetFontWeight();
         static void OpenAlternateWindow();
         static void CloseAlternateWindow();
         static void RingBell();

@@ -133,19 +133,14 @@ namespace TMTK
         WriteAnsi("\x1b[22;{}m", static_cast<std::uint8_t>(weight));
     }
 
-    void Terminal::UnsetFontColor(Layer layer)
+    void Terminal::ResetFontColors()
     {
-        WriteAnsi("\x1b[{}9m", static_cast<std::uint8_t>(layer));
+        WriteAnsi("\x1b[39;49m");
     }
 
-    void Terminal::UnsetFontWeight()
+    void Terminal::ResetFontWeight()
     {
         WriteAnsi("\x1b[22m");
-    }
-
-    void Terminal::UnsetFontStyles()
-    {
-        WriteAnsi("\x1b[0m");
     }
 
     void Terminal::OpenAlternateWindow()
