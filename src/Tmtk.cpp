@@ -156,6 +156,16 @@ namespace Tmtk
         WriteAnsi("\x1b[0m");
     }
 
+    void Terminal::OpenAlternateWindow()
+    {
+        WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+    }
+
+    void Terminal::CloseAlternateWindow()
+    {
+        WriteAnsi("\x1b[?1049l");
+    }
+
     void Terminal::RingBell()
     {
         WriteAnsi("\7");

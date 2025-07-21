@@ -132,6 +132,8 @@ namespace Tmtk
         static void SetFontColor(RgbColor color, Layer layer);
         static void UnsetFontColor(Layer layer);
         static void UnsetFontStyles();
+        static void OpenAlternateWindow();
+        static void CloseAlternateWindow();
         static void RingBell();
 
         template <typename... Arguments>
