@@ -127,6 +127,7 @@ namespace Tmtk
         static bool IsOutputRedirected();
         static bool IsErrorRedirected();
         static void FlushOutputBuffer();
+        static void SetFontColor(std::uint8_t ansiColor, Layer layer);
         static void SetFontColor(AnsiColor color, Layer layer);
         static void SetFontColor(RgbColor color, Layer layer);
         static void UnsetFontColor(Layer layer);

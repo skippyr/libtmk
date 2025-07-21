@@ -131,9 +131,14 @@ namespace Tmtk
         s_hasAnsiCache = false;
     }
 
+    void Terminal::SetFontColor(std::uint8_t ansiColor, Layer layer)
+    {
+        WriteAnsi("\x1b[{}8;5;{}m", static_cast<std::uint8_t>(layer), ansiColor);
+    }
+
     void Terminal::SetFontColor(AnsiColor color, Layer layer)
     {
-        WriteAnsi("\x1b[{}8;5;{}m", static_cast<std::uint8_t>(layer), static_cast<std::uint8_t>(color));
+        SetFontColor(static_cast<std::uint8_t>(color), layer);
     }
 
     void Terminal::SetFontColor(RgbColor color, Layer layer)
