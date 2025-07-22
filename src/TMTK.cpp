@@ -10,6 +10,7 @@
 #define OUTPUT_STREAM 1
 #define ERROR_STREAM 2
 #ifdef _WIN32
+// TODO: isatty functions can fail. handle properly.
 #define IS_STREAM_REDIRECTED(stream) (!_isatty(stream) << stream)
 #else
 #define IS_STREAM_REDIRECTED(stream) (!isatty(stream) << stream)
@@ -123,33 +124,66 @@ namespace TMTK
     void Terminal::SetForeground(std::uint8_t ansiColor)
     {
         Init();
-        if (s_allowsTextStyles)
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
         {
             WriteAnsi("\x1b[38;5;{}m", ansiColor);
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
         }
     }
 
     void Terminal::SetForeground(ANSIColor color)
     {
-        Init();
-        if (s_allowsTextStyles)
-        {
-            SetForeground(static_cast<std::uint8_t>(color));
-        }
+        SetForeground(static_cast<std::uint8_t>(color));
     }
 
     void Terminal::SetForeground(RGBColor color)
     {
         Init();
-        if (s_allowsTextStyles)
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
         {
             WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
         }
     }
 
     void Terminal::SetBackground(std::uint8_t ansiColor)
     {
-        WriteAnsi("\x1b[48;5;{}m", ansiColor);
+        Init();
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteAnsi("\x1b[48;5;{}m", ansiColor);
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::SetBackground(ANSIColor color)
@@ -159,46 +193,76 @@ namespace TMTK
 
     void Terminal::SetBackground(RGBColor color)
     {
-        WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        Init();
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::SetTextStyles(int styles)
     {
+        Init();
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
         for (int offset = 0; offset < 8; ++offset)
         {
             if (styles & 1 << offset)
             {
-                switch (offset)
+                try
                 {
-                    /*
-                     * NOTE: some terminals may apply both bold and dim effects at the same time, but technically, as they refer to the same property "text brightness", that should
-                     * not be allowed. For consistent behavior, it always gets reset before applied.
-                     */
-                case 0: /* Bold */
-                    WriteAnsi("\x1b[22;1m");
-                    break;
-                case 1: /* Dim */
-                    WriteAnsi("\x1b[22;2m");
-                    break;
-                case 2: /* Italic */
-                    WriteAnsi("\x1b[3m");
-                    break;
-                case 3: /* Underline */
-                    WriteAnsi("\x1b[4m");
-                    break;
-                case 4: /* Strikethrough */
-                    WriteAnsi("\x1b[9m");
-                    break;
-                case 5: /* Blinking */
-                    WriteAnsi("\x1b[5m");
-                    break;
-                case 6: /* InvertedColors */
-                    WriteAnsi("\x1b[7m");
-                    break;
-                case 7: /* Hidden */
-                    WriteAnsi("\x1b[8m");
-                    break;
-                default:;
+                    switch (offset)
+                    {
+                        /*
+                         * NOTE: some terminals may apply both bold and dim effects at the same time, but technically, as they refer to the same property "text brightness", that
+                         * should not be allowed. For consistent behavior, it always gets reset before applied.
+                         */
+                    case 0: /* Bold */
+                        WriteAnsi("\x1b[22;1m");
+                        break;
+                    case 1: /* Dim */
+                        WriteAnsi("\x1b[22;2m");
+                        break;
+                    case 2: /* Italic */
+                        WriteAnsi("\x1b[3m");
+                        break;
+                    case 3: /* Underline */
+                        WriteAnsi("\x1b[4m");
+                        break;
+                    case 4: /* Strikethrough */
+                        WriteAnsi("\x1b[9m");
+                        break;
+                    case 5: /* Blinking */
+                        WriteAnsi("\x1b[5m");
+                        break;
+                    case 6: /* InvertedColors */
+                        WriteAnsi("\x1b[7m");
+                        break;
+                    case 7: /* Hidden */
+                        WriteAnsi("\x1b[8m");
+                    default:;
+                    }
+                }
+                catch (InitException&)
+                {
+                    throw;
+                }
+                catch (...)
+                {
+                    return;
                 }
             }
         }
@@ -211,12 +275,42 @@ namespace TMTK
 
     void Terminal::ResetColors()
     {
-        WriteAnsi("\x1b[39;49m");
+        Init();
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteAnsi("\x1b[39;49m");
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::ResetTextStyles()
     {
-        WriteAnsi("\x1b[22;23;24;25;27;28;29m");
+        Init();
+        if (!s_allowsTextStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteAnsi("\x1b[22;23;24;25;27;28;29m");
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::OpenAlternateScreen()
@@ -291,13 +385,7 @@ namespace TMTK
         {
             throw OutOfRangeException();
         }
-        try
-        {
-            WriteAnsi("\x1b[{};{}H",  row + 1, column + 1);
-        }
-        catch (...)
-        {
-        }
+        WriteAnsi("\x1b[{};{}H", row + 1, column + 1);
     }
 
     void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
@@ -305,20 +393,49 @@ namespace TMTK
         SetCursorCoordinate(coordinate.GetColumn(), coordinate.GetRow());
     }
 
-
     void Terminal::SetCursorVisible(bool isVisible)
     {
-        WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+        try
+        {
+            WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::SetCursorStyle(CursorStyle style)
     {
-        WriteAnsi("\x1b[{} q", static_cast<std::uint8_t>(style));
+        try
+        {
+            WriteAnsi("\x1b[{} q", static_cast<std::uint8_t>(style));
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::ResetCursorStyle()
     {
-        WriteAnsi("\x1b[0 q");
+        try
+        {
+            WriteAnsi("\x1b[0 q");
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::RingBell()

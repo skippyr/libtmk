@@ -7,20 +7,23 @@
 
 namespace TMTK
 {
+    class InitException : public std::exception
+    {
+    };
 #ifdef _WIN32
-    class CannotSetOutputCPException final : std::exception
+
+    class CannotSetOutputCPException final : public InitException
     {
     };
 
-    class InvalidHandleValueException final : std::exception
+    class InvalidHandleValueException final : public InitException
     {
     };
 
-    class NoANSISupportException final : std::exception
+    class NoANSISupportException final : public InitException
     {
     };
 #endif
-
     class StreamRedirectionException final : std::exception
     {
     };
@@ -190,6 +193,7 @@ namespace TMTK
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
         {
+            Init();
             if (s_ansiPrefersStdOut)
             {
                 if (!s_isOutputRedirected)
