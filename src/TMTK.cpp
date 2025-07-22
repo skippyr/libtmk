@@ -42,7 +42,7 @@ namespace TMTK
         s_isOutputRedirected = IS_STREAM_REDIRECTED(OUTPUT_STREAM);
         s_isErrorRedirected = IS_STREAM_REDIRECTED(ERROR_STREAM);
         const char* term;
-        s_allowsTextStyles = std::getenv("NO_COLOR") != nullptr || ((term = std::getenv("TERM")) && !std::strcmp(term, "dumb"));
+        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #ifdef _WIN32
         if (!SetConsoleOutputCP(CP_UTF8))
         {
