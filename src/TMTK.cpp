@@ -1,6 +1,5 @@
 #include "TMTK.hpp"
 #ifdef _WIN32
-#include <Windows.h>
 #include <io.h>
 #else
 #include <sys/ioctl.h>
@@ -239,7 +238,7 @@ namespace TMTK
         {
             (*width).get() = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
         }
-        if (heigth)
+        if (height)
         {
             (*height).get() = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
         }

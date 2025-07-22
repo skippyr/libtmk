@@ -1,5 +1,9 @@
 #pragma once
 #include <iostream>
+#ifdef _WIN32
+#include <Windows.h>
+#include <optional>
+#endif
 
 namespace TMTK
 {
