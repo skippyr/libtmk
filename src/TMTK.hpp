@@ -20,7 +20,15 @@ namespace TMTK
     {
     };
 
+    class InvalidFileTypeException final : public InitException
+    {
+    };
+
     class NoANSISupportException final : public InitException
+    {
+    };
+#else
+    class BadFileDescriptorException final : public InitException
     {
     };
 #endif
@@ -184,9 +192,14 @@ namespace TMTK
         [[nodiscard]]
         static HANDLE GetHandle(DWORD id);
         [[nodiscard]]
+        static bool IsStreamRedirected(HANDLE handle);
+        [[nodiscard]]
         static bool EnableANSIParse(HANDLE handle);
         [[nodiscard]]
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
+#else
+        [[nodiscard]]
+        static bool IsStreamRedirected(int fd);
 #endif
         static void GetDimensions(std::optional<std::reference_wrapper<std::uint16_t>> width, std::optional<std::reference_wrapper<std::uint16_t>> height);
 

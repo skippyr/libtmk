@@ -6,16 +6,6 @@
 #include <unistd.h>
 #endif
 
-#define INPUT_STREAM 0
-#define OUTPUT_STREAM 1
-#define ERROR_STREAM 2
-#ifdef _WIN32
-// TODO: isatty functions can fail. handle properly.
-#define IS_STREAM_REDIRECTED(stream) (!_isatty(stream) << stream)
-#else
-#define IS_STREAM_REDIRECTED(stream) (!isatty(stream) << stream)
-#endif
-
 namespace TMTK
 {
     bool Terminal::s_isInputRedirected;
@@ -39,23 +29,28 @@ namespace TMTK
             return;
         }
         s_hasInit = true;
-        s_isInputRedirected = IS_STREAM_REDIRECTED(INPUT_STREAM);
-        s_isOutputRedirected = IS_STREAM_REDIRECTED(OUTPUT_STREAM);
-        s_isErrorRedirected = IS_STREAM_REDIRECTED(ERROR_STREAM);
-        const char* term;
-        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #ifdef _WIN32
+        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
+        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
+        s_isInputRedirected = IsStreamRedirected(s_inputHandle);
+        s_isOutputRedirected = IsStreamRedirected(s_outputHandle);
+        s_isErrorRedirected = IsStreamRedirected(s_errorHandle);
+        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr;
         if (!SetConsoleOutputCP(CP_UTF8))
         {
             throw CannotSetOutputCPException();
         }
-        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
-        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
         if (!EnableANSIParse(s_outputHandle) && !EnableANSIParse(s_errorHandle))
         {
             throw NoANSISupportException();
         }
+#else
+        s_isInputRedirected = IsStreamRedirected(STDIN_FILENO);
+        s_isOutputRedirected = IsStreamRedirected(STDOUT_FILENO);
+        s_isErrorRedirected = IsStreamRedirected(STDERR_FILENO);
+        const char* term;
+        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #endif
     }
 
@@ -68,6 +63,14 @@ namespace TMTK
             throw InvalidHandleValueException();
         }
         return handle;
+    }
+
+    bool Terminal::IsStreamRedirected(HANDLE handle)
+    {
+        if (GetFileType(handle) == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
+        {
+            throw InvalidFileTypeException();
+        }
     }
 
     bool Terminal::EnableANSIParse(HANDLE handle)
@@ -84,6 +87,19 @@ namespace TMTK
             throw StreamRedirectionException();
         }
         return bufferInfo;
+    }
+#else
+    bool Terminal::IsStreamRedirected(int fd)
+    {
+        if (isatty(fd))
+        {
+            return true;
+        }
+        if (errno != ENOTTY)
+        {
+            throw BadFileDescriptorException();
+        }
+        return false;
     }
 #endif
 
