@@ -10,6 +10,30 @@
 
 namespace TMTK
 {
+#pragma region Encoding Class
+#ifdef _WIN32
+    std::wstring Encoding::ConvertUtf8To16(const std::string_view& utf8String) {
+        int size = MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, nullptr, 0);
+        if (!size) {
+            throw BadEncodingException{};
+        }
+        std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(size);
+        MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, buffer.get(), size);
+        return buffer.get();
+    }
+
+    std::string Encoding::ConvertUtf16To8(const std::wstring_view& utf16String) {
+        int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, nullptr, 0, nullptr, nullptr);
+        if (!size) {
+            throw BadEncodingException{};
+        }
+        std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
+        WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, buffer.get(), size, nullptr, nullptr);
+        return buffer.get();
+    }
+#endif
+#pragma endregion
+#pragma region Terminal Class
     bool Terminal::s_isInputRedirected;
     bool Terminal::s_isOutputRedirected;
     bool Terminal::s_isErrorRedirected;
@@ -578,7 +602,8 @@ namespace TMTK
     {
         WriteAnsi("\x1b[H\x1b[3J");
     }
-
+#pragma endregion
+#pragma region Operators
     int operator|(TextStyle style0, TextStyle style1)
     {
         return static_cast<int>(style0) | static_cast<int>(style1);
@@ -593,4 +618,5 @@ namespace TMTK
     {
         return static_cast<int>(style) | styles;
     }
+#pragma endregion
 }

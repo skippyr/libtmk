@@ -31,6 +31,10 @@ namespace TMTK
     class FlushConsoleInputBufferException final : public std::exception
     {
     };
+
+    class BadEncodingException final : public std::exception
+    {
+    };
 #else
     class BadFileDescriptorException final : public InitException
     {
@@ -226,6 +230,16 @@ namespace TMTK
             return m_width * m_height;
         }
     };
+
+#ifdef _WIN32
+    class Encoding final
+    {
+    public:
+        Encoding() = delete;
+        static std::wstring ConvertUtf8To16(const std::string_view& utf8String);
+        static std::string ConvertUtf16To8(const std::wstring_view& utf16String);
+    };
+#endif
 
     class Terminal final
     {
