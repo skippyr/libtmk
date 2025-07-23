@@ -2,6 +2,9 @@
 #ifdef _WIN32
 #include <io.h>
 #else
+#ifdef __APPLE__
+#include <crt_externs.h>
+#endif
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <termios.h>
@@ -155,6 +158,22 @@ namespace TMTK
         return true;
     }
 #endif
+
+    const std::vector<Argument> Terminal::GetArguments()
+    {
+#ifdef _WIN32
+#elif __APPLE__
+        int totalArguments = *_NSGetArgc();
+        char** systemArguments = *_NSGetArgv();
+        std::vector<Argument> arguments{};
+        arguments.reserve(totalArguments);
+        for (int offset = 0; offset < totalArguments; ++offset)
+        {
+            arguments.emplace_back(systemArguments[offset]);
+        }
+        return arguments;
+#endif
+    }
 
     [[nodiscard]]
     bool Terminal::IsInputRedirected()

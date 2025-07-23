@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <optional>
 #endif
+#include <vector>
 
 namespace TMTK
 {
@@ -335,7 +336,7 @@ namespace TMTK
 
     public:
         Terminal() = delete;
-
+        static const std::vector<Argument> GetArguments();
         [[nodiscard]]
         static bool IsInputRedirected();
         [[nodiscard]]
