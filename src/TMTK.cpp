@@ -133,7 +133,7 @@ namespace TMTK
         s_hasANSICache = false;
     }
 
-    void Terminal::ClearInput()
+    void Terminal::FlushInput()
     {
         Init();
         if (s_isInputRedirected)

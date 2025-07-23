@@ -304,7 +304,7 @@ namespace TMTK
         [[nodiscard]]
         static bool IsErrorRedirected();
         static void FlushOutput();
-        static void ClearInput();
+        static void FlushInput();
         static void SetAllowsTextStyle(bool allowsTextStyle);
         static void SetForeground(std::uint8_t ansiColor);
         static void SetForeground(ANSIColor color);
