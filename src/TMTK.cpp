@@ -62,7 +62,7 @@ namespace TMTK
         HANDLE handle{GetStdHandle(id)};
         if (handle == INVALID_HANDLE_VALUE)
         {
-            throw InvalidHandleValueException();
+            throw InvalidHandleValueException{};
         }
         return handle;
     }
@@ -71,7 +71,7 @@ namespace TMTK
     {
         if (GetFileType(handle) == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
         {
-            throw InvalidFileTypeException();
+            throw InvalidFileTypeException{};
         }
     }
 
@@ -86,7 +86,7 @@ namespace TMTK
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
         if (!GetConsoleScreenBufferInfo(s_outputHandle, &bufferInfo) && !GetConsoleScreenBufferInfo(s_errorHandle, &bufferInfo))
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException{};
         }
         return bufferInfo;
     }
@@ -418,7 +418,7 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
-        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
+        return {bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1};
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
