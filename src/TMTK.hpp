@@ -156,7 +156,6 @@ namespace TMTK
 
     class Coordinate final
     {
-    private:
         std::uint16_t m_column;
         std::uint16_t m_row;
 
@@ -185,6 +184,45 @@ namespace TMTK
         void SetRow(std::uint16_t row) noexcept
         {
             m_row = row;
+        }
+    };
+
+    class Dimensions final
+    {
+        std::uint16_t m_width;
+        std::uint16_t m_height;
+
+    public:
+        constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width(width), m_height(height)
+        {
+        }
+
+        [[nodiscard]]
+        constexpr std::uint16_t GetWidth() const noexcept
+        {
+            return m_width;
+        }
+
+        [[nodiscard]]
+        constexpr std::uint16_t GetHeight() const noexcept
+        {
+            return m_height;
+        }
+
+        constexpr void SetWidth(std::uint16_t width) noexcept
+        {
+            m_width = width;
+        }
+
+        constexpr void SetHeight(std::uint16_t height) noexcept
+        {
+            m_height = height;
+        }
+
+        [[nodiscard]]
+        constexpr std::uint32_t GetArea() const noexcept
+        {
+            return m_width * m_height;
         }
     };
 
@@ -217,7 +255,6 @@ namespace TMTK
         [[nodiscard]]
         static bool IsStreamRedirected(int fd);
 #endif
-        static void GetDimensions(std::optional<std::reference_wrapper<std::uint16_t>> width, std::optional<std::reference_wrapper<std::uint16_t>> height);
 
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
@@ -281,12 +318,7 @@ namespace TMTK
         static void ResetTextStyles();
         static void OpenAlternateScreen();
         static void CloseAlternateScreen();
-        [[nodiscard]]
-        static std::uint16_t GetWidth();
-        [[nodiscard]]
-        static std::uint16_t GetHeight();
-        [[nodiscard]]
-        static std::uint32_t GetArea();
+        static Dimensions GetDimensions();
         static Coordinate GetCursorCoordinate();
         static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
         static void SetCursorCoordinate(const Coordinate& coordinate);

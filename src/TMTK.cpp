@@ -413,65 +413,26 @@ namespace TMTK
         WriteAnsi("\x1b[?1049l");
     }
 
-    void Terminal::GetDimensions(std::optional<std::reference_wrapper<std::uint16_t>> width, std::optional<std::reference_wrapper<std::uint16_t>> height)
+    Dimensions Terminal::GetDimensions()
     {
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
-        if (width)
-        {
-            (*width).get() = bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1;
-        }
-        if (height)
-        {
-            (*height).get() = bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1;
-        }
-
+        return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
         {
             throw StreamRedirectionException();
         }
-        if (width)
-        {
-            (*width).get() = windowSize.ws_col;
-        }
-        if (height)
-        {
-            (*height).get() = windowSize.ws_row;
-        }
+        return {windowSize.ws_col, windowSize.ws_row};
 #endif
-    }
-
-    std::uint16_t Terminal::GetWidth()
-    {
-        std::uint16_t width;
-        GetDimensions(width, std::nullopt);
-        return width;
-    }
-
-    std::uint16_t Terminal::GetHeight()
-    {
-        std::uint16_t height;
-        GetDimensions(std::nullopt, height);
-        return height;
-    }
-
-    std::uint32_t Terminal::GetArea()
-    {
-        std::uint16_t width;
-        std::uint16_t height;
-        GetDimensions(width, height);
-        return width * height;
     }
 
     void Terminal::SetCursorCoordinate(std::uint16_t column, std::uint16_t row)
     {
-        std::uint16_t columns;
-        std::uint16_t rows;
-        GetDimensions(columns, rows);
-        if (column >= columns || row >= rows)
+        Dimensions dimensions = GetDimensions();
+        if (column >= dimensions.GetWidth() || row >= dimensions.GetHeight())
         {
             throw OutOfRangeException();
         }
