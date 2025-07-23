@@ -121,7 +121,7 @@ namespace TMTK
 
     bool Terminal::IsStreamRedirected(HANDLE handle)
     {
-        DWORD type = GetFileType(handle);
+        DWORD type{GetFileType(handle)};
         if (type == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
         {
             throw InvalidFileTypeException{};
@@ -159,15 +159,15 @@ namespace TMTK
     }
 #endif
 
-    const std::vector<Argument> Terminal::GetArguments()
+    std::vector<Argument> Terminal::GetArguments()
     {
 #ifdef _WIN32
 #elif __APPLE__
-        int totalArguments = *_NSGetArgc();
-        char** systemArguments = *_NSGetArgv();
+        int totalArguments{*_NSGetArgc()};
+        char** systemArguments{*_NSGetArgv()};
         std::vector<Argument> arguments{};
         arguments.reserve(totalArguments);
-        for (int offset = 0; offset < totalArguments; ++offset)
+        for (int offset{}; offset < totalArguments; ++offset)
         {
             arguments.emplace_back(systemArguments[offset]);
         }

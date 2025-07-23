@@ -336,7 +336,7 @@ namespace TMTK
 
     public:
         Terminal() = delete;
-        static const std::vector<Argument> GetArguments();
+        static std::vector<Argument> GetArguments();
         [[nodiscard]]
         static bool IsInputRedirected();
         [[nodiscard]]
