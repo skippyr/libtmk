@@ -109,9 +109,9 @@ namespace TMTK
     }
 
 #ifdef _WIN32
-    HANDLE Terminal::GetHandle(DWORD id)
+    HANDLE Terminal::GetHandle(const DWORD id)
     {
-        HANDLE handle{GetStdHandle(id)};
+        const HANDLE handle{GetStdHandle(id)};
         if (handle == INVALID_HANDLE_VALUE)
         {
             throw InvalidHandleValueException{};
@@ -119,9 +119,9 @@ namespace TMTK
         return handle;
     }
 
-    bool Terminal::IsStreamRedirected(HANDLE handle)
+    bool Terminal::IsStreamRedirected(const HANDLE handle)
     {
-        DWORD type{GetFileType(handle)};
+        const DWORD type{GetFileType(handle)};
         if (type == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
         {
             throw InvalidFileTypeException{};
@@ -129,7 +129,7 @@ namespace TMTK
         return type == FILE_TYPE_CHAR;
     }
 
-    bool Terminal::EnableANSIParse(HANDLE handle)
+    bool Terminal::EnableANSIParse(const HANDLE handle)
     {
         DWORD mode;
         return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
@@ -145,7 +145,7 @@ namespace TMTK
         return bufferInfo;
     }
 #else
-    bool Terminal::IsStreamRedirected(int fd)
+    bool Terminal::IsStreamRedirected(const int fd)
     {
         if (isatty(fd))
         {
@@ -162,6 +162,28 @@ namespace TMTK
     std::vector<Argument> Terminal::GetArguments()
     {
 #ifdef _WIN32
+        int totalArguments;
+        LPWSTR* systemArguments{CommandLineToArgvW(GetCommandLineW(), &totalArguments)};
+        if (systemArguments == nullptr)
+        {
+            throw NotEnoughMemoryException{};
+        }
+        std::vector<Argument> arguments{};
+        try
+        {
+            arguments.reserve(totalArguments);
+            for (int offset{}; offset < totalArguments; ++offset)
+            {
+                arguments.emplace_back(Argument{systemArguments[offset]});
+            }
+        }
+        catch (...)
+        {
+            LocalFree(systemArguments);
+            throw;
+        }
+        LocalFree(systemArguments);
+        return arguments;
 #elif __APPLE__
         int totalArguments{*_NSGetArgc()};
         char** systemArguments{*_NSGetArgv()};
@@ -216,7 +238,7 @@ namespace TMTK
             throw FlushConsoleInputBufferException{};
         }
 #else
-        termios attributes;
+        termios attributes{};
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
             throw TcgetattrException{};
@@ -556,7 +578,7 @@ namespace TMTK
         SetCursorCoordinate(coordinate.GetColumn(), coordinate.GetRow());
     }
 
-    void Terminal::MoveCursor(std::uint16_t steps, Direction direction)
+    void Terminal::MoveCursor(const std::uint16_t steps, const Direction direction)
     {
         Coordinate cursorCoordinate{GetCursorCoordinate()};
         if ((direction == Direction::Left && cursorCoordinate.GetColumn() - steps < 0) || (direction == Direction::Top && cursorCoordinate.GetRow() - steps < 0))

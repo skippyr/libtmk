@@ -64,7 +64,6 @@ namespace TMTK
     {
     };
 #ifdef _WIN32
-
     class CannotSetOutputCPException final : public InitException
     {
     };
@@ -109,11 +108,15 @@ namespace TMTK
     {
     };
 #endif
-    class StreamRedirectionException final : std::exception
+    class StreamRedirectionException final : public std::exception
     {
     };
 
-    class OutOfRangeException final : std::exception
+    class NotEnoughMemoryException final : public std::exception
+    {
+    };
+
+    class OutOfRangeException final : public std::exception
     {
     };
 #pragma endregion
