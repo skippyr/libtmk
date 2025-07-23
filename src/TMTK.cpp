@@ -2,7 +2,9 @@
 #ifdef _WIN32
 #include <io.h>
 #else
+#include <fcntl.h>
 #include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 #endif
 
@@ -93,13 +95,13 @@ namespace TMTK
     {
         if (isatty(fd))
         {
-            return true;
+            return false;
         }
         if (errno != ENOTTY)
         {
             throw BadFileDescriptorException();
         }
-        return false;
+        return true;
     }
 #endif
 
@@ -129,6 +131,78 @@ namespace TMTK
         Init();
         std::cout << std::flush;
         s_hasANSICache = false;
+    }
+
+    void Terminal::ClearInput()
+    {
+        Init();
+        if (s_isInputRedirected)
+        {
+            throw StreamRedirectionException();
+        }
+#ifdef _WIN32
+        if (!FlushConsoleInputBuffer(s_inputHanddle))
+        {
+            throw FlushConsoleInputBufferException();
+        }
+#else
+        termios attributes;
+        if (tcgetattr(STDIN_FILENO, &attributes))
+        {
+            throw TcgetattrException();
+        }
+        int flags = fcntl(STDIN_FILENO, F_GETFL);
+        if (flags == -1)
+        {
+            throw FcntlException();
+        }
+        if (fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK))
+        {
+            throw FcntlException();
+        }
+        attributes.c_lflag &= ~(ECHO | ICANON);
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+        {
+            if (fcntl(STDIN_FILENO, F_SETFL, flags))
+            {
+                throw FcntlException();
+            }
+            throw TcsetattrException();
+        }
+        try
+        {
+            while (true)
+            {
+                if (std::cin.get() == EOF)
+                {
+                    break;
+                }
+            }
+            std::cin.clear();
+        }
+        catch (...)
+        {
+            if (fcntl(STDIN_FILENO, F_SETFL, flags))
+            {
+                throw FcntlException();
+            }
+            attributes.c_lflag |= ECHO | ICANON;
+            if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+            {
+                throw TcsetattrException();
+            }
+            throw;
+        }
+        if (fcntl(STDIN_FILENO, F_SETFL, flags))
+        {
+            throw FcntlException();
+        }
+        attributes.c_lflag |= ECHO | ICANON;
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+        {
+            throw TcsetattrException();
+        }
+#endif
     }
 
     void Terminal::SetAllowsTextStyle(bool allowsTextStyle)

@@ -27,8 +27,24 @@ namespace TMTK
     class NoANSISupportException final : public InitException
     {
     };
+
+    class FlushConsoleInputBufferException final : public std::exception
+    {
+    };
 #else
     class BadFileDescriptorException final : public InitException
+    {
+    };
+
+    class TcgetattrException final : public std::exception
+    {
+    };
+
+    class TcsetattrException final : public std::exception
+    {
+    };
+
+    class FcntlException final : public std::exception
     {
     };
 #endif
@@ -251,6 +267,7 @@ namespace TMTK
         [[nodiscard]]
         static bool IsErrorRedirected();
         static void FlushOutput();
+        static void ClearInput();
         static void SetAllowsTextStyle(bool allowsTextStyle);
         static void SetForeground(std::uint8_t ansiColor);
         static void SetForeground(ANSIColor color);
