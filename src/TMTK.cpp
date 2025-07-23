@@ -429,6 +429,44 @@ namespace TMTK
 #endif
     }
 
+    Coordinate Terminal::GetCursorCoordinate()
+    {
+        Init();
+#ifdef _WIN32
+#else
+        if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
+        {
+            throw StreamRedirectionException{};
+        }
+        FlushInput();
+        WriteAnsi("\x1b[6n");
+        termios attributes;
+        if (tcgetattr(STDIN_FILENO, &attributes))
+        {
+            throw TcgetattrException{};
+        }
+        attributes.c_lflag &= ~(ECHO | ICANON);
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+        {
+            throw TcsetattrException{};
+        }
+        std::uint16_t row;
+        std::uint16_t column;
+        int matches = std::scanf("\x1b[%hu;%huR", &row, &column);
+        attributes.c_lflag |= ECHO | ICANON;
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+        {
+            throw TcsetattrException{};
+        }
+        if (matches != 2)
+        {
+            FlushInput();
+            throw CursorFormatException{};
+        }
+        return {static_cast<std::uint16_t>(column - 1), static_cast<std::uint16_t>(row - 1)};
+#endif
+    }
+
     void Terminal::SetCursorCoordinate(std::uint16_t column, std::uint16_t row)
     {
         Dimensions dimensions{GetDimensions()};

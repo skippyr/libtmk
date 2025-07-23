@@ -47,6 +47,10 @@ namespace TMTK
     class FcntlException final : public std::exception
     {
     };
+
+    class CursorFormatException final : public std::exception
+    {
+    };
 #endif
     class StreamRedirectionException final : std::exception
     {
