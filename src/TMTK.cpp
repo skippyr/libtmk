@@ -418,7 +418,7 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
-        return {bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1};
+        return {static_cast<std::uint16_t>(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1), static_cast<std::uint16_t>(bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1)};
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
@@ -434,7 +434,7 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
-        return {bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left, bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top};
+        return {static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left), static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top)};
 #else
         if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
         {
