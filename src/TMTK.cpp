@@ -69,10 +69,12 @@ namespace TMTK
 
     bool Terminal::IsStreamRedirected(HANDLE handle)
     {
-        if (GetFileType(handle) == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
+        DWORD type = GetFileType(handle);
+        if (type == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
         {
             throw InvalidFileTypeException{};
         }
+        return type == FILE_TYPE_CHAR;
     }
 
     bool Terminal::EnableANSIParse(HANDLE handle)
