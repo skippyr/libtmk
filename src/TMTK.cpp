@@ -19,10 +19,10 @@ namespace TMTK
     HANDLE Terminal::s_outputHandle;
     HANDLE Terminal::s_errorHandle;
 #endif
-    bool Terminal::s_hasInit = false;
-    bool Terminal::s_hasANSICache = false;
+    bool Terminal::s_hasInit{false};
+    bool Terminal::s_hasANSICache{false};
     // NOTE: stderr is unbuffered, thus preferred by default.
-    bool Terminal::s_ansiPrefersStdOut = false;
+    bool Terminal::s_ansiPrefersStdOut{false};
 
     void Terminal::Init()
     {
@@ -59,7 +59,7 @@ namespace TMTK
 #ifdef _WIN32
     HANDLE Terminal::GetHandle(DWORD id)
     {
-        HANDLE handle = GetStdHandle(id);
+        HANDLE handle{GetStdHandle(id)};
         if (handle == INVALID_HANDLE_VALUE)
         {
             throw InvalidHandleValueException();
@@ -99,7 +99,7 @@ namespace TMTK
         }
         if (errno != ENOTTY)
         {
-            throw BadFileDescriptorException();
+            throw BadFileDescriptorException{};
         }
         return true;
     }
@@ -138,36 +138,36 @@ namespace TMTK
         Init();
         if (s_isInputRedirected)
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException{};
         }
 #ifdef _WIN32
-        if (!FlushConsoleInputBuffer(s_inputHanddle))
+        if (!FlushConsoleInputBuffer(s_inputHandle))
         {
-            throw FlushConsoleInputBufferException();
+            throw FlushConsoleInputBufferException{};
         }
 #else
         termios attributes;
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
-            throw TcgetattrException();
+            throw TcgetattrException{};
         }
-        int flags = fcntl(STDIN_FILENO, F_GETFL);
+        int flags{fcntl(STDIN_FILENO, F_GETFL)};
         if (flags == -1)
         {
-            throw FcntlException();
+            throw FcntlException{};
         }
         if (fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK))
         {
-            throw FcntlException();
+            throw FcntlException{};
         }
         attributes.c_lflag &= ~(ECHO | ICANON);
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
             if (fcntl(STDIN_FILENO, F_SETFL, flags))
             {
-                throw FcntlException();
+                throw FcntlException{};
             }
-            throw TcsetattrException();
+            throw TcsetattrException{};
         }
         try
         {
@@ -184,23 +184,23 @@ namespace TMTK
         {
             if (fcntl(STDIN_FILENO, F_SETFL, flags))
             {
-                throw FcntlException();
+                throw FcntlException{};
             }
             attributes.c_lflag |= ECHO | ICANON;
             if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
             {
-                throw TcsetattrException();
+                throw TcsetattrException{};
             }
             throw;
         }
         if (fcntl(STDIN_FILENO, F_SETFL, flags))
         {
-            throw FcntlException();
+            throw FcntlException{};
         }
         attributes.c_lflag |= ECHO | ICANON;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
-            throw TcsetattrException();
+            throw TcsetattrException{};
         }
 #endif
     }
@@ -308,7 +308,7 @@ namespace TMTK
         {
             return;
         }
-        for (int offset = 0; offset < 8; ++offset)
+        for (int offset{}; offset < 8; ++offset)
         {
             if (styles & 1 << offset)
             {
@@ -417,13 +417,13 @@ namespace TMTK
     {
         Init();
 #ifdef _WIN32
-        CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
+        CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
         return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException{};
         }
         return {windowSize.ws_col, windowSize.ws_row};
 #endif
@@ -431,10 +431,10 @@ namespace TMTK
 
     void Terminal::SetCursorCoordinate(std::uint16_t column, std::uint16_t row)
     {
-        Dimensions dimensions = GetDimensions();
+        Dimensions dimensions{GetDimensions()};
         if (column >= dimensions.GetWidth() || row >= dimensions.GetHeight())
         {
-            throw OutOfRangeException();
+            throw OutOfRangeException{};
         }
         WriteAnsi("\x1b[{};{}H", row + 1, column + 1);
     }
@@ -494,7 +494,7 @@ namespace TMTK
         WriteAnsi("\7");
     }
 
-    void Terminal::Clear()
+    void Terminal::ClearScreen()
     {
         WriteAnsi("\x1b[H\x1b[2J");
     }

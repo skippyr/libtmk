@@ -116,7 +116,7 @@ namespace TMTK
         std::uint8_t m_blue;
 
     public:
-        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red(red), m_green(green), m_blue(blue)
+        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red{red}, m_green{green}, m_blue{blue}
         {
         }
 
@@ -160,7 +160,7 @@ namespace TMTK
         std::uint16_t m_row;
 
     public:
-        constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column(column), m_row(row)
+        constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column{column}, m_row{row}
         {
         }
 
@@ -193,7 +193,7 @@ namespace TMTK
         std::uint16_t m_height;
 
     public:
-        constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width(width), m_height(height)
+        constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width{width}, m_height{height}
         {
         }
 
@@ -273,7 +273,7 @@ namespace TMTK
                 }
                 else
                 {
-                    throw StreamRedirectionException();
+                    throw StreamRedirectionException{};
                 }
             }
             else
@@ -289,7 +289,7 @@ namespace TMTK
                 }
                 else
                 {
-                    throw StreamRedirectionException();
+                    throw StreamRedirectionException{};
                 }
             }
         }
@@ -326,7 +326,7 @@ namespace TMTK
         static void SetCursorStyle(CursorStyle style);
         static void ResetCursorStyle();
         static void RingBell();
-        static void Clear();
+        static void ClearScreen();
         static void ClearLine();
         static void ClearHistory();
 
@@ -334,7 +334,7 @@ namespace TMTK
         static void Write(const std::string_view& format, Arguments... arguments)
         {
             Init();
-            std::string result = std::vformat(format, std::make_format_args(arguments...));
+            std::string result{std::vformat(format, std::make_format_args(arguments...))};
             std::cout << result;
             s_ansiPrefersStdOut = true;
             if (s_hasANSICache && result.contains('\n'))
