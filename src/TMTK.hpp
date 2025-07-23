@@ -239,10 +239,31 @@ namespace TMTK
     {
     public:
         Encoding() = delete;
-        static std::wstring ConvertUtf8To16(const std::string_view& utf8String);
-        static std::string ConvertUtf16To8(const std::wstring_view& utf16String);
+        static std::wstring ConvertUTF8To16(const std::string_view& utf8String);
+        static std::string ConvertUTF16To8(const std::wstring_view& utf16String);
     };
 #endif
+
+    class Argument final
+    {
+#ifdef _WIN32
+        std::wstring m_encodedInUTF16;
+#endif
+        std::string m_encodedInUTF8;
+
+    public:
+#ifdef _WIN32
+        Argument(const std::wstring_view& encodedInUTF16);
+#else
+        Argument(const std::string_view& encodedInUTF8);
+#endif
+#ifdef _WIN32
+        [[nodiscard]]
+        std::wstring EncodedInUTF16() const;
+#endif
+        [[nodiscard]]
+        std::string EncodedInUTF8() const;
+    };
 
     class Terminal final
     {

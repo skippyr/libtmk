@@ -12,9 +12,11 @@ namespace TMTK
 {
 #pragma region Encoding Class
 #ifdef _WIN32
-    std::wstring Encoding::ConvertUtf8To16(const std::string_view& utf8String) {
+    std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
+    {
         int size = MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, nullptr, 0);
-        if (!size) {
+        if (!size)
+        {
             throw BadEncodingException{};
         }
         std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(size);
@@ -22,9 +24,11 @@ namespace TMTK
         return buffer.get();
     }
 
-    std::string Encoding::ConvertUtf16To8(const std::wstring_view& utf16String) {
+    std::string Encoding::ConvertUTF16To8(const std::wstring_view& utf16String)
+    {
         int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, nullptr, 0, nullptr, nullptr);
-        if (!size) {
+        if (!size)
+        {
             throw BadEncodingException{};
         }
         std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
@@ -32,6 +36,27 @@ namespace TMTK
         return buffer.get();
     }
 #endif
+#pragma endregion
+#pragma region Argument Class
+#ifdef _WIN32
+    Argument::Argument(const std::wstring_view& encodedInUTF16) : m_encodedInUTF16{encodedInUTF16}, m_encodedInUTF8{Encoding::ConvertUTF16To8(encodedInUTF16)}
+    {
+    }
+#else
+    Argument::Argument(const std::string_view& encodedInUTF8) : m_encodedInUTF8{encodedInUTF8}
+    {
+    }
+#endif
+#ifdef _WIN32
+    std::wstring Argument::EncodedInUTF16() const
+    {
+        return m_encodedInUTF16;
+    }
+#endif
+    std::string Argument::EncodedInUTF8() const
+    {
+        return m_encodedInUTF8;
+    }
 #pragma endregion
 #pragma region Terminal Class
     bool Terminal::s_isInputRedirected;
@@ -515,13 +540,12 @@ namespace TMTK
     void Terminal::MoveCursor(std::uint16_t steps, Direction direction)
     {
         Coordinate cursorCoordinate{GetCursorCoordinate()};
-        if ((direction == Direction::Left && cursorCoordinate.GetColumn() - steps < 0) ||
-            (direction == Direction::Top && cursorCoordinate.GetRow() - steps < 0))
+        if ((direction == Direction::Left && cursorCoordinate.GetColumn() - steps < 0) || (direction == Direction::Top && cursorCoordinate.GetRow() - steps < 0))
         {
             throw OutOfRangeException{};
         }
         if (Dimensions dimensions{GetDimensions()}; (direction == Direction::Right && cursorCoordinate.GetColumn() + steps >= dimensions.GetWidth()) ||
-            (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
+                                                    (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
         {
             throw OutOfRangeException{};
         }
