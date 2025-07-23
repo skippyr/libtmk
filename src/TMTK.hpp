@@ -102,15 +102,12 @@ namespace TMTK
         StaticBar
     };
 
-    enum class ClearRegion
+    enum class Direction
     {
-        Line,
-        UntilLineEnd,
-        UntilLineStart,
-        Screen,
-        UntilScreenEnd,
-        UntilScreenStart,
-        ScrollbackBuffer
+        Top = 'A',
+        Down,
+        Right,
+        Left
     };
 
     class RGBColor final
@@ -326,6 +323,7 @@ namespace TMTK
         static Coordinate GetCursorCoordinate();
         static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
         static void SetCursorCoordinate(const Coordinate& coordinate);
+        static void MoveCursor(std::uint16_t steps, Direction direction);
         static void SetCursorVisible(bool isVisible);
         static void SetCursorStyle(CursorStyle style);
         static void ResetCursorStyle();

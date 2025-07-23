@@ -420,7 +420,8 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
-        return {static_cast<std::uint16_t>(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1), static_cast<std::uint16_t>(bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1)};
+        return {static_cast<std::uint16_t>(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1),
+                static_cast<std::uint16_t>(bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1)};
 #else
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
@@ -436,7 +437,8 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo{GetScreenBufferInfo()};
-        return {static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left), static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top)};
+        return {static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left),
+                static_cast<std::uint16_t>(bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top)};
 #else
         if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
         {
@@ -484,6 +486,32 @@ namespace TMTK
     void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
     {
         SetCursorCoordinate(coordinate.GetColumn(), coordinate.GetRow());
+    }
+
+    void Terminal::MoveCursor(std::uint16_t steps, Direction direction)
+    {
+        Coordinate cursorCoordinate{GetCursorCoordinate()};
+        if ((direction == Direction::Left && cursorCoordinate.GetColumn() - steps < 0) ||
+            (direction == Direction::Top && cursorCoordinate.GetRow() - steps < 0))
+        {
+            throw OutOfRangeException{};
+        }
+        if (Dimensions dimensions{GetDimensions()}; (direction == Direction::Right && cursorCoordinate.GetColumn() + steps >= dimensions.GetWidth()) ||
+            (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
+        {
+            throw OutOfRangeException{};
+        }
+        try
+        {
+            WriteAnsi("\x1b[{}{}", steps, static_cast<char>(direction));
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
     }
 
     void Terminal::SetCursorVisible(bool isVisible)
