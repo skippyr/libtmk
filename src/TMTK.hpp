@@ -7,6 +7,58 @@
 
 namespace TMTK
 {
+#pragma region Enums
+    enum class ANSIColor
+    {
+        DarkBlack,
+        DarkRed,
+        DarkGreen,
+        DarkYellow,
+        DarkBlue,
+        DarkMagenta,
+        DarkCyan,
+        DarkWhite,
+        LightBlack,
+        LightRed,
+        LightGreen,
+        LightYellow,
+        LightBlue,
+        LightMagenta,
+        LightCyan,
+        LightWhite
+    };
+
+    enum class TextStyle
+    {
+        Bold = 1,
+        Dim = 1 << 1,
+        Italic = 1 << 2,
+        Underline = 1 << 3,
+        Strikethrough = 1 << 4,
+        Blinking = 1 << 5,
+        InvertedColors = 1 << 6,
+        Hidden = 1 << 7
+    };
+
+    enum class CursorStyle
+    {
+        BlinkingBlock = 1,
+        StaticBlock,
+        BlinkingUnderline,
+        StaticUnderline,
+        BlinkingBar,
+        StaticBar
+    };
+
+    enum class Direction
+    {
+        Top = 'A',
+        Down,
+        Right,
+        Left
+    };
+#pragma endregion
+#pragma region Exception Classes
     class InitException : public std::exception
     {
     };
@@ -63,57 +115,8 @@ namespace TMTK
     class OutOfRangeException final : std::exception
     {
     };
-
-    enum class ANSIColor
-    {
-        DarkBlack,
-        DarkRed,
-        DarkGreen,
-        DarkYellow,
-        DarkBlue,
-        DarkMagenta,
-        DarkCyan,
-        DarkWhite,
-        LightBlack,
-        LightRed,
-        LightGreen,
-        LightYellow,
-        LightBlue,
-        LightMagenta,
-        LightCyan,
-        LightWhite
-    };
-
-    enum class TextStyle
-    {
-        Bold = 1,
-        Dim = 1 << 1,
-        Italic = 1 << 2,
-        Underline = 1 << 3,
-        Strikethrough = 1 << 4,
-        Blinking = 1 << 5,
-        InvertedColors = 1 << 6,
-        Hidden = 1 << 7
-    };
-
-    enum class CursorStyle
-    {
-        BlinkingBlock = 1,
-        StaticBlock,
-        BlinkingUnderline,
-        StaticUnderline,
-        BlinkingBar,
-        StaticBar
-    };
-
-    enum class Direction
-    {
-        Top = 'A',
-        Down,
-        Right,
-        Left
-    };
-
+#pragma endregion
+#pragma region Classes
     class RGBColor final
     {
         std::uint8_t m_red;
@@ -409,8 +412,10 @@ namespace TMTK
             WriteErrorLine("{}", argument);
         }
     };
-
+#pragma endregion
+#pragma region Operators
     int operator|(TextStyle style0, TextStyle style1);
     int operator|(int styles, TextStyle style);
     int operator|(TextStyle style, int styles);
+#pragma endregion
 }
