@@ -206,7 +206,7 @@ namespace TMTK
         std::vector<std::size_t> lengths{};
         lengths.reserve(10);
         char byte;
-        for (int length{}; file.get(byte);)
+        for (int length{}; cmdFile.get(byte);)
         {
             if (!byte)
             {
