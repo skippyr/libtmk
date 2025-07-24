@@ -89,6 +89,11 @@ namespace TMTK
     {
     };
 #else
+#ifdef __linux__
+    class CannotOpenCommandLineException final : public std::Exception
+    {
+    }
+#endif
     class BadFileDescriptorException final : public InitException
     {
     };

@@ -196,8 +196,39 @@ namespace TMTK
         }
         return arguments;
 #else
-        // TODO: add linux implementation that parses /proc/self/cmdline.
-        return {};
+        std::fstream cmdFile{"/proc/self/cmdline", std::ios::in | std::ios::binary};
+        if (!cmdFile)
+        {
+            throw CannotOpenCommandLineException{};
+        }
+        std::vector<std::size_t> lengths{};
+        lengths.reserve(10);
+        char byte;
+        for (int length{}; file.get(byte);)
+        {
+            if (!byte)
+            {
+                lengths.emplace_back(length);
+                length = 0;
+                continue;
+            }
+            ++length;
+        }
+        file.clear();
+        file.seekg(0);
+        std::vector<Argument> arguments{};
+        arguments.reserve(lengths.size());
+        for (auto length : lengths)
+        {
+            std::string buffer(length, 0);
+            for (int offset{}; offset < length + 1; ++offset)
+            {
+                file.get(byte);
+                buffer[offset] = byte;
+            }
+            arguments.emplace_back(buffer);
+        }
+        return arguments;
 #endif
     }
 
