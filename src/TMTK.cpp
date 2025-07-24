@@ -1,4 +1,5 @@
 #include "TMTK.hpp"
+#include <cstring>
 #ifdef _WIN32
 #include <io.h>
 #else
@@ -194,6 +195,9 @@ namespace TMTK
             arguments.emplace_back(systemArguments[offset]);
         }
         return arguments;
+#else
+        // TODO: add linux implementation that parses /proc/self/cmdline.
+        return {};
 #endif
     }
 

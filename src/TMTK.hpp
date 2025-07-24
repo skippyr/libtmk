@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
+#include <optional>
+#include <vector>
 #ifdef _WIN32
 #include <Windows.h>
-#include <optional>
 #endif
-#include <vector>
 
 namespace TMTK
 {
