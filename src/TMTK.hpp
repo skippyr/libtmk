@@ -2,6 +2,8 @@
 #include <iostream>
 #include <optional>
 #include <vector>
+#include <format>
+#include <cstdint>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
