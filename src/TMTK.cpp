@@ -5,6 +5,8 @@
 #else
 #ifdef __APPLE__
 #include <crt_externs.h>
+#else
+#include <fstream>
 #endif
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -214,8 +216,8 @@ namespace TMTK
             }
             ++length;
         }
-        file.clear();
-        file.seekg(0);
+        cmdFile.clear();
+        cmdFile.seekg(0);
         std::vector<Argument> arguments{};
         arguments.reserve(lengths.size());
         for (auto length : lengths)
@@ -223,7 +225,7 @@ namespace TMTK
             std::string buffer(length, 0);
             for (int offset{}; offset < length + 1; ++offset)
             {
-                file.get(byte);
+                cmdFile.get(byte);
                 buffer[offset] = byte;
             }
             arguments.emplace_back(buffer);
