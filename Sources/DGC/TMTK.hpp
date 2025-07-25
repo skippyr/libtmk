@@ -138,6 +138,9 @@ namespace DGC::TMTK
     {
     };
 
+    class CannotWriteToStreamException final : public std::exception
+    {};
+
     class RGBColor final
     {
         std::uint8_t m_red;
@@ -391,12 +394,27 @@ namespace DGC::TMTK
         static void ClearLine();
         static void ClearHistory();
 
+        /// <summary>
+        /// Formats and writes a string to the terminal output stream.
+        /// </summary>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="arguments">The arguments to be formatted.</param>
+        /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
+        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
+        /// <exception cref="std::format_error">Thrown when an incorrect formatting is providing.</exception>
+        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
         template <typename... Arguments>
         static void Write(const std::string_view& format, Arguments... arguments)
         {
             Init();
             std::string result = std::vformat(format, std::make_format_args(arguments...));
             std::cout << result;
+            if (std::cout.fail())
+            {
+                std::cout.clear();
+                throw CannotWriteToStreamException();
+            }
+            std::cout.clear();
             s_ansiPrefersStdOut = true;
             if (s_hasANSICache && result.contains('\n'))
             {
@@ -404,12 +422,27 @@ namespace DGC::TMTK
             }
         }
 
+        /// <summary>
+        /// Formats and writes an argument to the terminal output stream.
+        /// </summary>
+        /// <param name="argument">The argument to be formatted.</param>
+        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
+        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
         template <typename T>
         static void Write(const T& argument)
         {
             Write("{}", argument);
         }
 
+        /// <summary>
+        /// Formats and writes a string to the terminal output stream with a newline sequence appended to its end.
+        /// </summary>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="arguments">The arguments to be formatted.</param>
+        /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
+        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
+        /// <exception cref="std::format_error">Thrown when an incorrect formatting is providing.</exception>
+        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
         template <typename... Arguments>
         static void WriteLine(const std::string_view& format, Arguments... arguments)
         {
@@ -417,6 +450,12 @@ namespace DGC::TMTK
             Write("\n");
         }
 
+        /// <summary>
+        /// Formats and writes an argument to the terminal output stream with a newline sequence appended to its end.
+        /// </summary>
+        /// <param name="argument">The argument to be formatted.</param>
+        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
+        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
         template <typename T>
         static void WriteLine(const T& argument)
         {
