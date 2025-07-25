@@ -1,7 +1,7 @@
 /* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
- * TMTK.hpp
+ * TMTK.cpp
  *
- * TMTK (Terminal Manipulation ToolKit)
+ * TMTK (Terminal Manipulation ToolKit) <https://github.com/skippyr/TMTK>
  * DGC :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
  *
  * Distributed under the BSD-3-Clause License.
