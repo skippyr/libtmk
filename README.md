@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="" src="https://raw.githubusercontent.com/skippyr/TMTK/refs/heads/master/Assets/Ornament.png" width="1020" />
+  <img alt="" src="https://raw.githubusercontent.com/skippyr/TMTK/refs/heads/master/Assets/Images/Ornament.png" width="1020" />
 </p>
 <h1 align="center">≥v≥v&ensp;TMTK&ensp;≥v≥v</h1>
 <p align="center">— Terminal Manipulation Toolkit —</p>
