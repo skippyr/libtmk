@@ -142,6 +142,10 @@ namespace DGC::TMTK
     {
     };
 
+    class CannotFlushStreamException final : public std::exception
+    {
+    };
+
     class RGBColor final
     {
         std::uint8_t m_red;
@@ -469,6 +473,11 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         [[nodiscard]]
         static bool IsErrorRedirected();
+        /// <summary>
+        /// Flushes the terminal output stream buffer, writing any content it has to the stream.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="CannotFlushStreamException">Thrown when the stream cannot be flushed.</exception>
         static void FlushOutput();
         static void FlushInput();
         static void SetAllowsTextStyle(bool allowsTextStyle);
@@ -511,13 +520,13 @@ namespace DGC::TMTK
         {
             Init();
             std::string result = std::vformat(format, std::make_format_args(arguments...));
+            std::cout.clear();
             std::cout << result;
             if (std::cout.fail())
             {
                 std::cout.clear();
                 throw CannotWriteToStreamException();
             }
-            std::cout.clear();
             s_ansiPrefersStdOut = true;
             if (s_hasANSICache && result.contains('\n'))
             {
@@ -582,7 +591,13 @@ namespace DGC::TMTK
             {
                 FlushOutput();
             }
+            std::cerr.clear();
             std::cerr << std::vformat(format, std::make_format_args(arguments...));
+            if (std::cerr.fail())
+            {
+                std::cerr.clear();
+                throw CannotWriteToStreamException();
+            }
             s_ansiPrefersStdOut = false;
         }
 

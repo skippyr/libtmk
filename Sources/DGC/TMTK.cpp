@@ -269,8 +269,14 @@ namespace DGC::TMTK
 
     void Terminal::FlushOutput()
     {
+        /// HACK: this function will throw an exception if the stream does not have a buffer.
         Init();
         std::cout << std::flush;
+        if (std::cout.fail())
+        {
+            std::cout.clear();
+            throw CannotFlushStreamException();
+        }
         s_hasANSICache = false;
     }
 
