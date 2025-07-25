@@ -78,7 +78,7 @@ namespace DGC::TMTK
     bool Terminal::s_isInputRedirected;
     bool Terminal::s_isOutputRedirected;
     bool Terminal::s_isErrorRedirected;
-    bool Terminal::s_allowsTextStyles;
+    bool Terminal::s_allowsStyles;
 #ifdef _WIN32
     HANDLE Terminal::s_inputHandle;
     HANDLE Terminal::s_outputHandle;
@@ -118,7 +118,7 @@ namespace DGC::TMTK
         s_isOutputRedirected = IsStreamRedirected(STDOUT_FILENO);
         s_isErrorRedirected = IsStreamRedirected(STDERR_FILENO);
         const char* term;
-        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
+        s_allowsStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #endif
     }
 
@@ -348,13 +348,13 @@ namespace DGC::TMTK
     void Terminal::SetAllowsTextStyle(bool allowsTextStyle)
     {
         Init();
-        s_allowsTextStyles = allowsTextStyle;
+        s_allowsStyles = allowsTextStyle;
     }
 
     void Terminal::SetForeground(std::uint8_t ansiColor)
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -379,7 +379,7 @@ namespace DGC::TMTK
     void Terminal::SetForeground(RGBColor color)
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -399,7 +399,7 @@ namespace DGC::TMTK
     void Terminal::SetBackground(std::uint8_t ansiColor)
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -424,7 +424,7 @@ namespace DGC::TMTK
     void Terminal::SetBackground(RGBColor color)
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -444,7 +444,7 @@ namespace DGC::TMTK
     void Terminal::SetTextStyles(int styles)
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -505,7 +505,7 @@ namespace DGC::TMTK
     void Terminal::ResetColors()
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }
@@ -525,7 +525,7 @@ namespace DGC::TMTK
     void Terminal::ResetTextStyles()
     {
         Init();
-        if (!s_allowsTextStyles)
+        if (!s_allowsStyles)
         {
             return;
         }

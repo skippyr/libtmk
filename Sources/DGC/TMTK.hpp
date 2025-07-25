@@ -289,19 +289,43 @@ namespace DGC::TMTK
         const std::string& EncodedInUTF8() const;
     };
 
+    /// <summary>
+    /// Represents the terminal emulator.
+    /// </summary>
     class Terminal final
     {
+        /// <summary>
+        /// A boolean that states the terminal input stream is being redirected.
+        /// </summary>
         static bool s_isInputRedirected;
+        /// <summary>
+        /// A boolean that states the terminal output stream is being redirected.
+        /// </summary>
         static bool s_isOutputRedirected;
+        /// <summary>
+        /// A boolean that states the terminal error stream is being redirected.
+        /// </summary>
         static bool s_isErrorRedirected;
-        static bool s_allowsTextStyles;
+        /// <summary>
+        /// A boolean that states terminal styles are enabled. It includes colors and text styles.
+        /// </summary>
+        static bool s_allowsStyles;
 #ifdef _WIN32
         static HANDLE s_inputHandle;
         static HANDLE s_outputHandle;
         static HANDLE s_errorHandle;
 #endif
+        /// <summary>
+        /// A boolean that states the terminal has been initialized, setting up the required features in and from the environment.
+        /// </summary>
         static bool s_hasInit;
+        /// <summary>
+        /// A boolean that states at least one ANSI sequence has been cached in the terminal output stream buffer.
+        /// </summary>
         static bool s_hasANSICache;
+        /// <summary>
+        /// A boolean that states ANSI sequences are prefered to be written to the terminal output stream, allowing caching.
+        /// </summary>
         static bool s_ansiPrefersStdOut;
 
         static void Init();
