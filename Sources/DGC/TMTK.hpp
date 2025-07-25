@@ -139,7 +139,8 @@ namespace DGC::TMTK
     };
 
     class CannotWriteToStreamException final : public std::exception
-    {};
+    {
+    };
 
     class RGBColor final
     {
@@ -311,8 +312,17 @@ namespace DGC::TMTK
         /// </summary>
         static bool s_allowsStyles;
 #ifdef _WIN32
+        /// <summary>
+        /// The Windows handle for the terminal input stream.
+        /// </summary>
         static HANDLE s_inputHandle;
+        /// <summary>
+        /// The Windows handle for the terminal output stream.
+        /// </summary>
         static HANDLE s_outputHandle;
+        /// <summary>
+        /// The Windows handle for the terminal error stream.
+        /// </summary>
         static HANDLE s_errorHandle;
 #endif
         /// <summary>
@@ -328,21 +338,63 @@ namespace DGC::TMTK
         /// </summary>
         static bool s_ansiPrefersStdOut;
 
+        /// <summary>
+        /// Initiates the required terminal features in and from the environment. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
+        /// and cache metadata about streams and style allowance.
+        /// </summary>
         static void Init();
 #ifdef _WIN32
+        /// <summary>
+        /// Gets the Windows terminal handle of a stream. It is only available on Windows.
+        /// </summary>
+        /// <param name="id">The stream identifier, such as <code>STD_OUTPUT_HANDLE</code>.</param>
+        /// <returns>The handle.</returns>
+        /// <exception cref="InvalidHandleValueException">Thrown when the stream handle is invalid.</exception>
         [[nodiscard]]
         static HANDLE GetHandle(DWORD id);
+        /// <summary>
+        /// Checks whether a terminal stream is being redirected. This overloading is only available on Windows.
+        /// </summary>
+        /// <param name="handle">The stream handle.</param>
+        /// <returns>A boolean that states that.</returns>
+        /// <exception cref="InvalidFileTypeException">Thrown when the stream file type is invalid.</exception>
         [[nodiscard]]
         static bool IsStreamRedirected(HANDLE handle);
+        /// <summary>
+        /// Sets the bitmask flag that enables the parse of ANSI escape sequences in a terminal stream mode. It is only available on Windows.
+        /// </summary>
+        /// <param name="handle">The stream handle.</param>
+        /// <returns>A boolean that states the parse has been enabled.</returns>
+        /// <remarks>It is only necessary to set it on one output stream for it to work.</remarks>
         [[nodiscard]]
-        static bool EnableANSIParse(HANDLE handle);
+        static bool EnableANSIParse(HANDLE handle) noexcept;
+        /// <summary>
+        /// Gets the Windows terminal screen buffer information.
+        /// </summary>
+        /// <returns>The buffer information.</returns>
+        /// <exception name="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception name="StreamRedirectionException">Thrown when all possible streams that could return an answer are being redirected.</exception>
         [[nodiscard]]
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 #else
+        /// <summary>
+        /// Checks whether a terminal stream is being redirected. This overloading is only available on macOS and Linux.
+        /// </summary>
+        /// <param name="fd">The stream file descriptor.</param>
+        /// <returns>A boolean that states that.</returns>
+        /// <exception name="InitException">Thrown when the terminal features cannot be initialized.</exception>
         [[nodiscard]]
         static bool IsStreamRedirected(int fd);
 #endif
 
+        /// <summary>
+        /// Formats and writes an ANSI escape sequence to a terminal output stream.
+        /// </summary>
+        /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
+        /// <param name="format">The format to be used.</param>
+        /// <param name="arguments">The arguments to be formatted.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when both output and error streams are being redirected.</exception>
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
         {

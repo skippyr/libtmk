@@ -143,7 +143,7 @@ namespace DGC::TMTK
         return type != FILE_TYPE_CHAR;
     }
 
-    bool Terminal::EnableANSIParse(HANDLE handle)
+    bool Terminal::EnableANSIParse(HANDLE handle) noexcept
     {
         DWORD mode;
         return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
@@ -151,6 +151,7 @@ namespace DGC::TMTK
 
     CONSOLE_SCREEN_BUFFER_INFO Terminal::GetScreenBufferInfo()
     {
+        Init();
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
         if (!GetConsoleScreenBufferInfo(s_outputHandle, &bufferInfo) && !GetConsoleScreenBufferInfo(s_errorHandle, &bufferInfo))
         {
