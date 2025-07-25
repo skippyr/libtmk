@@ -254,7 +254,7 @@ namespace TMTK
     };
 #endif
 
-    class Argument final
+    class UnicodeString final
     {
 #ifdef _WIN32
         std::wstring m_encodedInUTF16;
@@ -263,16 +263,16 @@ namespace TMTK
 
     public:
 #ifdef _WIN32
-        Argument(const std::wstring_view& encodedInUTF16);
+        UnicodeString(const std::wstring_view& encodedInUTF16);
 #else
-        Argument(const std::string_view& encodedInUTF8);
+        UnicodeString(const std::string_view& encodedInUTF8);
 #endif
 #ifdef _WIN32
         [[nodiscard]]
-        std::wstring EncodedInUTF16() const;
+        const std::wstring& EncodedInUTF16() const;
 #endif
         [[nodiscard]]
-        std::string EncodedInUTF8() const;
+        const std::string& EncodedInUTF8() const;
     };
 
     class Terminal final
@@ -345,7 +345,7 @@ namespace TMTK
 
     public:
         Terminal() = delete;
-        static std::vector<Argument> GetArguments();
+        static std::vector<UnicodeString> GetArguments();
         [[nodiscard]]
         static bool IsInputRedirected();
         [[nodiscard]]

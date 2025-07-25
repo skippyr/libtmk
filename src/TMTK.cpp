@@ -43,23 +43,23 @@ namespace TMTK
     }
 #endif
 #pragma endregion
-#pragma region Argument Class
+#pragma region UnicodeString Class
 #ifdef _WIN32
-    Argument::Argument(const std::wstring_view& encodedInUTF16) : m_encodedInUTF16{encodedInUTF16}, m_encodedInUTF8{Encoding::ConvertUTF16To8(encodedInUTF16)}
+    UnicodeString::UnicodeString(const std::wstring_view& encodedInUTF16) : m_encodedInUTF16{encodedInUTF16}, m_encodedInUTF8{Encoding::ConvertUTF16To8(encodedInUTF16)}
     {
     }
 #else
-    Argument::Argument(const std::string_view& encodedInUTF8) : m_encodedInUTF8{encodedInUTF8}
+    UnicodeString::UnicodeString(const std::string_view& encodedInUTF8) : m_encodedInUTF8{encodedInUTF8}
     {
     }
 #endif
 #ifdef _WIN32
-    std::wstring Argument::EncodedInUTF16() const
+    const std::wstring& UnicodeString::EncodedInUTF16() const
     {
         return m_encodedInUTF16;
     }
 #endif
-    std::string Argument::EncodedInUTF8() const
+    const std::string& UnicodeString::EncodedInUTF8() const
     {
         return m_encodedInUTF8;
     }
@@ -162,7 +162,7 @@ namespace TMTK
     }
 #endif
 
-    std::vector<Argument> Terminal::GetArguments()
+    std::vector<UnicodeString> Terminal::GetArguments()
     {
 #ifdef _WIN32
         int totalArguments;
@@ -171,13 +171,13 @@ namespace TMTK
         {
             throw NotEnoughMemoryException{};
         }
-        std::vector<Argument> arguments{};
+        std::vector<UnicodeString> arguments{};
         try
         {
             arguments.reserve(totalArguments);
             for (int offset{}; offset < totalArguments; ++offset)
             {
-                arguments.emplace_back(Argument{systemArguments[offset]});
+                arguments.emplace_back(systemArguments[offset]);
             }
         }
         catch (...)
@@ -190,7 +190,7 @@ namespace TMTK
 #elif __APPLE__
         int totalArguments{*_NSGetArgc()};
         char** systemArguments{*_NSGetArgv()};
-        std::vector<Argument> arguments{};
+        std::vector<UnicodeString> arguments{};
         arguments.reserve(totalArguments);
         for (int offset{}; offset < totalArguments; ++offset)
         {
@@ -218,7 +218,7 @@ namespace TMTK
         }
         cmdFile.clear();
         cmdFile.seekg(0);
-        std::vector<Argument> arguments{};
+        std::vector<UnicodeString> arguments{};
         arguments.reserve(lengths.size());
         for (auto length : lengths)
         {
