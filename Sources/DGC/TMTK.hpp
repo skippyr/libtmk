@@ -342,6 +342,11 @@ namespace DGC::TMTK
         /// Initiates the required terminal features in and from the environment. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
         /// and cache metadata about streams and style allowance.
         /// </summary>
+        /// <exception cref="CannotSetOutputEncodingException">Thrown, on Windows, when UTF-8 cannot be set as the output encoding.</exception>
+        /// <exception cref="NoANSISupportException">Thrown, on Windows, when the parse of ANSI escape sequences cannot be enabled.</exception>
+        /// <exception cref="InvalidHandleValueException">Thrown, on Windows, when any stream handle is invalid.</exception>
+        /// <exception cref="InvalidFileTypeException">Thrown, on Windows, when any stream file type is invalid.</exception>
+        /// <exception cref="InvalidFileDescriptorException">Thrown, on macOS and Linux, when the file descriptor is invalid.</exception>
         static void Init();
 #ifdef _WIN32
         /// <summary>
@@ -372,17 +377,17 @@ namespace DGC::TMTK
         /// Gets the Windows terminal screen buffer information.
         /// </summary>
         /// <returns>The buffer information.</returns>
-        /// <exception name="InitException">Thrown when the terminal features cannot be initialized.</exception>
-        /// <exception name="StreamRedirectionException">Thrown when all possible streams that could return an answer are being redirected.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all possible streams that could return an answer are being redirected.</exception>
         [[nodiscard]]
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 #else
         /// <summary>
         /// Checks whether a terminal stream is being redirected. This overloading is only available on macOS and Linux.
         /// </summary>
-        /// <param name="fd">The stream file descriptor.</param>
+        /// <param name="fd">The stream file descriptor, such as <code>STDOUT_FILENO</code>.</param>
         /// <returns>A boolean that states that.</returns>
-        /// <exception name="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InvalidFileDescriptorException">Thrown when the file descriptor is invalid.</exception>
         [[nodiscard]]
         static bool IsStreamRedirected(int fd);
 #endif
@@ -435,11 +440,33 @@ namespace DGC::TMTK
 
     public:
         Terminal() = delete;
+        /// <summary>
+        /// Gets the arguments given by the terminal shell to the current process.
+        /// </summary>
+        /// <returns>A vector containing the arguments.</returns>
+        /// <exception cref="NotEnoughMemoryException">Thrown when memory cannot be allocated for the arguments.</exception>
+        /// <exception cref="BadEncodingException">Thrown, on Windows, if any argument is badly encoded in UTF-16.</exception>
+        /// <exception cref="CannotOpenCommandLineException">Thrown, on Linux, if the <code>/proc/self/cmdline</code> file cannot be opened for reading.</exception>
         static std::vector<UnicodeString> GetArguments();
+        /// <summary>
+        /// Checks whether the terminal input stream is being redirected.
+        /// </summary>
+        /// <returns>A boolean that states that.</returns>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         [[nodiscard]]
         static bool IsInputRedirected();
+        /// <summary>
+        /// Checks whether the terminal output stream is being redirected.
+        /// </summary>
+        /// <returns>A boolean that states that.</returns>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         [[nodiscard]]
         static bool IsOutputRedirected();
+        /// <summary>
+        /// Checks whether the terminal error stream is being redirected.
+        /// </summary>
+        /// <returns>A boolean that states that.</returns>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         [[nodiscard]]
         static bool IsErrorRedirected();
         static void FlushOutput();

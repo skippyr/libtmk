@@ -86,7 +86,7 @@ namespace DGC::TMTK
 #endif
     bool Terminal::s_hasInit = false;
     bool Terminal::s_hasANSICache = false;
-    /* NOTE: possible ANSI cache is avoided by prefering the standard error stream. */
+    /* NOTE: possible ANSI cache is avoided by preferring the standard error stream. */
     bool Terminal::s_ansiPrefersStdOut = false;
 
     void Terminal::Init()
