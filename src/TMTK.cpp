@@ -561,7 +561,7 @@ namespace TMTK
         Init();
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
-        return Dimensions(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left, bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
+        return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left, bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
 #else
         if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
         {
