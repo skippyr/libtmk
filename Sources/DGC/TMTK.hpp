@@ -91,10 +91,6 @@ namespace DGC::TMTK
     {
     };
 
-    class FlushConsoleInputBufferException final : public std::exception
-    {
-    };
-
     class BadEncodingException final : public std::exception
     {
     };
@@ -479,6 +475,11 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         /// <exception cref="CannotFlushStreamException">Thrown when the stream cannot be flushed.</exception>
         static void FlushOutput();
+        /// <summary>
+        /// Flushes the terminal input buffer, losing any content it has.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="CannotFlushStreamException">Thrown when the stream cannot be flushed.</exception>
         static void FlushInput();
         static void SetAllowsTextStyle(bool allowsTextStyle);
         static void SetForeground(std::uint8_t ansiColor);

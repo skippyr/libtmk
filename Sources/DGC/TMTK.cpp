@@ -285,36 +285,36 @@ namespace DGC::TMTK
         Init();
         if (s_isInputRedirected)
         {
-            throw StreamRedirectionException();
+            throw CannotFlushStreamException();
         }
 #ifdef _WIN32
         if (!FlushConsoleInputBuffer(s_inputHandle))
         {
-            throw FlushConsoleInputBufferException();
+            throw CannotFlushStreamException();
         }
 #else
         termios attributes;
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
-            throw TcgetattrException();
+            throw CannotFlushStreamException();
         }
         int flags = fcntl(STDIN_FILENO, F_GETFL);
         if (flags == -1)
         {
-            throw FcntlException();
+            throw CannotFlushStreamException();
         }
         if (fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK))
         {
-            throw FcntlException();
+            throw CannotFlushStreamException();
         }
         attributes.c_lflag &= ~(ECHO | ICANON);
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
             if (fcntl(STDIN_FILENO, F_SETFL, flags))
             {
-                throw FcntlException();
+                throw CannotFlushStreamException();
             }
-            throw TcsetattrException();
+            throw CannotFlushStreamException();
         }
         try
         {
@@ -331,23 +331,23 @@ namespace DGC::TMTK
         {
             if (fcntl(STDIN_FILENO, F_SETFL, flags))
             {
-                throw FcntlException();
+                throw CannotFlushStreamException();
             }
             attributes.c_lflag |= ECHO | ICANON;
             if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
             {
-                throw TcsetattrException();
+                throw CannotFlushStreamException();
             }
             throw;
         }
         if (fcntl(STDIN_FILENO, F_SETFL, flags))
         {
-            throw FcntlException();
+            throw CannotFlushStreamException();
         }
         attributes.c_lflag |= ECHO | ICANON;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
-            throw TcsetattrException();
+            throw CannotFlushStreamException();
         }
 #endif
     }
