@@ -1,10 +1,24 @@
-*.sw?
+# macOS
 .DS_Store
+
+# Vim/Neovim
+*.sw?
+
+# CLion
 /.idea/
+
+# Visual Studio
 /.vs/
+
+# Visual Studio Code
 /.vscode/
+
+# Zed
 /.zed/
+
+# Build Directories
 /build/
+/Build/
 /cmake-build-*/
 /out/
 /target/

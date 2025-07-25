@@ -1,3 +1,14 @@
+/* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+ * TMTK.hpp
+ *
+ * TMTK (Terminal Manipulation ToolKit)
+ * DGC :: Sherman Rofeman <skippyr.developer@icloud.com>
+ *
+ * Distribuded under the BSD-3-Clause License.
+ * See the LICENSE file that comes with the source code for license and copyright details.
+ * //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+ */
+
 #include "TMTK.hpp"
 #include <cstring>
 #ifdef _WIN32
@@ -14,7 +25,7 @@
 #include <unistd.h>
 #endif
 
-namespace TMTK
+namespace DGC::TMTK
 {
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
