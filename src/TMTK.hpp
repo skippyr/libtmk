@@ -1,15 +1,14 @@
 #pragma once
+#include <cstdint>
+#include <format>
 #include <iostream>
 #include <vector>
-#include <format>
-#include <cstdint>
 #ifdef _WIN32
 #include <Windows.h>
 #endif
 
 namespace TMTK
 {
-#pragma region Enums
     enum class ANSIColor
     {
         DarkBlack,
@@ -59,11 +58,11 @@ namespace TMTK
         Right,
         Left
     };
-#pragma endregion
-#pragma region Exception Classes
+
     class InitException : public std::exception
     {
     };
+
 #ifdef _WIN32
     class CannotSetOutputCPException final : public InitException
     {
@@ -93,6 +92,7 @@ namespace TMTK
     class CannotOpenCommandLineException final : public std::exception
     {
     };
+
 #endif
     class BadFileDescriptorException final : public InitException
     {
@@ -114,6 +114,7 @@ namespace TMTK
     {
     };
 #endif
+
     class StreamRedirectionException final : public std::exception
     {
     };
@@ -125,8 +126,7 @@ namespace TMTK
     class OutOfRangeException final : public std::exception
     {
     };
-#pragma endregion
-#pragma region Classes
+
     class RGBColor final
     {
         std::uint8_t m_red;
@@ -134,7 +134,7 @@ namespace TMTK
         std::uint8_t m_blue;
 
     public:
-        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red{red}, m_green{green}, m_blue{blue}
+        constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red(red), m_green(green), m_blue(blue)
         {
         }
 
@@ -178,7 +178,7 @@ namespace TMTK
         std::uint16_t m_row;
 
     public:
-        constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column{column}, m_row{row}
+        constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column(column), m_row(row)
         {
         }
 
@@ -211,7 +211,7 @@ namespace TMTK
         std::uint16_t m_height;
 
     public:
-        constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width{width}, m_height{height}
+        constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width(width), m_height(height)
         {
         }
 
@@ -322,7 +322,7 @@ namespace TMTK
                 }
                 else
                 {
-                    throw StreamRedirectionException{};
+                    throw StreamRedirectionException();
                 }
             }
             else
@@ -338,7 +338,7 @@ namespace TMTK
                 }
                 else
                 {
-                    throw StreamRedirectionException{};
+                    throw StreamRedirectionException();
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace TMTK
         static void Write(const std::string_view& format, Arguments... arguments)
         {
             Init();
-            std::string result{std::vformat(format, std::make_format_args(arguments...))};
+            std::string result = std::vformat(format, std::make_format_args(arguments...));
             std::cout << result;
             s_ansiPrefersStdOut = true;
             if (s_hasANSICache && result.contains('\n'))
@@ -443,10 +443,8 @@ namespace TMTK
             WriteErrorLine("{}", argument);
         }
     };
-#pragma endregion
-#pragma region Operators
+
     int operator|(TextStyle style0, TextStyle style1);
     int operator|(int styles, TextStyle style);
     int operator|(TextStyle style, int styles);
-#pragma endregion
 }
