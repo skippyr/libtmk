@@ -129,7 +129,7 @@ namespace TMTK
         {
             throw InvalidFileTypeException{};
         }
-        return type == FILE_TYPE_CHAR;
+        return type != FILE_TYPE_CHAR;
     }
 
     bool Terminal::EnableANSIParse(const HANDLE handle)
