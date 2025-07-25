@@ -86,11 +86,12 @@ namespace DGC::TMTK
 #endif
     bool Terminal::s_hasInit = false;
     bool Terminal::s_hasANSICache = false;
-    // NOTE: stderr is unbuffered, thus preferred by default.
+    /* NOTE: possible ANSI cache is avoided by prefering the standard error stream. */
     bool Terminal::s_ansiPrefersStdOut = false;
 
     void Terminal::Init()
     {
+        /* NOTE: learn more about the NO_COLOR environment variable at: https://no-color.org. */
         if (s_hasInit)
         {
             return;
