@@ -111,13 +111,13 @@ namespace DGC::TMTK
         }
         s_hasInit = true;
 #ifdef _WIN32
-        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE, "input");
-        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE, "output");
-        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE, "error");
+        s_inputHandle = GetHandle(STD_INPUT_HANDLE, "input");
+        s_outputHandle = GetHandle(STD_OUTPUT_HANDLE, "output");
+        s_errorHandle = GetHandle(STD_ERROR_HANDLE, "error");
         s_isInputRedirected = IsStreamRedirected(s_inputHandle, "input");
         s_isOutputRedirected = IsStreamRedirected(s_outputHandle, "output");
         s_isErrorRedirected = IsStreamRedirected(s_errorHandle, "error");
-        s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr;
+        s_allowsStyles = std::getenv("NO_COLOR") == nullptr;
         if (!SetConsoleOutputCP(CP_UTF8))
         {
             throw InitException("cannot set UTF-8 as the terminal output encoding.");

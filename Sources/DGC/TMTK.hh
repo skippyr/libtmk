@@ -498,6 +498,7 @@ namespace DGC::TMTK
         static void ClearScreen();
         static void ClearLine();
         static void ClearHistory();
+        // static void SetTitle(const std::string_view& title);
 
         /// <summary>
         /// Formats and writes a string to the terminal output stream.
