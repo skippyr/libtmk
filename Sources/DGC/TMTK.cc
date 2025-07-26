@@ -639,6 +639,7 @@ namespace DGC::TMTK
 
     void Terminal::OpenAlternateScreen()
     {
+        /* NOTE: some terminals may not support this feature. The clear screen sequence is used to immitate a similar behavior. */
         WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
     }
 

@@ -507,7 +507,8 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <remarks><para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para><para>• If all output
-        /// streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
+        /// streams are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetColors</c> function
+        /// must be made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetForeground(std::uint8_t ansiColor);
         /// <summary>
         /// Writes the ANSI sequence that sets one of the first 16 standard colors of the ANSI palette in the terminal foreground to the most viable output stream.
@@ -516,7 +517,8 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</remarks>
+        /// <remarks><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to
+        /// the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetForeground(ANSIColor color);
         /// <summary>
         /// Writes the ANSI sequence that sets an RGB color in the terminal foreground to the most viable output stream.
@@ -526,7 +528,8 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <remarks><para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para><para>• If all output streams
-        /// are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
+        /// are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetColors</c> function must be
+        /// made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetForeground(RGBColor color);
         /// <summary>
         /// Sets a color of the 256 colors ANSI palette in the terminal background.
@@ -536,7 +539,8 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <remarks><para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para><para>• If all output
-        /// streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
+        /// streams are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetColors</c> function
+        /// must be made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetBackground(std::uint8_t ansiColor);
         /// <summary>
         /// Sets one of the first 16 standard colors of the ANSI palette in the terminal background.
@@ -545,7 +549,8 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</remarks>
+        /// <remarks><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to
+        /// the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetBackground(ANSIColor color);
         /// <summary>
         /// Sets an RGB color in the terminal background.
@@ -555,7 +560,8 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <remarks><para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para><para>• If all output streams
-        /// are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
+        /// are being redirected, the color is not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetColors</c> function must be
+        /// made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void SetBackground(RGBColor color);
         /// <summary>
         /// Sets the terminal text styles flagged in a bitmask.
@@ -564,7 +570,9 @@ namespace DGC::TMTK
         /// <c>TextStyle</c>.</param> <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception> <exception cref="IOException">Thrown when
         /// the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception> <exception cref="NotEnoughMemoryException">Thrown
         /// when not enough memory can be allocated to format the output.</exception> <remarks><para>• Though rare, some terminals may not support all the styles available, causing
-        /// them to not take effect.</para><para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para></remarks>
+        /// them to not take effect.</para><para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para><para>• In order
+        /// to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset them automatically after the current process
+        /// execution.</para></remarks>
         static void SetTextStyles(int styles);
         /// <summary>
         /// Sets a terminal text style.
@@ -574,7 +582,9 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <remarks><para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para><para>• If all output streams are being
-        /// redirected, the style is not applied, not throwing exceptions or errors.</para></remarks>
+        /// redirected, the style is not applied, not throwing exceptions or errors.</para><para>• If all output streams are being redirected, the styles are not applied, not
+        /// throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset it
+        /// automatically after the current process execution.</para></remarks>
         static void SetTextStyles(TextStyle style);
         /// <summary>
         /// Resets the terminal foreground and background colors.
@@ -590,7 +600,24 @@ namespace DGC::TMTK
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ResetTextStyles();
+        /// <summary>
+        /// Opens the terminal alternate screen.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <remarks><para>• Opening the alternate screen while it is already opened, resets it in place, allowing you to perform repainting.</para><para>• Though rare, some
+        /// terminals may not have support to this feature. In that case, their screens are simply cleared, giving a similar effect.</para><para>• In order to close it, a call to
+        /// the <c>CloseAlternateScreen</c> function must be made as the shell may not reset it automatically after the current process execution.</para></remarks>
         static void OpenAlternateScreen();
+        /// <summary>
+        /// Closes the terminal alternate screen.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
         static void CloseAlternateScreen();
         static Dimensions GetDimensions();
         static Coordinate GetCursorCoordinate();
