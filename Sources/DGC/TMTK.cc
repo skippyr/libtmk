@@ -40,13 +40,25 @@ namespace DGC::TMTK
     {
     }
 
+    NotEnoughMemoryException::NotEnoughMemoryException(const std::string_view& message) : Exception(message)
+    {
+    }
+
+    BadEncodingException::BadEncodingException(const std::string_view& message) : Exception(message)
+    {
+    }
+
+    IOException::IOException(const std::string_view& message) : Exception(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
         int size = MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, nullptr, 0);
         if (!size)
         {
-            throw BadEncodingException();
+            throw BadEncodingException("cannot convert a badly encoded UTF-8 string to UTF-16.");
         }
         std::unique_ptr<wchar_t[]> buffer = std::make_unique<wchar_t[]>(size);
         MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, buffer.get(), size);
@@ -58,7 +70,7 @@ namespace DGC::TMTK
         int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, nullptr, 0, nullptr, nullptr);
         if (!size)
         {
-            throw BadEncodingException();
+            throw BadEncodingException("cannot convert a badly encoded UTF-16 string to UTF-8.");
         }
         std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
         WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, buffer.get(), size, nullptr, nullptr);
@@ -173,7 +185,7 @@ namespace DGC::TMTK
         return bufferInfo;
     }
 #else
-    bool Terminal::IsStreamRedirected(int fd, const char *stream)
+    bool Terminal::IsStreamRedirected(int fd, const char* stream)
     {
         if (isatty(fd))
         {
@@ -185,16 +197,15 @@ namespace DGC::TMTK
         }
         return true;
     }
-#endif
-
     std::vector<UnicodeString> Terminal::GetArguments()
     {
+        constexpr const char* allocationFailMessage = "cannot allocate enough memory to hold the terminal arguments.";
 #ifdef _WIN32
         int totalArguments;
         LPWSTR* systemArguments = CommandLineToArgvW(GetCommandLineW(), &totalArguments);
         if (!systemArguments)
         {
-            throw NotEnoughMemoryException();
+            throw NotEnoughMemoryException(allocationFailMessage);
         }
         std::vector arguments = std::vector<UnicodeString>();
         try
@@ -208,7 +219,7 @@ namespace DGC::TMTK
         catch (...)
         {
             LocalFree(systemArguments);
-            throw;
+            throw NotEnoughMemoryException(allocationFailMessage);
         }
         LocalFree(systemArguments);
         return arguments;
@@ -216,48 +227,64 @@ namespace DGC::TMTK
         int totalArguments = *_NSGetArgc();
         char** systemArguments = *_NSGetArgv();
         std::vector arguments = std::vector<UnicodeString>();
-        arguments.reserve(totalArguments);
-        for (int offset = 0; offset < totalArguments; ++offset)
+        try
         {
-            arguments.emplace_back(systemArguments[offset]);
+            arguments.reserve(totalArguments);
+            for (int offset = 0; offset < totalArguments; ++offset)
+            {
+                arguments.emplace_back(systemArguments[offset]);
+            }
+        }
+        catch (...)
+        {
+            throw NotEnoughMemoryException(allocationFailMessage);
         }
         return arguments;
 #else
         std::fstream cmdFile = std::fsstream("/proc/self/cmdline", std::ios::in | std::ios::binary);
         if (!cmdFile)
         {
-            throw CannotOpenCommandLineException();
+            throw IOException("cannot open the \"/proc/self/cmdline\" file to read the terminal arguments.");
         }
         std::vector lengths = std::vector<std::size_t>();
-        lengths.reserve(10);
-        char byte;
-        for (int length = 0; cmdFile.get(byte);)
+        try
         {
-            if (!byte)
+            lengths.reserve(10);
+            char byte;
+            for (int length = 0; cmdFile.get(byte);)
             {
-                lengths.emplace_back(length);
-                length = 0;
-                continue;
+                if (!byte)
+                {
+                    lengths.emplace_back(length);
+                    length = 0;
+                    continue;
+                }
+                ++length;
             }
-            ++length;
+            cmdFile.clear();
+            cmdFile.seekg(0);
+            std::vector arguments = std::vector<UnicodeString>();
+            arguments.reserve(lengths.size());
+            for (auto length : lengths)
+            {
+
+                std::string buffer = std::string(length, 0);
+                for (int offset = 0; offset < length + 1; ++offset)
+                {
+                    cmdFile.get(byte);
+                    buffer[offset] = byte;
+                }
+                arguments.emplace_back(buffer);
+            }
         }
-        cmdFile.clear();
-        cmdFile.seekg(0);
-        std::vector arguments = std::vector<UnicodeString>();
-        arguments.reserve(lengths.size());
-        for (auto length : lengths)
+        catch (...)
         {
-            std::string buffer = std::string(length, 0);
-            for (int offset = 0; offset < length + 1; ++offset)
-            {
-                cmdFile.get(byte);
-                buffer[offset] = byte;
-            }
-            arguments.emplace_back(buffer);
+            throw NotEnoughMemoryException(allocationFailMessage);
         }
         return arguments;
 #endif
     }
+#endif
 
     [[nodiscard]]
     bool Terminal::IsInputRedirected()

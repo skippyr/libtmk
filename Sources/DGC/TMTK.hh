@@ -86,6 +86,24 @@ namespace DGC::TMTK
         InitException(const std::string_view& message);
     };
 
+    class NotEnoughMemoryException final : public Exception
+    {
+    public:
+        NotEnoughMemoryException(const std::string_view& message);
+    };
+
+    class BadEncodingException final : public Exception
+    {
+    public:
+        BadEncodingException(const std::string_view& message);
+    };
+
+    class IOException : public Exception
+    {
+    public:
+        IOException(const std::string_view& message);
+    };
+
 #ifdef _WIN32
     class BadEncodingException final : public std::exception
     {
@@ -115,10 +133,6 @@ namespace DGC::TMTK
 #endif
 
     class StreamRedirectionException final : public std::exception
-    {
-    };
-
-    class NotEnoughMemoryException final : public std::exception
     {
     };
 
