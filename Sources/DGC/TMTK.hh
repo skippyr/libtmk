@@ -106,6 +106,13 @@ namespace DGC::TMTK
         IOException(const std::string_view& message);
     };
 
+    // TODO: explicitly say in docs it is not meant to be handled
+    class InternalAttributesException : public Exception
+    {
+    public:
+        InternalAttributesException(const std::string_view& message);
+    };
+
 #ifndef _WIN32
     class TcgetattrException final : public std::exception
     {
@@ -133,10 +140,6 @@ namespace DGC::TMTK
     };
 
     class CannotWriteToStreamException final : public std::exception
-    {
-    };
-
-    class CannotFlushStreamException final : public std::exception
     {
     };
 
@@ -474,8 +477,6 @@ namespace DGC::TMTK
         /// <summary>
         /// Flushes the terminal input buffer, losing any content it has.
         /// </summary>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
-        /// <exception cref="IOException">Thrown when the stream does not have a buffer to flush and when the flush operation fails.</exception>
         static void FlushInput();
         /// <summary>
         /// Specifies whether the terminal should use custom styles including colors and text styles. By default, it allows it if the environment variable <c>NO_COLOR</c> is

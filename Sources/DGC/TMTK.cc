@@ -54,6 +54,10 @@ namespace DGC::TMTK
     {
     }
 
+    InternalAttributesException::InternalAttributesException(const std::string_view& message) : Exception(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
@@ -349,69 +353,81 @@ namespace DGC::TMTK
         Init();
         if (s_isInputRedirected)
         {
-            throw CannotFlushStreamException();
+            throw IOException("cannot flush the terminal input streams due to it being redirected.");
         }
+        if (!std::cin.rdbuf())
+        {
+            throw IOException("the terminal input stream does not have a buffer to flush.");
+        }
+        constexpr const char* flushFailMessage = "cannot flush the terminal input stream.";
 #ifdef _WIN32
         if (!FlushConsoleInputBuffer(s_inputHandle))
         {
-            throw CannotFlushStreamException();
+            throw IOException(flushFailMessage);
         }
 #else
         termios attributes;
+        constexpr const char* attributesFetchFailMessage = "cannot obtain the terminal input stream attributes.";
+        constexpr const char* attributesSetFailMessage = "cannot set the terminal input stream attributes.";
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesFetchFailMessage);
         }
         int flags = fcntl(STDIN_FILENO, F_GETFL);
         if (flags == -1)
         {
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesFetchFailMessage);
         }
         if (fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK))
         {
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
         attributes.c_lflag &= ~(ECHO | ICANON);
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
             if (fcntl(STDIN_FILENO, F_SETFL, flags))
             {
-                throw CannotFlushStreamException();
+                throw InternalAttributesException(attributesSetFailMessage);
             }
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
-        try
+        while (true)
         {
-            while (true)
+            try
             {
                 if (std::cin.get() == EOF)
                 {
                     break;
                 }
             }
-            std::cin.clear();
-        }
-        catch (...)
-        {
-            if (fcntl(STDIN_FILENO, F_SETFL, flags))
+            catch (...)
             {
-                throw CannotFlushStreamException();
+                if (std::cin.eof())
+                {
+                    break;
+                }
+                std::cin.clear();
+                if (fcntl(STDIN_FILENO, F_SETFL, flags))
+                {
+                    throw InternalAttributesException(attributesSetFailMessage);
+                }
+                attributes.c_lflag |= ECHO | ICANON;
+                if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
+                {
+                    throw InternalAttributesException(attributesSetFailMessage);
+                }
+                throw IOException(flushFailMessage);
             }
-            attributes.c_lflag |= ECHO | ICANON;
-            if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
-            {
-                throw CannotFlushStreamException();
-            }
-            throw;
         }
+        std::cin.clear();
         if (fcntl(STDIN_FILENO, F_SETFL, flags))
         {
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
         attributes.c_lflag |= ECHO | ICANON;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
-            throw CannotFlushStreamException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
 #endif
     }
