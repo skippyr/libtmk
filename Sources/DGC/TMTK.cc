@@ -62,6 +62,10 @@ namespace DGC::TMTK
     {
     }
 
+    StreamRedirectionException::StreamRedirectionException(const std::string_view& message) : IOException(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
@@ -196,7 +200,7 @@ namespace DGC::TMTK
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
         if (!GetConsoleScreenBufferInfo(s_outputHandle, &bufferInfo) && !GetConsoleScreenBufferInfo(s_errorHandle, &bufferInfo))
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException(""); /* TODO: add an error message here later */
         }
         return bufferInfo;
     }
@@ -653,7 +657,7 @@ namespace DGC::TMTK
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException("");
         }
         return Dimensions(windowSize.ws_col, windowSize.ws_row);
 #endif
@@ -668,7 +672,7 @@ namespace DGC::TMTK
 #else
         if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
         {
-            throw StreamRedirectionException();
+            throw StreamRedirectionException("");
         }
         FlushInput();
         WriteAnsi("\x1b[6n");

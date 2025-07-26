@@ -119,7 +119,14 @@ namespace DGC::TMTK
         FormatException(const std::string_view& message);
     };
 
+    class StreamRedirectionException final : public IOException
+    {
+    public:
+        StreamRedirectionException(const std::string_view& message);
+    };
+
 #ifndef _WIN32
+    /* TODO: remove this after exception refactoring. */
     class TcgetattrException final : public std::exception
     {
     };
@@ -136,10 +143,6 @@ namespace DGC::TMTK
     {
     };
 #endif
-
-    class StreamRedirectionException final : public std::exception
-    {
-    };
 
     class OutOfRangeException final : public std::exception
     {
@@ -409,6 +412,7 @@ namespace DGC::TMTK
         template <typename... Arguments>
         static void WriteAnsi(const std::string_view& format, Arguments... arguments)
         {
+            /* NOTE: it uses a stream preference algorithm to avoid caching and flushing performance costs whenever possible. */
             Init();
             if (s_ansiPrefersStdOut)
             {
@@ -495,7 +499,7 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         static void SetStylesUse(bool allowsTextStyle);
         /// <summary>
-        /// Sets a 256-color ANSI palette color in the terminal foreground.
+        /// Writes the ANSI sequence that sets a 256-color ANSI palette color in the terminal foreground to the most viable output stream.
         /// </summary>
         /// <param name="ansiColor">The color to be set.</param>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
@@ -504,7 +508,7 @@ namespace DGC::TMTK
         /// <remarks><para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetForeground(std::uint8_t ansiColor);
         /// <summary>
-        /// Sets one of the first 16 standard colors of the ANSI palette in the terminal foreground.
+        /// Writes the ANSI sequence that sets one of the first 16 standard colors of the ANSI palette in the terminal foreground to the most viable output stream.
         /// </summary>
         /// <param name="color">The color to be set.</param>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
@@ -513,7 +517,7 @@ namespace DGC::TMTK
         /// <remarks>If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</remarks>
         static void SetForeground(ANSIColor color);
         /// <summary>
-        /// Sets an RGB color in the terminal foreground.
+        /// Writes the ANSI sequence that sets an RGB color in the terminal foreground to the most viable output stream.
         /// </summary>
         /// <param name="color">The color to be set.</param>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
