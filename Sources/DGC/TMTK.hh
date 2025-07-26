@@ -92,11 +92,13 @@ namespace DGC::TMTK
         NotEnoughMemoryException(const std::string_view& message);
     };
 
+#ifdef _WIN32
     class BadEncodingException final : public Exception
     {
     public:
         BadEncodingException(const std::string_view& message);
     };
+#endif
 
     class IOException : public Exception
     {
@@ -104,11 +106,7 @@ namespace DGC::TMTK
         IOException(const std::string_view& message);
     };
 
-#ifdef _WIN32
-    class BadEncodingException final : public std::exception
-    {
-    };
-#else
+#ifndef _WIN32
 #ifdef __linux__
     class CannotOpenCommandLineException final : public std::exception
     {

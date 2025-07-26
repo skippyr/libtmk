@@ -44,9 +44,11 @@ namespace DGC::TMTK
     {
     }
 
+#ifdef _WIN32
     BadEncodingException::BadEncodingException(const std::string_view& message) : Exception(message)
     {
     }
+#endif
 
     IOException::IOException(const std::string_view& message) : Exception(message)
     {
