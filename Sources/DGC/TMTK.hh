@@ -494,11 +494,51 @@ namespace DGC::TMTK
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         static void SetStylesUse(bool allowsTextStyle);
+        /// <summary>
+        /// Sets a 256-color ANSI palette color in the terminal foreground.
+        /// </summary>
+        /// <param name="ansiColor">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</remarks>
         static void SetForeground(std::uint8_t ansiColor);
+        /// <summary>
+        /// Sets one of the first 16 standard colors of the ANSI palette in the terminal foreground.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void SetForeground(ANSIColor color);
+        /// <summary>
+        /// Sets an RGB color in the terminal foreground.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>The terminal must have TrueColor support for it to be visible.</remarks>
         static void SetForeground(RGBColor color);
+        /// <summary>
+        /// Sets a color of the 256 colors ANSI palette in the terminal background.
+        /// </summary>
+        /// <param name="ansiColor">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</remarks>
         static void SetBackground(std::uint8_t ansiColor);
+        /// <summary>
+        /// Sets one of the first 16 standard colors of the ANSI palette in the terminal background.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void SetBackground(ANSIColor color);
+        /// <summary>
+        /// Sets an RGB color in the terminal background.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>The terminal must have TrueColor support for it to be visible.</remarks>
         static void SetBackground(RGBColor color);
         static void SetTextStyles(int styles);
         static void SetTextStyles(TextStyle style);
