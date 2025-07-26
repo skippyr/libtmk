@@ -118,7 +118,6 @@ namespace DGC::TMTK
 
     void Terminal::Init()
     {
-        /* NOTE: learn more about the NO_COLOR environment variable at: https://no-color.org. */
         if (s_hasInit)
         {
             return;
@@ -131,6 +130,7 @@ namespace DGC::TMTK
         s_isInputRedirected = IsStreamRedirected(s_inputHandle, "input");
         s_isOutputRedirected = IsStreamRedirected(s_outputHandle, "output");
         s_isErrorRedirected = IsStreamRedirected(s_errorHandle, "error");
+        /* NOTE: learn more about the NO_COLOR environment variable at: https://no-color.org. */
         s_allowsStyles = std::getenv("NO_COLOR") == nullptr;
         if (!SetConsoleOutputCP(CP_UTF8))
         {
@@ -145,8 +145,14 @@ namespace DGC::TMTK
         s_isOutputRedirected = IsStreamRedirected(STDOUT_FILENO, "output");
         s_isErrorRedirected = IsStreamRedirected(STDERR_FILENO, "error");
         const char* term;
+        /* NOTE: learn more about the NO_COLOR environment variable at: https://no-color.org. */
         s_allowsStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #endif
+        /* NOTE: for safety, the standard streams are marked to throw exceptions on failure. */
+        auto bits = std::ios::badbit | std::ios::failbit;
+        std::cin.exceptions(bits);
+        std::cout.exceptions(bits);
+        std::cerr.exceptions(bits);
     }
 
 #ifdef _WIN32
