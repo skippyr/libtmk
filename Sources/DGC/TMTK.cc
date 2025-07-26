@@ -651,7 +651,6 @@ namespace DGC::TMTK
     Dimensions Terminal::GetDimensions()
     {
         Init();
-        /* NOTE: obtaning the terminal dimensions can fail for reasons other than stream redirection. */
         if (!s_isInputRedirected || !s_isOutputRedirected || !s_isErrorRedirected)
         {
             throw StreamRedirectionException("cannot obtain the terminal dimensions due to all output streams being redirected.");
@@ -682,19 +681,21 @@ namespace DGC::TMTK
         }
         if (s_isOutputRedirected && s_isErrorRedirected)
         {
-
+            throw StreamRedirectionException("cannot request the terminal cursor coordinate due to all output streams being redirected.");
         }
         FlushInput();
         WriteAnsi("\x1b[6n");
+        constexpr const char* attributesFetchFailMessage = "cannot obtain the terminal input stream attributes due to an operating system error.";
+        constexpr const char* attributesSetFailMessage = "cannot set the terminal input stream attributes due to an operating system error.";
         termios attributes;
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
-            throw TcgetattrException();
+            throw InternalAttributesException(attributesFetchFailMessage);
         }
         attributes.c_lflag &= ~(ECHO | ICANON);
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
-            throw TcsetattrException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
         std::uint16_t row;
         std::uint16_t column;
@@ -702,12 +703,12 @@ namespace DGC::TMTK
         attributes.c_lflag |= ECHO | ICANON;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &attributes))
         {
-            throw TcsetattrException();
+            throw InternalAttributesException(attributesSetFailMessage);
         }
         if (matches != 2)
         {
             FlushInput();
-            throw CursorFormatException();
+            throw FormatException("the terminal response about the cursor coordinate is badly formed.");
         }
         return Coordinate(column - 1, row - 1);
 #endif
