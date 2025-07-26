@@ -58,6 +58,10 @@ namespace DGC::TMTK
     {
     }
 
+    FormatException::FormatException(const std::string_view& message) : Exception(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
@@ -213,7 +217,7 @@ namespace DGC::TMTK
     std::vector<UnicodeString> Terminal::GetArguments()
     {
         Init();
-        constexpr const char* allocationFailMessage = "cannot allocate enough memory to hold the terminal arguments.";
+        constexpr const char* allocationFailMessage = "cannot allocate enough memory for the terminal arguments.";
 #ifdef _WIN32
         int totalArguments;
         LPWSTR* systemArguments = CommandLineToArgvW(GetCommandLineW(), &totalArguments);
