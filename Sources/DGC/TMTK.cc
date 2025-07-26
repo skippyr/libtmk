@@ -200,7 +200,7 @@ namespace DGC::TMTK
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
         if (!GetConsoleScreenBufferInfo(s_outputHandle, &bufferInfo) && !GetConsoleScreenBufferInfo(s_errorHandle, &bufferInfo))
         {
-            throw StreamRedirectionException(""); /* TODO: add an error message here later */
+            throw InternalAttributesException("cannot obtain the terminal dimensions attributes due to an operating system error.");
         }
         return bufferInfo;
     }
@@ -375,8 +375,8 @@ namespace DGC::TMTK
         }
 #else
         termios attributes;
-        constexpr const char* attributesFetchFailMessage = "cannot obtain the terminal input stream attributes.";
-        constexpr const char* attributesSetFailMessage = "cannot set the terminal input stream attributes.";
+        constexpr const char* attributesFetchFailMessage = "cannot obtain the terminal input stream attributes due to an operating system error.";
+        constexpr const char* attributesSetFailMessage = "cannot set the terminal input stream attributes due to an operating system error.";
         if (tcgetattr(STDIN_FILENO, &attributes))
         {
             throw InternalAttributesException(attributesFetchFailMessage);
@@ -651,6 +651,11 @@ namespace DGC::TMTK
     Dimensions Terminal::GetDimensions()
     {
         Init();
+        /* NOTE: obtaning the terminal dimensions can fail for reasons other than stream redirection. */
+        if (!s_isInputRedirected || !s_isOutputRedirected || !s_isErrorRedirected)
+        {
+            throw StreamRedirectionException("cannot obtain the terminal dimensions due to all output streams being redirected.");
+        }
 #ifdef _WIN32
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
         return Dimensions(bufferInfo.srWindow.Right - bufferInfo.srWindow.Left + 1, bufferInfo.srWindow.Bottom - bufferInfo.srWindow.Top + 1);
@@ -658,7 +663,7 @@ namespace DGC::TMTK
         winsize windowSize;
         if (ioctl(STDIN_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) && ioctl(STDERR_FILENO, TIOCGWINSZ, &windowSize))
         {
-            throw StreamRedirectionException("");
+            throw InternalAttributesException("cannot obtain the terminal dimensions attributes due to an operating system error.");
         }
         return Dimensions(windowSize.ws_col, windowSize.ws_row);
 #endif
@@ -671,9 +676,13 @@ namespace DGC::TMTK
         CONSOLE_SCREEN_BUFFER_INFO bufferInfo = GetScreenBufferInfo();
         return Coordinate(bufferInfo.dwCursorPosition.X - bufferInfo.srWindow.Left, bufferInfo.dwCursorPosition.Y - bufferInfo.srWindow.Top);
 #else
-        if (s_isInputRedirected || (s_isOutputRedirected && s_isErrorRedirected))
+        if (s_isInputRedirected)
         {
-            throw StreamRedirectionException("");
+            throw StreamRedirectionException("cannot read the terminal response about the cursor coordinate due to the input stream being redirected.");
+        }
+        if (s_isOutputRedirected && s_isErrorRedirected)
+        {
+
         }
         FlushInput();
         WriteAnsi("\x1b[6n");

@@ -619,6 +619,15 @@ namespace DGC::TMTK
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
         static void CloseAlternateScreen();
+        /// <summary>
+        /// Gets the terminal screen dimensions.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <exception cref="InternalAttributesException">Thrown when the dimensions cannot be obtained due to an operating system error.</exception>
+        /// <remarks>The operating system kernel or console submodule can report dimensions that may not match the graphical window or monitor sizes.</remarks>
         static Dimensions GetDimensions();
         static Coordinate GetCursorCoordinate();
         static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
