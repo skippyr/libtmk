@@ -1,5 +1,5 @@
 /* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
- * TMTK.hpp
+ * TMTK.hh
  *
  * TMTK (Terminal Manipulation ToolKit) <https://github.com/skippyr/TMTK>
  * DGC :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
@@ -70,27 +70,23 @@ namespace DGC::TMTK
         Left
     };
 
-    class InitException : public std::exception
+    class Exception : public std::exception
     {
+        std::string m_message;
+
+    public:
+        Exception(const std::string_view& message);
+        [[nodiscard]]
+        const char* what() const noexcept override;
+    };
+
+    class InitException : public Exception
+    {
+    public:
+        InitException(const std::string_view& message);
     };
 
 #ifdef _WIN32
-    class CannotSetOutputCPException final : public InitException
-    {
-    };
-
-    class InvalidHandleValueException final : public InitException
-    {
-    };
-
-    class InvalidFileTypeException final : public InitException
-    {
-    };
-
-    class NoANSISupportException final : public InitException
-    {
-    };
-
     class BadEncodingException final : public std::exception
     {
     };
@@ -101,10 +97,6 @@ namespace DGC::TMTK
     };
 
 #endif
-    class BadFileDescriptorException final : public InitException
-    {
-    };
-
     class TcgetattrException final : public std::exception
     {
     };
@@ -356,7 +348,7 @@ namespace DGC::TMTK
         /// <returns>The handle.</returns>
         /// <exception cref="InvalidHandleValueException">Thrown when the stream handle is invalid.</exception>
         [[nodiscard]]
-        static HANDLE GetHandle(DWORD id);
+        static HANDLE GetHandle(DWORD id, const char* name);
         /// <summary>
         /// Checks whether a terminal stream is being redirected. This overloading is only available on Windows.
         /// </summary>
@@ -364,7 +356,7 @@ namespace DGC::TMTK
         /// <returns>A boolean that states that.</returns>
         /// <exception cref="InvalidFileTypeException">Thrown when the stream file type is invalid.</exception>
         [[nodiscard]]
-        static bool IsStreamRedirected(HANDLE handle);
+        static bool IsStreamRedirected(HANDLE handle, const char* name);
         /// <summary>
         /// Sets the bitmask flag that enables the parse of ANSI escape sequences in a terminal stream mode. It is only available on Windows.
         /// </summary>
@@ -389,7 +381,7 @@ namespace DGC::TMTK
         /// <returns>A boolean that states that.</returns>
         /// <exception cref="InvalidFileDescriptorException">Thrown when the file descriptor is invalid.</exception>
         [[nodiscard]]
-        static bool IsStreamRedirected(int fd);
+        static bool IsStreamRedirected(int fd, const char* name);
 #endif
 
         /// <summary>

@@ -1,5 +1,5 @@
 /* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
- * TMTK.cpp
+ * TMTK.cc
  *
  * TMTK (Terminal Manipulation ToolKit) <https://github.com/skippyr/TMTK>
  * DGC :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
@@ -9,7 +9,7 @@
  * //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
  */
 
-#include "TMTK.hpp"
+#include "TMTK.hh"
 #include <cstring>
 #ifdef _WIN32
 #include <io.h>
@@ -27,6 +27,19 @@
 
 namespace DGC::TMTK
 {
+    Exception::Exception(const std::string_view& message) : m_message(message)
+    {
+    }
+
+    const char* Exception::what() const noexcept
+    {
+        return m_message.c_str();
+    }
+
+    InitException::InitException(const std::string_view& message) : Exception(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
@@ -98,47 +111,47 @@ namespace DGC::TMTK
         }
         s_hasInit = true;
 #ifdef _WIN32
-        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE);
-        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE);
-        s_isInputRedirected = IsStreamRedirected(s_inputHandle);
-        s_isOutputRedirected = IsStreamRedirected(s_outputHandle);
-        s_isErrorRedirected = IsStreamRedirected(s_errorHandle);
+        s_inputHandle = GetStdHandle(STD_INPUT_HANDLE, "input");
+        s_outputHandle = GetStdHandle(STD_OUTPUT_HANDLE, "output");
+        s_errorHandle = GetStdHandle(STD_ERROR_HANDLE, "error");
+        s_isInputRedirected = IsStreamRedirected(s_inputHandle, "input");
+        s_isOutputRedirected = IsStreamRedirected(s_outputHandle, "output");
+        s_isErrorRedirected = IsStreamRedirected(s_errorHandle, "error");
         s_allowsTextStyles = std::getenv("NO_COLOR") == nullptr;
         if (!SetConsoleOutputCP(CP_UTF8))
         {
-            throw CannotSetOutputCPException();
+            throw InitException("cannot set UTF-8 as the terminal output encoding.");
         }
         if (!EnableANSIParse(s_outputHandle) && !EnableANSIParse(s_errorHandle))
         {
-            throw NoANSISupportException();
+            throw InitException("cannot enable the terminal parse of ANSI sequences.");
         }
 #else
-        s_isInputRedirected = IsStreamRedirected(STDIN_FILENO);
-        s_isOutputRedirected = IsStreamRedirected(STDOUT_FILENO);
-        s_isErrorRedirected = IsStreamRedirected(STDERR_FILENO);
+        s_isInputRedirected = IsStreamRedirected(STDIN_FILENO, "input");
+        s_isOutputRedirected = IsStreamRedirected(STDOUT_FILENO, "output");
+        s_isErrorRedirected = IsStreamRedirected(STDERR_FILENO, "error");
         const char* term;
         s_allowsStyles = std::getenv("NO_COLOR") == nullptr || ((term = std::getenv("TERM")) && std::strcmp(term, "dumb"));
 #endif
     }
 
 #ifdef _WIN32
-    HANDLE Terminal::GetHandle(DWORD id)
+    HANDLE Terminal::GetHandle(DWORD id, const char* name)
     {
         HANDLE handle = GetStdHandle(id);
         if (handle == INVALID_HANDLE_VALUE)
         {
-            throw InvalidHandleValueException();
+            throw InitException(std::format("obtained an invalid handle value for the terminal {} stream.", name));
         }
         return handle;
     }
 
-    bool Terminal::IsStreamRedirected(HANDLE handle)
+    bool Terminal::IsStreamRedirected(HANDLE handle, const char* name)
     {
         DWORD type = GetFileType(handle);
         if (type == FILE_TYPE_UNKNOWN && GetLastError() != NO_ERROR)
         {
-            throw InvalidFileTypeException();
+            throw InitException(std::format("the terminal {} stream has an invalid file type.", name));
         }
         return type != FILE_TYPE_CHAR;
     }
@@ -160,7 +173,7 @@ namespace DGC::TMTK
         return bufferInfo;
     }
 #else
-    bool Terminal::IsStreamRedirected(int fd)
+    bool Terminal::IsStreamRedirected(int fd, const char *stream)
     {
         if (isatty(fd))
         {
@@ -168,7 +181,7 @@ namespace DGC::TMTK
         }
         if (errno != ENOTTY)
         {
-            throw BadFileDescriptorException();
+            throw InitException(std::format("the terminal {} stream has an invalid file descriptor.", stream));
         }
         return true;
     }
