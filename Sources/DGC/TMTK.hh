@@ -472,11 +472,14 @@ namespace DGC::TMTK
         /// Flushes the terminal output stream buffer, writing any content it has to the stream.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
-        /// <exception cref="CannotFlushStreamException">Thrown when the stream cannot be flushed.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to be flushed or when the operation fails.</exception>
         static void FlushOutput();
         /// <summary>
-        /// Flushes the terminal input buffer, losing any content it has.
+        /// Flushes the terminal input buffer, losing any content it has cached.
         /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to be flushed or when the operation fails.</exception>
+        /// <exception cref="InternalAttributesException">Thrown on macOS and Linux when internal attributes of the stream could not be fetched or set.</exception>
         static void FlushInput();
         /// <summary>
         /// Specifies whether the terminal should use custom styles including colors and text styles. By default, it allows it if the environment variable <c>NO_COLOR</c> is
