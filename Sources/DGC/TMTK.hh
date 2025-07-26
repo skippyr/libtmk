@@ -318,7 +318,7 @@ namespace DGC::TMTK
         static HANDLE s_errorHandle;
 #endif
         /// <summary>
-        /// A boolean that states the terminal has been initialized, setting up the required features in and from the environment.
+        /// A boolean that states the terminal features have been initialized.
         /// </summary>
         static bool s_hasInit;
         /// <summary>
@@ -326,43 +326,41 @@ namespace DGC::TMTK
         /// </summary>
         static bool s_hasANSICache;
         /// <summary>
-        /// A boolean that states ANSI sequences are prefered to be written to the terminal output stream, allowing caching.
+        /// A boolean that states ANSI sequences are preferred to be written to the terminal output stream, allowing caching.
         /// </summary>
         static bool s_ansiPrefersStdOut;
 
         /// <summary>
-        /// Initiates the required terminal features in and from the environment. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
+        /// Initiates the required terminal features. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
         /// and cache metadata about streams and style allowance.
         /// </summary>
-        /// <exception cref="CannotSetOutputEncodingException">Thrown, on Windows, when UTF-8 cannot be set as the output encoding.</exception>
-        /// <exception cref="NoANSISupportException">Thrown, on Windows, when the parse of ANSI escape sequences cannot be enabled.</exception>
-        /// <exception cref="InvalidHandleValueException">Thrown, on Windows, when any stream handle is invalid.</exception>
-        /// <exception cref="InvalidFileTypeException">Thrown, on Windows, when any stream file type is invalid.</exception>
-        /// <exception cref="InvalidFileDescriptorException">Thrown, on macOS and Linux, when the file descriptor is invalid.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         static void Init();
 #ifdef _WIN32
         /// <summary>
         /// Gets the Windows terminal handle of a stream. It is only available on Windows.
         /// </summary>
         /// <param name="id">The stream identifier, such as <code>STD_OUTPUT_HANDLE</code>.</param>
+        /// <param name="name">The stream name to be used in exception messages.</param>
         /// <returns>The handle.</returns>
-        /// <exception cref="InvalidHandleValueException">Thrown when the stream handle is invalid.</exception>
+        /// <exception cref="InitException">Thrown when the stream handle is invalid.</exception>
         [[nodiscard]]
         static HANDLE GetHandle(DWORD id, const char* name);
         /// <summary>
-        /// Checks whether a terminal stream is being redirected. This overloading is only available on Windows.
+        /// Checks whether a terminal stream is being redirected. It is only available on Windows.
         /// </summary>
         /// <param name="handle">The stream handle.</param>
+        /// <param name="name">The stream name to be used in exception messages.</param>
         /// <returns>A boolean that states that.</returns>
-        /// <exception cref="InvalidFileTypeException">Thrown when the stream file type is invalid.</exception>
+        /// <exception cref="InitException">Thrown when the stream file type is invalid.</exception>
         [[nodiscard]]
         static bool IsStreamRedirected(HANDLE handle, const char* name);
         /// <summary>
-        /// Sets the bitmask flag that enables the parse of ANSI escape sequences in a terminal stream mode. It is only available on Windows.
+        /// Sets the bitmask flag that enables the parse of ANSI sequences in a terminal output stream mode. It is only available on Windows.
         /// </summary>
         /// <param name="handle">The stream handle.</param>
         /// <returns>A boolean that states the parse has been enabled.</returns>
-        /// <remarks>It is only necessary to set it on one output stream for it to work.</remarks>
+        /// <remarks>It is only necessary to set it in one stream for it to work.</remarks>
         [[nodiscard]]
         static bool EnableANSIParse(HANDLE handle) noexcept;
         /// <summary>
@@ -375,17 +373,17 @@ namespace DGC::TMTK
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 #else
         /// <summary>
-        /// Checks whether a terminal stream is being redirected. This overloading is only available on macOS and Linux.
+        /// Checks whether a terminal stream is being redirected. It is only available on macOS and Linux.
         /// </summary>
         /// <param name="fd">The stream file descriptor, such as <code>STDOUT_FILENO</code>.</param>
         /// <returns>A boolean that states that.</returns>
-        /// <exception cref="InvalidFileDescriptorException">Thrown when the file descriptor is invalid.</exception>
+        /// <exception cref="InitException">Thrown when the file descriptor is invalid.</exception>
         [[nodiscard]]
         static bool IsStreamRedirected(int fd, const char* name);
 #endif
 
         /// <summary>
-        /// Formats and writes an ANSI escape sequence to a terminal output stream.
+        /// Formats and writes an ANSI sequence to a terminal output stream.
         /// </summary>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <param name="format">The format to be used.</param>
