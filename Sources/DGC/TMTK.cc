@@ -199,8 +199,10 @@ namespace DGC::TMTK
         }
         return true;
     }
+
     std::vector<UnicodeString> Terminal::GetArguments()
     {
+        Init();
         constexpr const char* allocationFailMessage = "cannot allocate enough memory to hold the terminal arguments.";
 #ifdef _WIN32
         int totalArguments;
@@ -311,14 +313,28 @@ namespace DGC::TMTK
 
     void Terminal::FlushOutput()
     {
-        /// HACK: this function will throw an exception if the stream does not have a buffer.
         Init();
-        std::cout << std::flush;
+        if (!std::cout.rdbuf())
+        {
+            throw IOException("the terminal output stream does not have a buffer to flush.");
+        }
+        constexpr const char* flushFailMessage = "cannot flush the terminal output stream.";
+        std::cout.clear();
+        try
+        {
+            std::cout << std::flush;
+        }
+        catch (...)
+        {
+            std::cout.clear();
+            throw IOException(flushFailMessage);
+        }
         if (std::cout.fail())
         {
             std::cout.clear();
-            throw CannotFlushStreamException();
+            throw IOException(flushFailMessage);
         }
+        std::cout.clear();
         s_hasANSICache = false;
     }
 

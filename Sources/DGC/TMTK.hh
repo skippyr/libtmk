@@ -107,12 +107,6 @@ namespace DGC::TMTK
     };
 
 #ifndef _WIN32
-#ifdef __linux__
-    class CannotOpenCommandLineException final : public std::exception
-    {
-    };
-
-#endif
     class TcgetattrException final : public std::exception
     {
     };
@@ -346,7 +340,7 @@ namespace DGC::TMTK
         /// Initiates the required terminal features. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
         /// and cache metadata about streams and style allowance.
         /// </summary>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         static void Init();
 #ifdef _WIN32
         /// <summary>
@@ -379,7 +373,7 @@ namespace DGC::TMTK
         /// Gets the Windows terminal screen buffer information.
         /// </summary>
         /// <returns>The buffer information.</returns>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="StreamRedirectionException">Thrown when all possible streams that could return an answer are being redirected.</exception>
         [[nodiscard]]
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
@@ -446,9 +440,9 @@ namespace DGC::TMTK
         /// Gets the arguments given by the terminal shell to the current process.
         /// </summary>
         /// <returns>A vector containing the arguments.</returns>
-        /// <exception cref="NotEnoughMemoryException">Thrown when memory cannot be allocated for the arguments.</exception>
-        /// <exception cref="BadEncodingException">Thrown, on Windows, if any argument is badly encoded in UTF-16.</exception>
-        /// <exception cref="CannotOpenCommandLineException">Thrown, on Linux, if the <code>/proc/self/cmdline</code> file cannot be opened for reading.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory cannot be allocated for the arguments.</exception>
+        /// <exception cref="IOException">Thrown, on Linux, if the <code>/proc/self/cmdline</code> file cannot be opened for reading.</exception>
         static std::vector<UnicodeString> GetArguments();
         /// <summary>
         /// Checks whether the terminal input stream is being redirected.
@@ -481,7 +475,7 @@ namespace DGC::TMTK
         /// Flushes the terminal input buffer, losing any content it has.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
-        /// <exception cref="CannotFlushStreamException">Thrown when the stream cannot be flushed.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to flush and when the flush operation fails.</exception>
         static void FlushInput();
         static void SetAllowsTextStyle(bool allowsTextStyle);
         static void SetForeground(std::uint8_t ansiColor);
@@ -509,6 +503,7 @@ namespace DGC::TMTK
         static void ClearLine();
         static void ClearHistory();
         // static void SetTitle(const std::string_view& title);
+        // static std::string CreateURL(const std::string_view& address); // <-- possibly better to create a URL class with custom formatting
 
         /// <summary>
         /// Formats and writes a string to the terminal output stream.
