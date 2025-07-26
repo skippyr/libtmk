@@ -416,7 +416,7 @@ namespace DGC::TMTK
 #endif
     }
 
-    void Terminal::SetAllowsTextStyle(bool allowsTextStyle)
+    void Terminal::SetStylesUse(bool allowsTextStyle)
     {
         Init();
         s_allowsStyles = allowsTextStyle;

@@ -346,7 +346,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Gets the Windows terminal handle of a stream. It is only available on Windows.
         /// </summary>
-        /// <param name="id">The stream identifier, such as <code>STD_OUTPUT_HANDLE</code>.</param>
+        /// <param name="id">The stream identifier, such as <c>STD_OUTPUT_HANDLE</c>.</param>
         /// <param name="name">The stream name to be used in exception messages.</param>
         /// <returns>The handle.</returns>
         /// <exception cref="InitException">Thrown when the stream handle is invalid.</exception>
@@ -381,7 +381,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Checks whether a terminal stream is being redirected. It is only available on macOS and Linux.
         /// </summary>
-        /// <param name="fd">The stream file descriptor, such as <code>STDOUT_FILENO</code>.</param>
+        /// <param name="fd">The stream file descriptor, such as <c>STDOUT_FILENO</c>.</param>
         /// <returns>A boolean that states that.</returns>
         /// <exception cref="InitException">Thrown when the file descriptor is invalid.</exception>
         [[nodiscard]]
@@ -442,7 +442,7 @@ namespace DGC::TMTK
         /// <returns>A vector containing the arguments.</returns>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory cannot be allocated for the arguments.</exception>
-        /// <exception cref="IOException">Thrown, on Linux, if the <code>/proc/self/cmdline</code> file cannot be opened for reading.</exception>
+        /// <exception cref="IOException">Thrown, on Linux, if the <c>/proc/self/cmdline</c> file cannot be opened for reading.</exception>
         static std::vector<UnicodeString> GetArguments();
         /// <summary>
         /// Checks whether the terminal input stream is being redirected.
@@ -477,7 +477,12 @@ namespace DGC::TMTK
         /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
         /// <exception cref="IOException">Thrown when the stream does not have a buffer to flush and when the flush operation fails.</exception>
         static void FlushInput();
-        static void SetAllowsTextStyle(bool allowsTextStyle);
+        /// <summary>
+        /// Specifies whether the terminal should use custom styles including colors and text styles. By default, it allows it if the environment variable <c>NO_COLOR</c> is
+        /// not set and, on macOS and Linux, when the environment variable <c>TERM</c> is not <c>dumb</c>.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        static void SetStylesUse(bool allowsTextStyle);
         static void SetForeground(std::uint8_t ansiColor);
         static void SetForeground(ANSIColor color);
         static void SetForeground(RGBColor color);
@@ -508,7 +513,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Formats and writes a string to the terminal output stream.
         /// </summary>
-        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
@@ -548,7 +553,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Formats and writes a string to the terminal output stream with a newline sequence appended to its end.
         /// </summary>
-        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
@@ -576,7 +581,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Formats and writes a string to the terminal error stream.
         /// </summary>
-        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
@@ -615,7 +620,7 @@ namespace DGC::TMTK
         /// <summary>
         /// Formats and writes a string to the terminal error stream with a newline sequence appended to its end.
         /// </summary>
-        /// <param name="format">The format to be used. It accepts the same specifiers as the <code>std::println</code> function family.</param>
+        /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
