@@ -527,7 +527,7 @@ namespace DGC::TMTK
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
-        /// <exception cref="NotEnoughMemoryException">Thrown when not enough can be allocated to format the output.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
         static void Write(const std::string_view& format, Arguments... arguments)
@@ -551,7 +551,7 @@ namespace DGC::TMTK
                 throw NotEnoughMemoryException("cannot allocate enough memory to format the output.");
             }
             std::cout.clear();
-            constexpr const char *writeFailMessage = "cannot write to the terminal output stream.";
+            constexpr const char* writeFailMessage = "cannot write to the terminal output stream.";
             try
             {
                 std::cout << result;
@@ -578,8 +578,9 @@ namespace DGC::TMTK
         /// Formats and writes an argument to the terminal output stream.
         /// </summary>
         /// <param name="argument">The argument to be formatted.</param>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
         static void Write(const T& argument)
         {
@@ -592,9 +593,9 @@ namespace DGC::TMTK
         /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="std::format_error">Thrown when an incorrect formatting is providing.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
         static void WriteLine(const std::string_view& format, Arguments... arguments)
         {
@@ -606,8 +607,9 @@ namespace DGC::TMTK
         /// Formats and writes an argument to the terminal output stream with a newline sequence appended to its end.
         /// </summary>
         /// <param name="argument">The argument to be formatted.</param>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
         static void WriteLine(const T& argument)
         {
@@ -620,9 +622,9 @@ namespace DGC::TMTK
         /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="std::format_error">Thrown when an incorrect formatting is providing.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
         static void WriteError(const std::string_view& format, Arguments... arguments)
         {
@@ -631,13 +633,40 @@ namespace DGC::TMTK
             {
                 FlushOutput();
             }
+            if (!std::cerr.rdbuf())
+            {
+                throw IOException("the terminal error stream does not a buffer to perform caching.");
+            }
+            std::string result;
+            try
+            {
+                result = std::vformat(format, std::make_format_args(arguments...));
+            }
+            catch (std::format_error&)
+            {
+                throw FormatException("the formatting requested for output is badly formed.");
+            }
+            catch (...)
+            {
+                throw NotEnoughMemoryException("cannot allocate enough memory to format the output.");
+            }
             std::cerr.clear();
-            std::cerr << std::vformat(format, std::make_format_args(arguments...));
+            constexpr const char* writeFailMessage = "cannot write to the terminal error stream.";
+            try
+            {
+                std::cerr << result;
+            }
+            catch (...)
+            {
+                std::cerr.clear();
+                throw IOException(writeFailMessage);
+            }
             if (std::cerr.fail())
             {
                 std::cerr.clear();
-                throw CannotWriteToStreamException();
+                throw IOException(writeFailMessage);
             }
+            std::cerr.clear();
             s_ansiPrefersStdOut = false;
         }
 
@@ -645,8 +674,9 @@ namespace DGC::TMTK
         /// Formats and writes an argument to the terminal error stream.
         /// </summary>
         /// <param name="argument">The argument to be formatted.</param>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
         static void WriteError(const T& argument)
         {
@@ -659,9 +689,9 @@ namespace DGC::TMTK
         /// <param name="format">The format to be used. It accepts the same specifiers as the <c>std::println</c> function family.</param>
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="std::format_error">Thrown when an incorrect formatting is providing.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
         static void WriteErrorLine(const std::string_view& format, Arguments... arguments)
         {
@@ -670,11 +700,12 @@ namespace DGC::TMTK
         }
 
         /// <summary>
-        /// Formats and writes an argument to the terminal error stream with a newline sequence appended to its end.
+        /// Formats and writes an argument to the terminal error stream with a newline appended to its end.
         /// </summary>
         /// <param name="argument">The argument to be formatted.</param>
-        /// <exception cref="std::out_of_memory">Thrown when memory cannot be allocated to format the string.</exception>
-        /// <exception cref="CannotWriteToStreamException">Thrown when it is not possible to write to the stream.</exception>
+        /// <exception cref="IOException">Thrown when the terminal output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
         static void WriteErrorLine(const T& argument)
         {
