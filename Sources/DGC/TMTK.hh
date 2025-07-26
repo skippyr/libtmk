@@ -498,51 +498,87 @@ namespace DGC::TMTK
         /// Sets a 256-color ANSI palette color in the terminal foreground.
         /// </summary>
         /// <param name="ansiColor">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</remarks>
+        /// <remarks><para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetForeground(std::uint8_t ansiColor);
         /// <summary>
         /// Sets one of the first 16 standard colors of the ANSI palette in the terminal foreground.
         /// </summary>
         /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</remarks>
         static void SetForeground(ANSIColor color);
         /// <summary>
         /// Sets an RGB color in the terminal foreground.
         /// </summary>
         /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>The terminal must have TrueColor support for it to be visible.</remarks>
+        /// <remarks><para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetForeground(RGBColor color);
         /// <summary>
         /// Sets a color of the 256 colors ANSI palette in the terminal background.
         /// </summary>
         /// <param name="ansiColor">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</remarks>
+        /// <remarks><para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetBackground(std::uint8_t ansiColor);
         /// <summary>
         /// Sets one of the first 16 standard colors of the ANSI palette in the terminal background.
         /// </summary>
         /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</remarks>
         static void SetBackground(ANSIColor color);
         /// <summary>
         /// Sets an RGB color in the terminal background.
         /// </summary>
         /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>The terminal must have TrueColor support for it to be visible.</remarks>
+        /// <remarks><para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para><para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetBackground(RGBColor color);
+        /// <summary>
+        /// Sets the terminal text styles flagged in a bitmask.
+        /// </summary>
+        /// <param name="styles">The bitmask containing the styles. It must be composed by using the <c>|</c> (bitwise OR) operator between members of the enum class <c>TextStyle</c>.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks><para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para><para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para></remarks>
         static void SetTextStyles(int styles);
+        /// <summary>
+        /// Sets a terminal text style.
+        /// </summary>
+        /// <param name="style">The style to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks><para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para><para>• If all output streams are being redirected, the style is not applied, not throwing exceptions or errors.</para></remarks>
         static void SetTextStyles(TextStyle style);
+        /// <summary>
+        /// Resets the terminal foreground and background colors.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ResetColors();
+        /// <summary>
+        /// Resets all terminal text styles.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ResetTextStyles();
         static void OpenAlternateScreen();
         static void CloseAlternateScreen();
