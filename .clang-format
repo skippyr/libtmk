@@ -1,8 +1,10 @@
 AccessModifierOffset: -4
 BasedOnStyle: Microsoft
 BreakAfterAttributes: Always
+BreakStringLiterals: false
 BreakTemplateDeclarations: Yes
-ColumnLimit: 180
+ColumnLimit: 999
 FixNamespaceComments: false
 NamespaceIndentation: All
 PointerAlignment: Left
+ReflowComments: false

@@ -545,12 +545,11 @@ namespace DGC::TMTK
         /// <summary>
         /// Writes the ANSI sequences that sets the terminal text styles flagged in a bitmask to the most viable stream.
         /// </summary>
-        /// <param name="styles">The bitmask containing the styles. It must be composed by using the <c>|</c> (bitwise OR) operator between members of the enum class
-        /// <c>TextStyle</c>.</param> <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception> <exception cref="IOException">Thrown when
-        /// the stream does not have a buffer to perform caching or when the write operation fails.</exception> <exception cref="NotEnoughMemoryException">Thrown  when not enough
-        /// memory can be allocated to format the output.</exception> <remarks><para>• Though rare, some terminals may not support all the styles available, causing them to not
-        /// take effect.</para><para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para><para>• In order to reset
-        /// it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset them automatically after the current process execution.</para></remarks>
+        /// <param name="styles">The bitmask containing the styles. It must be composed by using the <c>|</c> (bitwise OR) operator between members of the enum class <c>TextStyle</c>.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks><para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para><para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para><para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset them automatically after the current process execution.</para></remarks>
         static void SetTextStyles(int styles);
         /// <summary>
         /// Writes the ANSI sequence that sets a terminal text style to the most viable stream.

@@ -741,8 +741,7 @@ namespace DGC::TMTK
         {
             throw OutOfRangeException(outOfRangeFailMessage);
         }
-        if (Dimensions dimensions = GetDimensions(); (direction == Direction::Right && cursorCoordinate.GetColumn() + steps >= dimensions.GetWidth()) ||
-                                                     (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
+        if (Dimensions dimensions = GetDimensions(); (direction == Direction::Right && cursorCoordinate.GetColumn() + steps >= dimensions.GetWidth()) || (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
         {
             throw OutOfRangeException(outOfRangeFailMessage);
         }
