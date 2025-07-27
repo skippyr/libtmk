@@ -20,23 +20,78 @@
 
 namespace DGC::TMTK
 {
+    /// <summary>
+    /// Contains the first 16 standard colors of the terminal ANSI palette.
+    /// </summary>
+    /// <remarks>These colors always map to the ones in the current color scheme, providing a consistent and widely compatible option.</remarks>
     enum class ANSIColor
     {
+        /// <summary>
+        /// The dark variant of the black color. It is the same as value 0.
+        /// </summary>
+        /// <remarks>It should match with the color scheme background color.</remarks>
         DarkBlack,
+        /// <summary>
+        /// The dark variant of the red color. It is the same as value 1.
+        /// </summary>
         DarkRed,
+        /// <summary>
+        /// The dark variant of the green color. It is the same as value 2.
+        /// </summary>
         DarkGreen,
+        /// <summary>
+        /// The dark variant of the yellow color. It is the same as value 3.
+        /// </summary>
         DarkYellow,
+        /// <summary>
+        /// The dark variant of the blue color. It is the same as value 4.
+        /// </summary>
         DarkBlue,
+        /// <summary>
+        /// The dark variant of the magenta color. It is the same as value 5.
+        /// </summary.
         DarkMagenta,
+        /// <summary>
+        /// The dark variant of the cyan color. It is the same as value 6.
+        /// </summary>
         DarkCyan,
+        /// <summary>
+        /// The dark variant of the white color. It is the same as value 7.
+        /// </summary>
         DarkWhite,
+        /// <summary>
+        /// The light variant of the black color. It is the same as value 8.
+        /// </summary>
+        /// <remarks>It should match a darker version of the foreground color, useful for fadded highlights.</remarks>
         LightBlack,
+        /// <summary>
+        /// The light variant of the red color. It is the same as value 9.
+        /// </summary>
         LightRed,
+        /// <summary>
+        /// The light variant of the green color. It is the same as value 10.
+        /// </summary>
         LightGreen,
+        /// <summary>
+        /// The light variant of the yellow color. It is the same as value 11.
+        /// </summary>
         LightYellow,
+        /// <summary>
+        /// The light variant of the blue color. it is the same as value 12.
+        /// </summary>
         LightBlue,
+        /// <summary>
+        /// The light variant of the magenta color. It is the same as value 13.
+        /// </summary>
         LightMagenta,
+        /// <summary>
+        /// The light variant of the cyan color. It is the same as value 14.
+        /// </summary>
         LightCyan,
+        /// <summary>
+        /// The light variant of the white color. It is the same as value 15.
+        /// </summary>
+        /// <remarks>It should match with the color scheme foreground color.</remarks>
         LightWhite
     };
 
