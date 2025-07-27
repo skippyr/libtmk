@@ -106,7 +106,6 @@ namespace DGC::TMTK
         IOException(const std::string_view& message);
     };
 
-    // TODO: explicitly say in docs it is not meant to be handled
     class InternalAttributesException : public Exception
     {
     public:
@@ -125,31 +124,10 @@ namespace DGC::TMTK
         StreamRedirectionException(const std::string_view& message);
     };
 
-#ifndef _WIN32
-    /* TODO: remove this after exception refactoring. */
-    class TcgetattrException final : public std::exception
+    class OutOfRangeException final : public Exception
     {
-    };
-
-    class TcsetattrException final : public std::exception
-    {
-    };
-
-    class FcntlException final : public std::exception
-    {
-    };
-
-    class CursorFormatException final : public std::exception
-    {
-    };
-#endif
-
-    class OutOfRangeException final : public std::exception
-    {
-    };
-
-    class CannotWriteToStreamException final : public std::exception
-    {
+    public:
+        OutOfRangeException(const std::string_view& message);
     };
 
     class RGBColor final
@@ -622,9 +600,7 @@ namespace DGC::TMTK
         /// Gets the terminal screen dimensions.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="IOException">Thrown when the most viable output stream does not have a buffer to perform caching or when the write operation fails.</exception>
-        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all streams are being redirected.</exception>
         /// <exception cref="InternalAttributesException">Thrown when the dimensions cannot be obtained due to an operating system error.</exception>
         /// <remarks>The operating system kernel or console submodule can report dimensions that may not match the graphical window or monitor sizes.</remarks>
         static Dimensions GetDimensions();
@@ -633,13 +609,49 @@ namespace DGC::TMTK
         /// ANSI sequence to the most viable stream.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="IOException">Thrown, on macOS and Linux, when the stream does not have a buffer to perform caching or when the write operation of the request fails.</exception>
-        /// <exception cref="NotEnoughMemoryException">Thrown, on macOS and Linux, when not enough memory can be allocated to format the request.</exception>
-        /// <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are redirected, not allowing the request and read of the response.</exception>
-        /// <exception cref="FormatException">Thrown, on macOS and Linux, when the terminal response is badly formed.</exception> <remarks><para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para><para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para></remarks>
+        /// <exception cref="IOException">Thrown, on macOS and Linux, when the input stream or the viable output stream does not have a buffer to perform caching or when the write
+        /// operation of the request fails.</exception> <exception cref="NotEnoughMemoryException">Thrown, on macOS and Linux, when not enough memory can be allocated to format the
+        /// request.</exception> <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are redirected, not
+        /// allowing the request and read of the response.</exception> <exception cref="FormatException">Thrown, on macOS and Linux, when the terminal response is badly
+        /// formatted.</exception> <remarks><para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column
+        /// (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para><para>• On macOS and Linux, the coordinate is obtained
+        /// by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para></remarks>
         static Coordinate GetCursorCoordinate();
+        /// <summary>
+        /// Writes the ANSI sequence that sets the terminal cursor coordinate to the most viable stream.
+        /// </summary>
+        /// <param name="column">The column component of the coordinate to be set.</param>
+        /// <param name="row">The row component of the coordinate to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <exception cref="InternalAttributesException">Thrown when the terminal dimensions cannot be obtained due to an operating system error.</exception>
+        /// <exception cref="OutOfRangeException">Thrown when the coordinate provided is not contained within the terminal dimensions.</exception>
+        /// <remarks>It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and
+        /// row (in the vertical axis) values increase going right and down respectively.</remarks>
         static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
+        /// <summary>
+        /// Writes the ANSI sequence that sets the terminal cursor coordinate to the most viable stream.
+        /// </summary>
+        /// <param name="coordinate">The coordinate to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <exception cref="InternalAttributesException">Thrown when the terminal dimensions cannot be obtained due to an operating system error.</exception>
+        /// <exception cref="OutOfRangeException">Thrown when the coordinate provided is not contained within the terminal dimensions.</exception>
+        /// <remarks>It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and
+        /// row (in the vertical axis) values increase going right and down respectively.</remarks>
         static void SetCursorCoordinate(const Coordinate& coordinate);
+        /// <summary>
+        /// Writes the ANSI sequence that moves the terminal cursor to a specific direction.
+        /// </summary>
+        /// <param name="steps">The number of steps to take.</param>
+        /// <param name="direction">The direction of the movement.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
+        /// <exception cref="InternalAttributesException">Thrown when the terminal dimensions cannot be obtained due to an operating system error.</exception>
+        /// <exception cref="OutOfRangeException">Thrown when the final cursor coordinate after the movement is not contained within the terminal dimensions.</exception>
         static void MoveCursor(std::uint16_t steps, Direction direction);
         static void SetCursorVisible(bool isVisible);
         static void SetCursorStyle(CursorStyle style);

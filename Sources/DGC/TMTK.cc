@@ -66,6 +66,10 @@ namespace DGC::TMTK
     {
     }
 
+    OutOfRangeException::OutOfRangeException(const std::string_view& message) : Exception(message)
+    {
+    }
+
 #ifdef _WIN32
     std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
     {
@@ -719,7 +723,7 @@ namespace DGC::TMTK
         Dimensions dimensions = GetDimensions();
         if (column >= dimensions.GetWidth() || row >= dimensions.GetHeight())
         {
-            throw OutOfRangeException();
+            throw OutOfRangeException("cannot set a terminal cursor coordinate that is outside of its dimensions.");
         }
         WriteAnsi("\x1b[{};{}H", row + 1, column + 1);
     }
@@ -732,14 +736,15 @@ namespace DGC::TMTK
     void Terminal::MoveCursor(std::uint16_t steps, Direction direction)
     {
         Coordinate cursorCoordinate = GetCursorCoordinate();
+        constexpr const char* outOfRangeFailMessage = "cannot move the terminal cursor outside of its dimensions.";
         if ((direction == Direction::Left && cursorCoordinate.GetColumn() - steps < 0) || (direction == Direction::Top && cursorCoordinate.GetRow() - steps < 0))
         {
-            throw OutOfRangeException();
+            throw OutOfRangeException(outOfRangeFailMessage);
         }
         if (Dimensions dimensions = GetDimensions(); (direction == Direction::Right && cursorCoordinate.GetColumn() + steps >= dimensions.GetWidth()) ||
                                                      (direction == Direction::Left && cursorCoordinate.GetRow() + steps >= dimensions.GetHeight()))
         {
-            throw OutOfRangeException();
+            throw OutOfRangeException(outOfRangeFailMessage);
         }
         try
         {
