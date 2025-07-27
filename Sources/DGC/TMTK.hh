@@ -107,30 +107,35 @@ namespace DGC::TMTK
         /// <summary>
         /// Identified in the ANSI standard as the strong font brightness, in modern terminals, it usually applies the bold font weight and/or lighter foreground colors.
         /// </summary>
-        /// <remarks>Even though some terminals may allow, the library does not set the bold and faint styles at the same time.</remarks>
+        /// <remarks>Even though some terminals may allow, the library does not set the <c>Bold</c> and <c>Faint</c> styles at the same time.</remarks>
         Bold = 1,
         /// <summary>
         /// Identified in the ANSI standard as the weak font brightness, it usually applies dimmed foreground colors.
         /// </summary>
-        /// <remarks>Even though some terminals may allow, the library does not set the bold and faint styles at the same time.</remarks>
+        /// <remarks>Even though some terminals may allow, the library does not set the <c>Bold</c> and <c>Faint</c> styles at the same time because they technically refer to the same attribute.</remarks>
         Faint = 1 << 1,
         /// <summary>
         /// Makes the text slanted to the right.
         /// </summary>
-        /// <remarks>The terminal font needs to have italic variants for it to be visible unless faux styles are supported.</remarks>
+        /// <remarks>
+        ///     <para>• The terminal font needs to have italic variants for it to be visible unless faux styles are supported.</para>
+        ///     <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
+        /// </remarks>
         Italic = 1 << 2,
         /// <summary>
         /// Draws a straight horizontal line below the text.
         /// </summary>
+        /// <remarks>Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</remarks>
         StraightUnderline = 1 << 3,
         /// <summary>
-        /// Draws a curled horizontal line below the text.
+        /// Draws a curly horizontal line below the text.
         /// </summary>
-        /// <remarks>It is not well-supported on Windows.</remarks>
+        /// <remarks>It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.</remarks>
         CurlyUnderline = 1 << 4,
         /// <summary>
         /// Draws a horizontal line across the text.
         /// </summary>
+        /// <remarks>Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</remarks>
         Strikethrough = 1 << 5,
         /// <summary>
         /// Makes the text blink in a slow pace.
@@ -142,7 +147,7 @@ namespace DGC::TMTK
         /// </summary>
         InvertedColors = 1 << 7,
         /// <summary>
-        /// Makes the text hard to see or invisible.
+        /// Makes the text dimmed or invisible.
         /// </summary>
         Hidden = 1 << 8
     };
