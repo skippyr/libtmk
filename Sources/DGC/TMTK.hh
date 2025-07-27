@@ -296,7 +296,7 @@ namespace DGC::TMTK
         /// </summary>
         static bool s_isErrorRedirected;
         /// <summary>
-        /// A boolean that states terminal styles are enabled. It includes colors and text styles.
+        /// A boolean that states terminal styles are allowed, including colors and text styles.
         /// </summary>
         static bool s_allowsStyles;
 #ifdef _WIN32
@@ -327,8 +327,8 @@ namespace DGC::TMTK
         static bool s_ansiPrefersStdOut;
 
         /// <summary>
-        /// Initiates the required terminal features. It includes setting up UTF-8 as the output encoding, enable the parse of ANSI escape sequences,
-        /// and cache metadata about streams and style allowance.
+        /// Initiates the required terminal features. It sets up UTF-8 as the output encoding, enables the parse of ANSI escape sequences, and caches metadata about streams and
+        /// style allowance.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         static void Init();
@@ -352,7 +352,7 @@ namespace DGC::TMTK
         [[nodiscard]]
         static bool IsStreamRedirected(HANDLE handle, const char* name);
         /// <summary>
-        /// Sets the bitmask flag that enables the parse of ANSI sequences in a terminal output stream mode. It is only available on Windows.
+        /// Sets the Windows bitmask flag that enables the parse of ANSI sequences in a terminal output stream mode. It is only available on Windows.
         /// </summary>
         /// <param name="handle">The stream handle.</param>
         /// <returns>A boolean that states the parse has been enabled.</returns>
@@ -364,7 +364,7 @@ namespace DGC::TMTK
         /// </summary>
         /// <returns>The buffer information.</returns>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="StreamRedirectionException">Thrown when all possible streams that could return an answer are being redirected.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all possible streams that could return a response are being redirected.</exception>
         [[nodiscard]]
         static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 #else
@@ -385,6 +385,7 @@ namespace DGC::TMTK
         /// <param name="arguments">The arguments to be formatted.</param>
         /// <typeparam name="Arguments">A parameter pack containing the arguments to be formatted.</typeparam>
         /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown when all the output streams are redirected.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
