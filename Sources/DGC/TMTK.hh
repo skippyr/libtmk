@@ -629,17 +629,14 @@ namespace DGC::TMTK
         /// <remarks>The operating system kernel or console submodule can report dimensions that may not match the graphical window or monitor sizes.</remarks>
         static Dimensions GetDimensions();
         /// <summary>
-        /// Gets the terminal cursor coordinate. On macOS and Linux, it makes
+        /// Gets the terminal cursor coordinate either via a low-level call, on Windows, or by requesting and parsing a terminal response, on macOS and Linux, via the write of an
+        /// ANSI sequence to the most viable stream.
         /// </summary>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="IOException">Thrown, on macOS and Linux, when the most viable output stream does not have a buffer to perform caching or when the write operation of
-        /// the cursor coordinate request fails.</exception> <exception cref="NotEnoughMemoryException">Thrown, on macOS and Linux, when not enough memory can be allocated to
-        /// format the request.</exception> <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are
-        /// redirected, not allowing the request and read of the required terminal response about the cursor coordinate.</exception> <exception cref="FormatException">Thrown, on
-        /// macOS and Linux, when the terminal response read about the cursor coordinate is badly formed.</exception> <remarks><para>• It considers a coordinate system where the
-        /// origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going
-        /// right and down respectively.</para><para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream,
-        /// requiring it to be flushed upon execution to ensure correctness.</para></remarks>
+        /// <exception cref="IOException">Thrown, on macOS and Linux, when the stream does not have a buffer to perform caching or when the write operation of the request fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown, on macOS and Linux, when not enough memory can be allocated to format the request.</exception>
+        /// <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are redirected, not allowing the request and read of the response.</exception>
+        /// <exception cref="FormatException">Thrown, on macOS and Linux, when the terminal response is badly formed.</exception> <remarks><para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para><para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para></remarks>
         static Coordinate GetCursorCoordinate();
         static void SetCursorCoordinate(std::uint16_t column, std::uint16_t row);
         static void SetCursorCoordinate(const Coordinate& coordinate);
