@@ -643,7 +643,7 @@ namespace DGC::TMTK
         /// row (in the vertical axis) values increase going right and down respectively.</remarks>
         static void SetCursorCoordinate(const Coordinate& coordinate);
         /// <summary>
-        /// Writes the ANSI sequence that moves the terminal cursor to a specific direction.
+        /// Writes the ANSI sequence that moves the terminal cursor in a given direction.
         /// </summary>
         /// <param name="steps">The number of steps to take.</param>
         /// <param name="direction">The direction of the movement.</param>
