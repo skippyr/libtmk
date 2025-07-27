@@ -123,17 +123,27 @@ namespace DGC::TMTK
         /// Draws a straight horizontal line below the text.
         /// </summary>
         StraightUnderline = 1 << 3,
+        /// <summary>
+        /// Draws a curled horizontal line below the text.
+        /// </summary>
+        /// <remarks>It is not well-supported on Windows.</remarks>
         CurlyUnderline = 1 << 4,
         /// <summary>
         /// Draws a horizontal line across the text.
         /// </summary>
         Strikethrough = 1 << 5,
         /// <summary>
-        /// It makes the text blink in a slow pace.
+        /// Makes the text blink in a slow pace.
         /// </summary>
         /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes.</remarks>
         Blinking = 1 << 6,
+        /// <summary>
+        /// Inverts the foreground and background colors.
+        /// </summary>
         InvertedColors = 1 << 7,
+        /// <summary>
+        /// Makes the text hard to see or invisible.
+        /// </summary>
         Hidden = 1 << 8
     };
 
