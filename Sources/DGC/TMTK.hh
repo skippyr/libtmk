@@ -29,7 +29,7 @@ namespace DGC::TMTK
         /// <summary>
         /// The dark variant of the black color. It is the same as value 0.
         /// </summary>
-        /// <remarks>It should match with the color scheme background color.</remarks>
+        /// <remarks>It should match the color scheme background color.</remarks>
         DarkBlack,
         /// <summary>
         /// The dark variant of the red color. It is the same as value 1.
@@ -91,7 +91,7 @@ namespace DGC::TMTK
         /// <summary>
         /// The light variant of the white color. It is the same as value 15.
         /// </summary>
-        /// <remarks>It should match with the color scheme foreground color.</remarks>
+        /// <remarks>It should match the color scheme foreground color.</remarks>
         LightWhite
     };
 
