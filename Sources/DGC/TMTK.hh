@@ -653,16 +653,61 @@ namespace DGC::TMTK
         /// <exception cref="InternalAttributesException">Thrown when the terminal dimensions cannot be obtained due to an operating system error.</exception>
         /// <exception cref="OutOfRangeException">Thrown when the final cursor coordinate after the movement is not contained within the terminal dimensions.</exception>
         static void MoveCursor(std::uint16_t steps, Direction direction);
+        /// <summary>
+        /// Writes the ANSI sequence that sets the terminal cursor visibility.
+        /// </summary>
+        /// <param name="isVisible">A boolean that states the cursor should be visible.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void SetCursorVisible(bool isVisible);
+        /// <summary>
+        /// Writes the ANSI sequence that sets a terminal cursor style.
+        /// </summary>
+        /// <param name="style">The style to apply.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void SetCursorStyle(CursorStyle style);
+        /// <summary>
+        /// Writes the ANSI sequence that resets the cursor style.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ResetCursorStyle();
+        /// <summary>
+        /// Writes the ANSI sequence that rings the terminal bell.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>The terminal bell behavior depends on configuration and may be disabled, use custom sounds, visual effects, or system notifications.</remarks>
         static void RingBell();
+        /// <summary>
+        /// Writes the ANSI sequences that clears the terminal screen and moves the cursor to the top left corner.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ClearScreen();
+        /// <summary>
+        /// Writes the ANSI sequences that clears the terminal cursor line and moves the cursor to its first column.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ClearLine();
+        /// <summary>
+        /// Writes the ANSI sequences that clears the scrollback buffer and moves the cursor to the top left corner of the screen.
+        /// </summary>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         static void ClearHistory();
         // static bool HasInput(); // checks whether the input buffer has events.
         // static void SetTitle(const std::string_view& title);
-        // static std::string CreateURL(const std::string_view& address); // <-- possibly better to create a URL class with custom formatting
+        // static std::string CreateURL(const std::string_view& format, Arguments... arguments); // <-- possibly better to create a URL class with custom formatting
 
         /// <summary>
         /// Formats and writes a string to the terminal output stream.
