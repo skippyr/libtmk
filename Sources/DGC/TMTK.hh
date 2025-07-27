@@ -314,7 +314,7 @@ namespace DGC::TMTK
         static HANDLE s_errorHandle;
 #endif
         /// <summary>
-        /// A boolean that states the terminal features have been initialized.
+        /// A boolean that states the terminal features have been initiated.
         /// </summary>
         static bool s_hasInit;
         /// <summary>
@@ -431,7 +431,7 @@ namespace DGC::TMTK
     public:
         Terminal() = delete;
         /// <summary>
-        /// Gets the arguments given by the terminal shell to the current process.
+        /// Gets the arguments given by the calling process to the current one.
         /// </summary>
         /// <returns>A vector containing the arguments.</returns>
         /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
@@ -442,33 +442,33 @@ namespace DGC::TMTK
         /// Checks whether the terminal input stream is being redirected.
         /// </summary>
         /// <returns>A boolean that states that.</returns>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         [[nodiscard]]
         static bool IsInputRedirected();
         /// <summary>
         /// Checks whether the terminal output stream is being redirected.
         /// </summary>
         /// <returns>A boolean that states that.</returns>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         [[nodiscard]]
         static bool IsOutputRedirected();
         /// <summary>
         /// Checks whether the terminal error stream is being redirected.
         /// </summary>
         /// <returns>A boolean that states that.</returns>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         [[nodiscard]]
         static bool IsErrorRedirected();
         /// <summary>
         /// Flushes the terminal output stream buffer, writing any content it has to the stream.
         /// </summary>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the stream does not have a buffer to be flushed or when the operation fails.</exception>
         static void FlushOutput();
         /// <summary>
         /// Flushes the terminal input buffer, losing any content it has cached.
         /// </summary>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         /// <exception cref="IOException">Thrown when the stream does not have a buffer to be flushed or when the operation fails.</exception>
         /// <exception cref="InternalAttributesException">Thrown, on macOS and Linux, when internal attributes of the stream could not be fetched or set.</exception>
         static void FlushInput();
@@ -476,7 +476,7 @@ namespace DGC::TMTK
         /// Specifies whether the terminal should use custom styles including colors and text styles. By default, it allows it if the environment variable <c>NO_COLOR</c> is
         /// not set and, on macOS and Linux, when the environment variable <c>TERM</c> is not <c>dumb</c>.
         /// </summary>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initialized.</exception>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
         static void SetStylesUse(bool allowsTextStyle);
         /// <summary>
         /// Writes the ANSI sequence that sets a 256-color ANSI palette color in the terminal foreground to the most viable output stream.
