@@ -23,7 +23,10 @@ namespace DGC::TMTK
     /// <summary>
     /// Contains the first 16 standard colors of the terminal ANSI palette.
     /// </summary>
-    /// <remarks>These colors always map to the ones in the current color scheme, providing a consistent and widely compatible option.</remarks>
+    /// <remarks>
+    ///     <para>• They always map to the ones in the current color scheme, providing a consistent and widely compatible option.</para>
+    ///     <para>• They may be set using the <c>Terminal::SetForeground</c> and <c>Terminal::SetBackground</c> functions.</para>
+    /// </remarks>
     enum class ANSIColor
     {
         /// <summary>
@@ -95,16 +98,43 @@ namespace DGC::TMTK
         LightWhite
     };
 
+    /// <summary>
+    /// Contains the terminal text styles with the best compatibility.
+    /// </summary>
+    /// <remarks>They may be set using the <c>Terminal::SetTextStyles</c> function. Apply multiple ones by creating a bitmask using the <c>|</c> (bitwise OR) between them.</remarks>
     enum class TextStyle
     {
+        /// <summary>
+        /// Identified in the ANSI standard as the strong font brightness, in modern terminals, it usually applies the bold font weight and/or lighter foreground colors.
+        /// </summary>
+        /// <remarks>Even though some terminals may allow, the library does not set the bold and faint styles at the same time.</remarks>
         Bold = 1,
-        Dim = 1 << 1,
+        /// <summary>
+        /// Identified in the ANSI standard as the weak font brightness, it usually applies dimmed foreground colors.
+        /// </summary>
+        /// <remarks>Even though some terminals may allow, the library does not set the bold and faint styles at the same time.</remarks>
+        Faint = 1 << 1,
+        /// <summary>
+        /// Makes the text slanted to the right.
+        /// </summary>
+        /// <remarks>The terminal font needs to have italic variants for it to be visible unless faux styles are supported.</remarks>
         Italic = 1 << 2,
-        Underline = 1 << 3,
-        Strikethrough = 1 << 4,
-        Blinking = 1 << 5,
-        InvertedColors = 1 << 6,
-        Hidden = 1 << 7
+        /// <summary>
+        /// Draws a straight horizontal line below the text.
+        /// </summary>
+        StraightUnderline = 1 << 3,
+        CurlyUnderline = 1 << 4,
+        /// <summary>
+        /// Draws a horizontal line across the text.
+        /// </summary>
+        Strikethrough = 1 << 5,
+        /// <summary>
+        /// It makes the text blink in a slow pace.
+        /// </summary>
+        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes.</remarks>
+        Blinking = 1 << 6,
+        InvertedColors = 1 << 7,
+        Hidden = 1 << 8
     };
 
     enum class CursorStyle
@@ -443,7 +473,7 @@ namespace DGC::TMTK
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
-        static void WriteAnsi(const std::string_view& format, Arguments... arguments)
+        static void WriteANSI(const std::string_view& format, Arguments... arguments)
         {
             /* NOTE: it uses a stream preference algorithm to avoid caching and flushing performance costs whenever possible. */
             Init();
@@ -607,6 +637,9 @@ namespace DGC::TMTK
         ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
         /// </remarks>
         static void SetBackground(RGBColor color);
+        static void SetUnderlineColor(std::uint8_t ansiColor);
+        static void SetUnderlineColor(ANSIColor color);
+        static void SetUnderlineColor(RGBColor color);
         /// <summary>
         /// Writes the ANSI sequences that sets the terminal text styles flagged in a bitmask to the most viable stream.
         /// </summary>

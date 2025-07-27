@@ -459,7 +459,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[38;5;{}m", ansiColor);
+            WriteANSI("\x1b[38;5;{}m", ansiColor);
         }
         catch (InitException&)
         {
@@ -484,7 +484,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+            WriteANSI("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
         }
         catch (InitException&)
         {
@@ -504,7 +504,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[48;5;{}m", ansiColor);
+            WriteANSI("\x1b[48;5;{}m", ansiColor);
         }
         catch (InitException&)
         {
@@ -529,7 +529,52 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+            WriteANSI("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
+    }
+
+    void Terminal::SetUnderlineColor(std::uint8_t ansiColor)
+    {
+        Init();
+        if (!s_allowsStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteANSI("\x1b[58;5;{}m", ansiColor);
+        }
+        catch (InitException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+        }
+    }
+
+    void Terminal::SetUnderlineColor(ANSIColor color)
+    {
+        SetUnderlineColor(static_cast<std::uint8_t>(color));
+    }
+
+    void Terminal::SetUnderlineColor(RGBColor color)
+    {
+        Init();
+        if (!s_allowsStyles)
+        {
+            return;
+        }
+        try
+        {
+            WriteANSI("\x1b[58;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
         }
         catch (InitException&)
         {
@@ -547,7 +592,7 @@ namespace DGC::TMTK
         {
             return;
         }
-        for (int offset = 0; offset < 8; ++offset)
+        for (int offset = 0; offset < 9; ++offset)
         {
             if (styles & 1 << offset)
             {
@@ -560,28 +605,31 @@ namespace DGC::TMTK
                          * should not be allowed. For consistent behavior, it always gets reset before applied.
                          */
                     case 0: /* Bold */
-                        WriteAnsi("\x1b[22;1m");
+                        WriteANSI("\x1b[22;1m");
                         break;
                     case 1: /* Dim */
-                        WriteAnsi("\x1b[22;2m");
+                        WriteANSI("\x1b[22;2m");
                         break;
                     case 2: /* Italic */
-                        WriteAnsi("\x1b[3m");
+                        WriteANSI("\x1b[3m");
                         break;
-                    case 3: /* Underline */
-                        WriteAnsi("\x1b[4m");
+                    case 3: /* StraightUnderline */
+                        WriteANSI("\x1b[4m");
                         break;
-                    case 4: /* Strikethrough */
-                        WriteAnsi("\x1b[9m");
+                    case 4: /* CurlyUnderline */
+                        WriteANSI("\x1b[4:3m");
                         break;
-                    case 5: /* Blinking */
-                        WriteAnsi("\x1b[5m");
+                    case 5: /* Strikethrough */
+                        WriteANSI("\x1b[9m");
                         break;
-                    case 6: /* InvertedColors */
-                        WriteAnsi("\x1b[7m");
+                    case 6: /* Blinking */
+                        WriteANSI("\x1b[5m");
                         break;
-                    case 7: /* Hidden */
-                        WriteAnsi("\x1b[8m");
+                    case 7: /* InvertedColors */
+                        WriteANSI("\x1b[7m");
+                        break;
+                    case 8: /* Hidden */
+                        WriteANSI("\x1b[8m");
                     }
                 }
                 catch (InitException&)
@@ -610,7 +658,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[39;49m");
+            WriteANSI("\x1b[39;49;59m");
         }
         catch (InitException&)
         {
@@ -630,7 +678,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[22;23;24;25;27;28;29m");
+            WriteANSI("\x1b[22;23;24;25;27;28;29m");
         }
         catch (InitException&)
         {
@@ -644,12 +692,12 @@ namespace DGC::TMTK
     void Terminal::OpenAlternateScreen()
     {
         /* NOTE: some terminals may not support this feature. The clear screen sequence is used to immitate a similar behavior. */
-        WriteAnsi("\x1b[?1049h\x1b[2J\x1b[1;1H");
+        WriteANSI("\x1b[?1049h\x1b[2J\x1b[1;1H");
     }
 
     void Terminal::CloseAlternateScreen()
     {
-        WriteAnsi("\x1b[?1049l");
+        WriteANSI("\x1b[?1049l");
     }
 
     Dimensions Terminal::GetDimensions()
@@ -688,7 +736,7 @@ namespace DGC::TMTK
             throw StreamRedirectionException("cannot request the terminal cursor coordinate due to all output streams being redirected.");
         }
         FlushInput();
-        WriteAnsi("\x1b[6n");
+        WriteANSI("\x1b[6n");
         constexpr const char* attributesFetchFailMessage = "cannot obtain the terminal input stream attributes due to an operating system error.";
         constexpr const char* attributesSetFailMessage = "cannot set the terminal input stream attributes due to an operating system error.";
         termios attributes;
@@ -725,7 +773,7 @@ namespace DGC::TMTK
         {
             throw OutOfRangeException("cannot set a terminal cursor coordinate that is outside of its dimensions.");
         }
-        WriteAnsi("\x1b[{};{}H", row + 1, column + 1);
+        WriteANSI("\x1b[{};{}H", row + 1, column + 1);
     }
 
     void Terminal::SetCursorCoordinate(const Coordinate& coordinate)
@@ -747,7 +795,7 @@ namespace DGC::TMTK
         }
         try
         {
-            WriteAnsi("\x1b[{}{}", steps, static_cast<char>(direction));
+            WriteANSI("\x1b[{}{}", steps, static_cast<char>(direction));
         }
         catch (InitException&)
         {
@@ -762,7 +810,7 @@ namespace DGC::TMTK
     {
         try
         {
-            WriteAnsi("\x1b[?25{}", isVisible ? 'h' : 'l');
+            WriteANSI("\x1b[?25{}", isVisible ? 'h' : 'l');
         }
         catch (InitException&)
         {
@@ -777,7 +825,7 @@ namespace DGC::TMTK
     {
         try
         {
-            WriteAnsi("\x1b[{} q", static_cast<std::uint8_t>(style));
+            WriteANSI("\x1b[{} q", static_cast<std::uint8_t>(style));
         }
         catch (InitException&)
         {
@@ -792,7 +840,7 @@ namespace DGC::TMTK
     {
         try
         {
-            WriteAnsi("\x1b[0 q");
+            WriteANSI("\x1b[0 q");
         }
         catch (InitException&)
         {
@@ -805,22 +853,22 @@ namespace DGC::TMTK
 
     void Terminal::RingBell()
     {
-        WriteAnsi("\7");
+        WriteANSI("\7");
     }
 
     void Terminal::ClearScreen()
     {
-        WriteAnsi("\x1b[H\x1b[2J");
+        WriteANSI("\x1b[H\x1b[2J");
     }
 
     void Terminal::ClearLine()
     {
-        WriteAnsi("\x1b[G\x1b[2K");
+        WriteANSI("\x1b[G\x1b[2K");
     }
 
     void Terminal::ClearHistory()
     {
-        WriteAnsi("\x1b[H\x1b[3J");
+        WriteANSI("\x1b[H\x1b[3J");
     }
     int operator|(TextStyle style0, TextStyle style1)
     {
