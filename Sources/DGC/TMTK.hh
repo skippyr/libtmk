@@ -613,7 +613,7 @@ namespace DGC::TMTK
         /// operation of the request fails.</exception> <exception cref="NotEnoughMemoryException">Thrown, on macOS and Linux, when not enough memory can be allocated to format the
         /// request.</exception> <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are redirected, not
         /// allowing the request and read of the response.</exception> <exception cref="FormatException">Thrown, on macOS and Linux, when the terminal response is badly
-        /// formatted.</exception> <remarks><para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column
+        /// formed.</exception> <remarks><para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column
         /// (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para><para>• On macOS and Linux, the coordinate is obtained
         /// by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para></remarks>
         static Coordinate GetCursorCoordinate();
