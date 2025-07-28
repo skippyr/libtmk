@@ -71,8 +71,12 @@ namespace DragonsCave::TerminalToolkit
     }
 
 #ifdef _WIN32
-    std::wstring Encoding::ConvertUTF8To16(const std::string_view& utf8String)
+    std::wstring Encoding::FromUTF8To16(const std::string_view& utf8String)
     {
+        if (utf8String[utf8String.length()])
+        {
+            throw OutOfRangeException("the string provided for encoding conversion is not null terminated.");
+        }
         int size = MultiByteToWideChar(CP_UTF8, 0, utf8String.data(), -1, nullptr, 0);
         if (!size)
         {
@@ -83,8 +87,12 @@ namespace DragonsCave::TerminalToolkit
         return buffer.get();
     }
 
-    std::string Encoding::ConvertUTF16To8(const std::wstring_view& utf16String)
+    std::string Encoding::FromUTF16To8(const std::wstring_view& utf16String)
     {
+        if (utf16String[utf16String.length()])
+        {
+            throw OutOfRangeException("the string provided for encoding conversion is not null terminated.");
+        }
         int size = WideCharToMultiByte(CP_UTF8, 0, utf16String.data(), -1, nullptr, 0, nullptr, nullptr);
         if (!size)
         {
@@ -97,7 +105,7 @@ namespace DragonsCave::TerminalToolkit
 #endif
 
 #ifdef _WIN32
-    UnicodeString::UnicodeString(const std::wstring_view& encodedInUTF16) : m_encodedInUTF16(encodedInUTF16), m_encodedInUTF8(Encoding::ConvertUTF16To8(encodedInUTF16))
+    UnicodeString::UnicodeString(const std::wstring_view& encodedInUTF16) : m_encodedInUTF16(encodedInUTF16), m_encodedInUTF8(Encoding::FromUTF16To8(encodedInUTF16))
     {
     }
 #else

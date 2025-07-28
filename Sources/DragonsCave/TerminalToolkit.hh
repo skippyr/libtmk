@@ -562,12 +562,27 @@ namespace DragonsCave::TerminalToolkit
     };
 
 #ifdef _WIN32
+    /// <summary>
+    /// Represents the terminal text encoding, allowing conversions. It is only available on Windows.
+    /// </summary>
     class Encoding final
     {
     public:
         Encoding() = delete;
-        static std::wstring ConvertUTF8To16(const std::string_view& utf8String);
-        static std::string ConvertUTF16To8(const std::wstring_view& utf16String);
+        /// <summary>
+        /// Converts a UTF-8 encoded string to UTF-16.
+        /// </summary>
+        /// <param name="utf8String">The string to be converted. It must be null terminated.</param>
+        /// <exception cref="OutOfRangeException">Thrown when the string provided is not null terminated.</exception>
+        /// <exception cref="BadEncodingException">Thrown when the string provided is badly encoded.</exception>
+        static std::wstring FromUTF8To16(const std::string_view& utf8String);
+        /// <summary>
+        /// Converts a UTF-16 encoded string to UTF-8.
+        /// </summary>
+        /// <param name="utf16String">The string to be converted. It must be null terminated.</param>
+        /// <exception cref="OutOfRangeException">Thrown when the string provided is not null terminated.</exception>
+        /// <exception cref="BadEncodingException">Thrown when the string provided is badly encoded.</exception>
+        static std::string FromUTF16To8(const std::wstring_view& utf16String);
     };
 #endif
 
