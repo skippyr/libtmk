@@ -1,15 +1,15 @@
 /* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
- * TMTK.cc
+ * TerminalToolkit.cc
  *
- * TMTK (Terminal Manipulation ToolKit) <https://github.com/skippyr/TMTK>
- * DGC :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
+ * Terminal Toolkit <https://github.com/skippyr/TerminalToolkit>
+ * Dragon's Cave :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
  *
  * Distributed under the BSD-3-Clause License.
  * See the LICENSE file that comes with the source code for license and copyright details.
  * //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
  */
 
-#include "TMTK.hh"
+#include "TerminalToolkit.hh"
 #include <cstring>
 #ifdef _WIN32
 #include <io.h>
@@ -25,7 +25,7 @@
 #include <unistd.h>
 #endif
 
-namespace DGC::TMTK
+namespace DragonsCave::TerminalToolkit
 {
     Exception::Exception(const std::string_view& message) : m_message(message)
     {

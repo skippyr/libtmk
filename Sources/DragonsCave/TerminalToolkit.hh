@@ -1,8 +1,8 @@
 /* //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
- * TMTK.hh
+ * TerminalToolkit.cc
  *
- * TMTK (Terminal Manipulation ToolKit) <https://github.com/skippyr/TMTK>
- * DGC :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
+ * Terminal Toolkit <https://github.com/skippyr/TerminalToolkit>
+ * Dragon's Cave :: Sherman Rofeman (skippyr) <skippyr.developer@icloud.com>
  *
  * Distributed under the BSD-3-Clause License.
  * See the LICENSE file that comes with the source code for license and copyright details.
@@ -18,7 +18,7 @@
 #include <Windows.h>
 #endif
 
-namespace DGC::TMTK
+namespace DragonsCave::TerminalToolkit
 {
     /// <summary>
     /// Contains the first 16 standard colors of the terminal ANSI palette.
