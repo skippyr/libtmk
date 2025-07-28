@@ -152,13 +152,35 @@ namespace DGC::TMTK
         Hidden = 1 << 8
     };
 
+    /// <summary>
+    /// Contains the available terminal cursor styles.
+    /// </summary>
+    /// <remarks>They may be set using the <c>Terminal::SetCursorStyle</c> function.</remarks>
     enum class CursorStyle
     {
+        /// <summary>
+        /// The blinking variant of the block shape.
+        /// </summary>
         BlinkingBlock = 1,
+        /// <summary>
+        /// The static variant of the block shape.
+        /// </summary>
         StaticBlock,
+        /// <summary>
+        /// The blinking variant of the underline shape.
+        /// </summary>
         BlinkingUnderline,
+        /// <summary>
+        /// The static variant of the underline shape.
+        /// </summary>
         StaticUnderline,
+        /// <summary>
+        /// The blinking variant of the bar shape.
+        /// </summary>
         BlinkingBar,
+        /// <summary>
+        /// The static variant of the bar shape.
+        /// </summary>
         StaticBar
     };
 
