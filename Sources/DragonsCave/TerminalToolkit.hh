@@ -221,7 +221,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Constructs a new instance of the <c>Exception</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit Exception(const std::string_view& message);
         /// <summary>
         /// Gets the message that describes why the exception was thrown.
@@ -240,7 +240,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>InitException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit InitException(const std::string_view& message);
     };
 
@@ -253,7 +253,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>NotEnoughMemoryException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit NotEnoughMemoryException(const std::string_view& message);
     };
 
@@ -267,7 +267,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>BadEncodingException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit BadEncodingException(const std::string_view& message);
     };
 #endif
@@ -281,7 +281,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>IOException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit IOException(const std::string_view& message);
     };
 
@@ -294,7 +294,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>InternalAttributesException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit InternalAttributesException(const std::string_view& message);
     };
 
@@ -307,7 +307,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>FormatException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit FormatException(const std::string_view& message);
     };
 
@@ -320,7 +320,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>StreamRedirectionException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit StreamRedirectionException(const std::string_view& message);
     };
 
@@ -333,7 +333,7 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Creates an instance of the <c>OutOfRangeException</c> class.
         /// </summary>
-        /// <param name="message">The message that describes why it was thrown.</param>
+        /// <param name="message">The message that describes why it has been thrown.</param>
         explicit OutOfRangeException(const std::string_view& message);
     };
 
@@ -575,6 +575,7 @@ namespace DragonsCave::TerminalToolkit
         /// <param name="utf8String">The string to be converted. It must be null terminated.</param>
         /// <exception cref="OutOfRangeException">Thrown when the string provided is not null terminated.</exception>
         /// <exception cref="BadEncodingException">Thrown when the string provided is badly encoded.</exception>
+        /// <exception cref="std::out_of_memory">Throw when not enough memory can be allocated for the converted string.</exception>
         static std::wstring FromUTF8To16(const std::string_view& utf8String);
         /// <summary>
         /// Converts a UTF-16 encoded string to UTF-8.
@@ -582,27 +583,55 @@ namespace DragonsCave::TerminalToolkit
         /// <param name="utf16String">The string to be converted. It must be null terminated.</param>
         /// <exception cref="OutOfRangeException">Thrown when the string provided is not null terminated.</exception>
         /// <exception cref="BadEncodingException">Thrown when the string provided is badly encoded.</exception>
+        /// <exception cref="std::out_of_memory">Throw when not enough memory can be allocated for the converted string.</exception>
         static std::string FromUTF16To8(const std::wstring_view& utf16String);
     };
 #endif
 
+    /// <summary>
+    /// Represents a string encoded in different Unicode encodings.
+    /// </summary>
     class UnicodeString final
     {
 #ifdef _WIN32
+        /// <summary>
+        /// The string encoded in UTF-16.
+        /// </summary>
         std::wstring m_encodedInUTF16;
 #endif
+        /// <summary>
+        /// The string encoded in UTF-8.
+        /// </summary>
         std::string m_encodedInUTF8;
 
     public:
 #ifdef _WIN32
+        /// <summary>
+        /// Creates an instance of the <c>UnicodeString</c> class.
+        /// </summary>
+        /// <param name="encodedInUTF16">The base string encoded in UTF-16 to be copied from.</param>
+        /// <exception cref="std::out_of_memory">Throw when not enough memory can be allocated for the copied string.</exception>
         UnicodeString(const std::wstring_view& encodedInUTF16);
 #else
+        /// <summary>
+        /// Creates an instance of the <c>UnicodeString</c> class.
+        /// </summary>
+        /// <param name="encodedInUTF8">The base string encoded in UTF-8 to be copied from.</param>
+        /// <exception cref="std::out_of_memory">Throw when not enough memory can be allocated for the copied string.</exception>
         UnicodeString(const std::string_view& encodedInUTF8);
 #endif
 #ifdef _WIN32
+        /// <summary>
+        /// Gets the string encoded in UTF-16.
+        /// </summary>
+        /// <returns>The string.</returns>
         [[nodiscard]]
         const std::wstring& EncodedInUTF16() const;
 #endif
+        /// <summary>
+        /// Gets the string encoded in UTF-8.
+        /// </summary>
+        /// <returns>The string.</returns>
         [[nodiscard]]
         const std::string& EncodedInUTF8() const;
     };
