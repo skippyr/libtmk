@@ -207,12 +207,25 @@ namespace DGC::TMTK
         Left
     };
 
+    /// <summary>
+    /// Represents a generic exception used for others to be built upon.
+    /// </summary>
     class Exception : public std::exception
     {
+        /// <summary>
+        /// The message that describes why the exception was thrown.
+        /// </summary>
         std::string m_message;
 
     public:
+        /// <summary>
+        /// Constructs a new instance of the <c>Exception</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
         Exception(const std::string_view& message);
+        /// <summary>
+        /// Gets the message that describes why the exception was thrown.
+        /// </summary>
         [[nodiscard]]
         const char* what() const noexcept override;
     };
