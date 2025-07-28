@@ -222,62 +222,119 @@ namespace DGC::TMTK
         /// Constructs a new instance of the <c>Exception</c> class.
         /// </summary>
         /// <param name="message">The message that describes why it was thrown.</param>
-        Exception(const std::string_view& message);
+        explicit Exception(const std::string_view& message);
         /// <summary>
         /// Gets the message that describes why the exception was thrown.
         /// </summary>
+        /// <returns>The message.</returns>
         [[nodiscard]]
         const char* what() const noexcept override;
     };
 
+    /// <summary>
+    /// Represents an exception thrown when the terminal cannot initiate its features.
+    /// </summary>
     class InitException : public Exception
     {
     public:
-        InitException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>InitException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit InitException(const std::string_view& message);
     };
 
+    /// <summary>
+    /// Represents an exception thrown when not enough memory can be allocate for certain operation.
+    /// </summary>
     class NotEnoughMemoryException final : public Exception
     {
     public:
-        NotEnoughMemoryException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>NotEnoughMemoryException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit NotEnoughMemoryException(const std::string_view& message);
     };
 
 #ifdef _WIN32
+    /// <summary>
+    /// Represents an exception thrown when a string is bad encoded to perform a certain operation. It is only available on Windows.
+    /// </summary>
     class BadEncodingException final : public Exception
     {
     public:
-        BadEncodingException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>BadEncodingException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit BadEncodingException(const std::string_view& message);
     };
 #endif
 
+    /// <summary>
+    /// Represents a generic exception thrown when a certain IO operation fails.
+    /// </summary>
     class IOException : public Exception
     {
     public:
-        IOException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>IOException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit IOException(const std::string_view& message);
     };
 
+    /// <summary>
+    /// Represents a generic exception throw for an internal attributes failure, like not being able to fetch or set them.
+    /// </summary>
     class InternalAttributesException : public Exception
     {
     public:
-        InternalAttributesException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>InternalAttributesException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit InternalAttributesException(const std::string_view& message);
     };
 
+    /// <summary>
+    /// Represents a generic exception thrown when an expected format is badly formed.
+    /// </summary>
     class FormatException : public Exception
     {
     public:
-        FormatException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>FormatException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit FormatException(const std::string_view& message);
     };
 
+    /// <summary>
+    /// Represents an exception thrown when a set of terminal streams required for an operation are being redirected.
+    /// </summary>
     class StreamRedirectionException final : public IOException
     {
     public:
-        StreamRedirectionException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>StreamRedirectionException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit StreamRedirectionException(const std::string_view& message);
     };
 
+    /// <remarks>
+    /// Represents an exception thrown when a value is outside its valid range.
+    /// </remarks>
     class OutOfRangeException final : public Exception
     {
     public:
-        OutOfRangeException(const std::string_view& message);
+        /// <summary>
+        /// Creates an instance of the <c>OutOfRangeException</c> class.
+        /// </summary>
+        /// <param name="message">The message that describes why it was thrown.</param>
+        explicit OutOfRangeException(const std::string_view& message);
     };
 
     class RGBColor final
