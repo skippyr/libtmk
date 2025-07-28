@@ -184,11 +184,26 @@ namespace DGC::TMTK
         StaticBar
     };
 
+    /// <summary>
+    /// Contains the available directions for cursor movement inside the terminal.
+    /// </summary>
     enum class Direction
     {
+        /// <summary>
+        /// Moves the cursor up.
+        /// </summary>
         Top = 'A',
+        /// <summary>
+        /// Moves the cursor down.
+        /// </summary>
         Down,
+        /// <summary>
+        /// Moves the cursor right.
+        /// </summary>
         Right,
+        /// <summary>
+        /// Moves the cursor left.
+        /// </summary>
         Left
     };
 
