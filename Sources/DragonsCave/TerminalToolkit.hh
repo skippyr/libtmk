@@ -337,78 +337,151 @@ namespace DragonsCave::TerminalToolkit
         explicit OutOfRangeException(const std::string_view& message);
     };
 
+    /// <summary>
+    /// Represents an RGB color.
+    /// </summary>
     class RGBColor final
     {
+        /// <summary>
+        /// The red component of the color.
+        /// </summary>
         std::uint8_t m_red;
+        /// <summary>
+        /// The green component of the color.
+        /// </summary>
         std::uint8_t m_green;
+        /// <summary>
+        /// The blue component of the color.
+        /// </summary>
         std::uint8_t m_blue;
 
     public:
+        /// <summary>
+        /// Creates an instance of the <c>RGBColor</c> class.
+        /// </summary>
+        /// <param name="red">The red component of the color.</param>
+        /// <param name="green">The green component of the color.</param>
+        /// <param name="blue">The blue component of the color.</param>
         constexpr RGBColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue) noexcept : m_red(red), m_green(green), m_blue(blue)
         {
         }
 
+        /// <summary>
+        /// Gets the red component of the color.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint8_t GetRed() const noexcept
         {
             return m_red;
         }
 
+        /// <summary>
+        /// Gets the green component of the color.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint8_t GetGreen() const noexcept
         {
             return m_green;
         }
 
+        /// <summary>
+        /// Gets the blue component of the color.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint8_t GetBlue() const noexcept
         {
             return m_blue;
         }
 
+        /// <summary>
+        /// Sets the red component of the color.
+        /// </summary>
+        /// <param name="red">The new component.</param>
         constexpr void SetRed(std::uint8_t red) noexcept
         {
             m_red = red;
         }
 
+        /// <summary>
+        /// Sets the green component of the color.
+        /// </summary>
+        /// <param name="green">The new component.</param>
         constexpr void SetGreen(std::uint8_t green) noexcept
         {
             m_green = green;
         }
 
+        /// <summary>
+        /// Sets the blue component of the color.
+        /// </summary>
+        /// <param name="blue">The new component.</param>
         constexpr void SetBlue(std::uint8_t blue) noexcept
         {
             m_blue = blue;
         }
     };
 
+    /// <summary>
+    /// Represents a coordinate within the terminal screen.
+    /// </summary>
+    /// <remarks>It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</remarks>
     class Coordinate final
     {
+        /// <summary>
+        /// The column component of the coordinate.
+        /// </summary>
         std::uint16_t m_column;
+        /// <summary>
+        /// The row component of the coordinate.
+        /// </summary>
         std::uint16_t m_row;
 
     public:
+        /// <summary>
+        /// Creates an instance of the <c>Coordinate</c> class.
+        /// </summary>
+        /// <param name="column">The column component of the coordinate.</param>
+        /// <param name="row">The row component of the coordinate.</param>
         constexpr Coordinate(std::uint16_t column, std::uint16_t row) noexcept : m_column(column), m_row(row)
         {
         }
 
+        /// <summary>
+        /// Gets the column component of the coordinate.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint16_t GetColumn() const noexcept
         {
             return m_column;
         }
 
+        /// <summary>
+        /// Gets the row component of the coordinate.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint16_t GetRow() const noexcept
         {
             return m_row;
         }
 
+        /// <summary>
+        /// Sets the column component of the coordinate
+        /// </summary>
+        /// <param name="column">The new component to be set.</param>
         void SetColumn(std::uint16_t column) noexcept
         {
             m_column = column;
         }
 
+        /// <summary>
+        /// Sets the row component of the coordinate
+        /// </summary>
+        /// <param name="row">The new component to be set.</param>
         void SetRow(std::uint16_t row) noexcept
         {
             m_row = row;
