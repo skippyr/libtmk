@@ -488,38 +488,72 @@ namespace DragonsCave::TerminalToolkit
         }
     };
 
+    /// <summary>
+    /// Represents the terminal screen dimensions.
+    /// </summary>
     class Dimensions final
     {
+        /// <summary>
+        /// The width component of the dimensions.
+        /// </summary>
         std::uint16_t m_width;
+        /// <summary>
+        /// The height component of the dimensions.
+        /// </summary>
         std::uint16_t m_height;
 
     public:
+        /// <summary>
+        /// Creates a new instance of the <c>Dimensions</c> class.
+        /// </summary>
+        /// <param name="width">The width component of the dimensions.</param>
+        /// <param name="height">The height component of the dimensions.</param>
         constexpr Dimensions(std::uint16_t width, std::uint16_t height) noexcept : m_width(width), m_height(height)
         {
         }
 
+        /// <summary>
+        /// Gets the width component of the dimensions.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint16_t GetWidth() const noexcept
         {
             return m_width;
         }
 
+        /// <summary>
+        /// Gets the height component of the dimensions.
+        /// </summary>
+        /// <returns>The component.</returns>
         [[nodiscard]]
         constexpr std::uint16_t GetHeight() const noexcept
         {
             return m_height;
         }
 
+        /// <summary>
+        /// Sets the width component of the dimensions.
+        /// </summary>
+        /// <returns>The new component to be set.</returns>
         constexpr void SetWidth(std::uint16_t width) noexcept
         {
             m_width = width;
         }
 
+        /// <summary>
+        /// Sets the height component of the dimensions.
+        /// </summary>
+        /// <returns>The new component to be set.</returns>
         constexpr void SetHeight(std::uint16_t height) noexcept
         {
             m_height = height;
         }
 
+        /// <summary>
+        /// Gets the area of the dimensions.
+        /// </summary>
+        /// <returns>The area.</returns>
         [[nodiscard]]
         constexpr std::uint32_t GetArea() const noexcept
         {
