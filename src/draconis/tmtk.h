@@ -2,58 +2,16 @@
 #define _draconis_tmtk_h
 #include <stdarg.h>
 
-enum {
-  DBLK,
-  DRED,
-  DGRN,
-  DYLW,
-  DBLE,
-  DMAG,
-  DCYN,
-  DWHT,
-  LBLK,
-  LRED,
-  LGRN,
-  LYLW,
-  LBLE,
-  LMAG,
-  LCYN,
-  LWHT,
-};
-
-enum {
-  BLD = 1,
-  DIM = 1 << 1,
-  ITL = 1 << 2,
-  UND = 1 << 3,
-  STR = 1 << 4,
-  BLK = 1 << 5,
-  NEG = 1 << 6,
-  HID = 1 << 7,
+enum Stream {
+  Stream_Input,
+  Stream_Output,
+  Stream_Error
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  int intty(void);
-  int outtty(void);
-  int errtty(void);
-  void flush(void);
-  /* clear input :: void forget(void); */
-  void vwrt(const char *fmt, va_list args);
-  void wrt(const char *fmt, ...);
-  void vewrt(const char *fmt, va_list args);
-  void ewrt(const char *fmt, ...);
-  void ansifg(int clr);
-  void ansibg(int clr);
-  void rgbfg(unsigned char r, unsigned char g, unsigned char b);
-  void rgbbg(unsigned char r, unsigned char g, unsigned char b);
-  void eff(int e);
-  void res(void);
-  void bell(void);
-  void cls(void);
-  void clsln(void);
-  void clsbuf(void);
+  int isStreamRedirected(int stream);
 #ifdef __cplusplus
 }
 #endif
