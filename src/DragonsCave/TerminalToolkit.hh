@@ -113,7 +113,7 @@ namespace DragonsCave::TerminalToolkit
         /// Identified in the ANSI standard as the weak font brightness, it usually applies dimmed foreground colors.
         /// </summary>
         /// <remarks>Even though some terminals may allow, the library does not set the <c>Bold</c> and <c>Faint</c> styles at the same time because they technically refer to the same attribute.</remarks>
-        Faint = 1 << 1,
+        Dim = 1 << 1,
         /// <summary>
         /// Makes the text slanted to the right.
         /// </summary>
@@ -125,31 +125,50 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Draws a straight horizontal line below the text.
         /// </summary>
-        /// <remarks>Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</remarks>
-        StraightUnderline = 1 << 3,
+        /// <remarks>
+        ///     <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
+        ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+        /// </remarks>
+        Underline = 1 << 3,
         /// <summary>
         /// Draws a curly horizontal line below the text.
         /// </summary>
-        /// <remarks>It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.</remarks>
-        CurlyUnderline = 1 << 4,
+        /// <remarks>
+        ///     <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
+        ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+        /// </remarks>
+        DoubleUnderline = 1 << 4,
+        /// <summary>
+        /// Draws a curly horizontal line below the text.
+        /// </summary>
+        /// <remarks>
+        ///     <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
+        ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+        /// </remarks>
+        SquigglyLine = 1 << 5,
         /// <summary>
         /// Draws a horizontal line across the text.
         /// </summary>
         /// <remarks>Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</remarks>
-        Strikethrough = 1 << 5,
+        Strikethrough = 1 << 6,
         /// <summary>
         /// Makes the text blink in a slow pace.
         /// </summary>
-        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes.</remarks>
-        Blinking = 1 << 6,
+        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>RapidBlink</c> effect.</remarks>
+        SlowBlink = 1 << 7,
         /// <summary>
-        /// Inverts the foreground and background colors.
+        /// Makes the text blink in a rapid pace.
         /// </summary>
-        InvertedColors = 1 << 7,
+        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>SlowBlink</c> effect.</remarks>
+        RapidBlink = 1 << 8,
+        /// <summary>
+        /// Inverts the colors applied to the foreground and background.
+        /// </summary>
+        SwappedLayers = 1 << 9,
         /// <summary>
         /// Makes the text dimmed or invisible.
         /// </summary>
-        Hidden = 1 << 8
+        Hidden = 1 << 10
     };
 
     /// <summary>

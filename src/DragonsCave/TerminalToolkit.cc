@@ -615,7 +615,7 @@ namespace DragonsCave::TerminalToolkit
         {
             return;
         }
-        for (int offset = 0; offset < 9; ++offset)
+        for (int offset = 0; offset < 11; ++offset)
         {
             if (styles & 1 << offset)
             {
@@ -636,23 +636,30 @@ namespace DragonsCave::TerminalToolkit
                     case 2: /* Italic */
                         WriteANSI("\x1b[3m");
                         break;
-                    case 3: /* StraightUnderline */
+                    case 3: /* Underline */
                         WriteANSI("\x1b[4m");
                         break;
-                    case 4: /* CurlyUnderline */
+                    case 4: /* DoubleUnderline */
+                        WriteANSI("\x1b[4:2m");
+                        break;
+                    case 5: /* SquigglyLine */
                         WriteANSI("\x1b[4:3m");
                         break;
-                    case 5: /* Strikethrough */
+                    case 6: /* Strikethrough */
                         WriteANSI("\x1b[9m");
                         break;
-                    case 6: /* Blinking */
+                    case 7: /* SlowBlink */
                         WriteANSI("\x1b[5m");
                         break;
-                    case 7: /* InvertedColors */
+                    case 8: /* RapidBlink */
+                        WriteANSI("\x1b[5m");
+                        break;
+                    case 9: /* SwappedLayers */
                         WriteANSI("\x1b[7m");
                         break;
-                    case 8: /* Hidden */
+                    case 10: /* Hidden */
                         WriteANSI("\x1b[8m");
+                        break;
                     }
                 }
                 catch (InitException&)
