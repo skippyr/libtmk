@@ -12,6 +12,11 @@ enum Stream {
 extern "C" {
 #endif
   int isStreamRedirected(int stream);
+  void flushOutput(void);
+  void outputWriteArguments(const char *format, va_list arguments);
+  void outputWrite(const char *format, ...);
+  void errorWriteArguments(const char *format, va_list arguments);
+  void errorWrite(const char *format, ...);
 #ifdef __cplusplus
 }
 #endif
