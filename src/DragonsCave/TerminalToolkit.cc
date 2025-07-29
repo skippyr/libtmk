@@ -503,6 +503,11 @@ namespace DragonsCave::TerminalToolkit
         }
     }
 
+    void Terminal::SetForeground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+    {
+        SetForeground(RGBColor(red, green, blue));
+    }
+
     void Terminal::SetBackground(std::uint8_t ansiColor)
     {
         Init();
@@ -546,6 +551,11 @@ namespace DragonsCave::TerminalToolkit
         catch (...)
         {
         }
+    }
+
+    void Terminal::SetBackground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+    {
+        SetBackground(RGBColor(red, green, blue));
     }
 
     void Terminal::SetUnderlineColor(std::uint8_t ansiColor)
@@ -878,6 +888,7 @@ namespace DragonsCave::TerminalToolkit
     {
         WriteANSI("\x1b[H\x1b[3J");
     }
+
     int operator|(TextStyle style0, TextStyle style1)
     {
         return static_cast<int>(style0) | static_cast<int>(style1);
