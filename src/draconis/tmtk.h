@@ -5,9 +5,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  int is_in_redirected(void);
-  int is_out_redirected(void);
-  int is_err_redirected(void);
+  int is_in_tty(void);
+  int is_out_tty(void);
+  int is_err_tty(void);
+  void flush_out(void);
   void out_write_args(const char *fmt, va_list args);
   void out_write(const char *fmt, ...);
   void err_write_args(const char *fmt, va_list args);

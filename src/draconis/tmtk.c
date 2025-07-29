@@ -8,12 +8,13 @@
 #endif
 
 #ifdef _WIN32
-#define REDIRECTION_CACHE(fd) (!_isatty(fd) << fd)
+#define TTY_CACHE(fd) (!!_isatty(fd) << fd)
 #else
-#define REDIRECTION_CACHE(fd) (!isatty(fd) << fd)
+#define TTY_CACHE(fd) (isatty(fd) << fd)
 #endif
 #define HAS_INIT (1 << 7)
-#define HAS_ANSI_CACHE (1 << 8)
+#define HAS_ANSI_CACHE (1 << 6)
+#define PREFERS_OUT (1 << 5)
 #define IN 0
 #define OUT 1
 #define ERR 2
@@ -23,6 +24,7 @@ static void init(void);
 static int enable_ansi_parse(DWORD handle_id);
 #endif
 static void f_write_args(FILE *f, const char *fmt, va_list args);
+static int write_ansi(const char *fmt, ...);
 
 static char cache = 0;
 
@@ -34,7 +36,7 @@ static void init(void) {
   SetConsoleOutputCP(CP_UTF8);
   !enable_ansi_parse(STD_OUTPUT_HANDLE) && enable_ansi_parse(STD_ERROR_HANDLE);
 #endif
-  cache = HAS_INIT | REDIRECTION_CACHE(IN) | REDIRECTION_CACHE(OUT) | REDIRECTION_CACHE(ERR);
+  cache = HAS_INIT | TTY_CACHE(IN) | TTY_CACHE(OUT) | TTY_CACHE(ERR);
 }
 
 #ifdef _WIN32
@@ -44,21 +46,6 @@ static int enable_ansi_parse(DWORD handle_id) {
   return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 #endif
-
-int is_in_redirected(void) {
-  init();
-  return !!(cache & IN);
-}
-
-int is_out_redirected(void) {
-  init();
-  return !!(cache & OUT);
-}
-
-int is_error_redirected(void) {
-  init();
-  return !!(cache & ERR);
-}
 
 static void f_write_args(FILE *f, const char *fmt, va_list args) {
   va_list args_cp;
@@ -70,11 +57,71 @@ static void f_write_args(FILE *f, const char *fmt, va_list args) {
     return;
   }
   vsnprintf(buf, len + 1, fmt, args);
-  if (buf[len] == '\n') {
-    cache |= HAS_ANSI_CACHE;
+  if (f == stdout) {
+    if (buf[len] == '\n') {
+      cache &= ~HAS_ANSI_CACHE;
+    }
+    cache |= PREFERS_OUT;
+  } else if (f == stderr) {
+    if (cache & HAS_ANSI_CACHE) {
+      flush_out();
+    }
+    cache &= ~PREFERS_OUT;
   }
   fputs(buf, f);
   free(buf);
+}
+
+static int write_ansi(const char *fmt, ...) {
+  va_list args;
+  if (cache & PREFERS_OUT) {
+    if (is_out_tty()) {
+      va_start(args, fmt);
+      out_write_args(fmt, args);
+      va_end(args);
+      cache |= HAS_ANSI_CACHE;
+    } else if (is_err_tty()) {
+      va_start(args, fmt);
+      err_write_args(fmt, args);
+      va_end(args);
+    } else {
+      return -1;
+    }
+  } else {
+    if (is_err_tty()) {
+      va_start(args, fmt);
+      err_write_args(fmt, args);
+      va_end(args);
+    } else if (is_out_tty()) {
+      va_start(args, fmt);
+      out_write_args(fmt, args);
+      va_end(args);
+      cache |= HAS_ANSI_CACHE;
+    } else {
+      return -1;
+    }
+  }
+  return 0;
+}
+
+int is_in_tty(void) {
+  init();
+  return cache & IN;
+}
+
+int is_out_tty(void) {
+  init();
+  return !!(cache & OUT);
+}
+
+int is_err_tty(void) {
+  init();
+  return !!(cache & ERR);
+}
+
+void flush_out(void) {
+  fflush(stdout);
+  cache &= ~HAS_ANSI_CACHE;
 }
 
 void out_write_args(const char *fmt, va_list args) {
