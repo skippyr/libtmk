@@ -32,27 +32,22 @@ enum {
   HID = 1 << 7,
 };
 
-struct rgb {
-  unsigned char r;
-  unsigned char g;
-  unsigned char b;
-};
-
 #ifdef __cplusplus
 extern "C" {
 #endif
   int intty(void);
   int outtty(void);
   int errtty(void);
-  void fout(void);
+  void flush(void);
+  /* clear input :: void forget(void); */
   void vwrt(const char *fmt, va_list args);
   void wrt(const char *fmt, ...);
   void vewrt(const char *fmt, va_list args);
   void ewrt(const char *fmt, ...);
   void ansifg(int clr);
   void ansibg(int clr);
-  void rgbfg(struct rgb r);
-  void rgbbg(struct rgb r);
+  void rgbfg(unsigned char r, unsigned char g, unsigned char b);
+  void rgbbg(unsigned char r, unsigned char g, unsigned char b);
   void eff(int e);
   void res(void);
 #ifdef __cplusplus

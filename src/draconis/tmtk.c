@@ -71,7 +71,7 @@ static void vfwrite(FILE *f, const char *fmt, va_list args) {
     cache |= PREFERSOUT;
   } else if (f == stderr) {
     if (cache & HASCACHE) {
-      fout();
+      flush();
     }
     cache &= ~PREFERSOUT;
   }
@@ -128,7 +128,7 @@ int errtty(void) {
   return !!(cache & ERR);
 }
 
-void fout(void) {
+void flush(void) {
   fflush(stdout);
   cache &= ~HASCACHE;
 }
@@ -163,12 +163,12 @@ void ansibg(int clr) {
   ansi("\x1b[48;5;%dm", clr);
 }
 
-void rgbfg(struct rgb r) {
-  ansi("\x1b[38;2;%d;%d;%dm", r.r, r.g, r.b);
+void rgbfg(unsigned char r, unsigned char g, unsigned char b) {
+  ansi("\x1b[38;2;%d;%d;%dm", r, g, b);
 }
 
-void rgbbg(struct rgb r) {
-  ansi("\x1b[48;2;%d;%d;%dm", r.r, r.g, r.b);
+void rgbbg(unsigned char r, unsigned char g, unsigned char b) {
+  ansi("\x1b[48;2;%d;%d;%dm", r, g, b);
 }
 
 void eff(int e) {
