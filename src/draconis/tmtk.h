@@ -50,6 +50,10 @@ extern "C" {
   void rgbbg(unsigned char r, unsigned char g, unsigned char b);
   void eff(int e);
   void res(void);
+  void bell(void);
+  void cls(void);
+  void clsln(void);
+  void clsbuf(void);
 #ifdef __cplusplus
 }
 #endif

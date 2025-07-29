@@ -206,3 +206,19 @@ void eff(int e) {
 void res(void) {
   ansi("\x1b[0m");
 }
+
+void bell(void) {
+  ansi("\7");
+}
+
+void cls(void) {
+  ansi("\x1b[H\x1b[2J");
+}
+
+void clsln(void) {
+  ansi("\x1b[G\x1b[2K");
+}
+
+void clsbuf(void) {
+  ansi("\x1b[H\x1b[3J");
+}
