@@ -483,7 +483,7 @@ namespace DragonsCave::TerminalToolkit
         SetForeground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetForeground(RGBColor color)
+    void Terminal::SetForeground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
     {
         Init();
         if (!s_allowsStyles)
@@ -492,7 +492,7 @@ namespace DragonsCave::TerminalToolkit
         }
         try
         {
-            WriteANSI("\x1b[38;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+            WriteANSI("\x1b[38;2;{};{};{}m", red, green, blue);
         }
         catch (InitException&)
         {
@@ -503,9 +503,9 @@ namespace DragonsCave::TerminalToolkit
         }
     }
 
-    void Terminal::SetForeground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+    void Terminal::SetForeground(RGBColor color)
     {
-        SetForeground(RGBColor(red, green, blue));
+        SetForeground(color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
     void Terminal::SetBackground(std::uint8_t ansiColor)
@@ -533,7 +533,7 @@ namespace DragonsCave::TerminalToolkit
         SetBackground(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetBackground(RGBColor color)
+    void Terminal::SetBackground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
     {
         Init();
         if (!s_allowsStyles)
@@ -542,7 +542,7 @@ namespace DragonsCave::TerminalToolkit
         }
         try
         {
-            WriteANSI("\x1b[48;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+            WriteANSI("\x1b[48;2;{};{};{}m", red, green, blue);
         }
         catch (InitException&)
         {
@@ -553,9 +553,9 @@ namespace DragonsCave::TerminalToolkit
         }
     }
 
-    void Terminal::SetBackground(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+    void Terminal::SetBackground(RGBColor color)
     {
-        SetBackground(RGBColor(red, green, blue));
+        SetBackground(color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
     void Terminal::SetUnderlineColor(std::uint8_t ansiColor)
@@ -583,7 +583,7 @@ namespace DragonsCave::TerminalToolkit
         SetUnderlineColor(static_cast<std::uint8_t>(color));
     }
 
-    void Terminal::SetUnderlineColor(RGBColor color)
+    void Terminal::SetUnderlineColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue)
     {
         Init();
         if (!s_allowsStyles)
@@ -592,7 +592,7 @@ namespace DragonsCave::TerminalToolkit
         }
         try
         {
-            WriteANSI("\x1b[58;2;{};{};{}m", color.GetRed(), color.GetGreen(), color.GetBlue());
+            WriteANSI("\x1b[58;2;{};{};{}m", red, green, blue);
         }
         catch (InitException&)
         {
@@ -601,6 +601,11 @@ namespace DragonsCave::TerminalToolkit
         catch (...)
         {
         }
+    }
+
+    void Terminal::SetUnderlineColor(RGBColor color)
+    {
+        SetUnderlineColor(color.GetRed(), color.GetGreen(), color.GetBlue());
     }
 
     void Terminal::SetTextStyles(int styles)

@@ -862,19 +862,6 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Writes the ANSI sequence that sets an RGB color in the terminal foreground to the most viable output stream.
         /// </summary>
-        /// <param name="color">The color to be set.</param>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
-        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>
-        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-        /// </remarks>
-        static void SetForeground(RGBColor color);
-        /// <summary>
-        /// Writes the ANSI sequence that sets an RGB color in the terminal foreground to the most viable output stream.
-        /// </summary>
         /// <param name="red">The red component of the color.</param>
         /// <param name="green">The green component of the color.</param>
         /// <param name="blue">The blue component of the color.</param>
@@ -887,6 +874,19 @@ namespace DragonsCave::TerminalToolkit
         ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
         /// </remarks>
         static void SetForeground(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+        /// <summary>
+        /// Writes the ANSI sequence that sets an RGB color in the terminal foreground to the most viable output stream.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        /// </remarks>
+        static void SetForeground(RGBColor color);
         /// <summary>
         /// Writes the ANSI sequence that sets a color of the 256 colors ANSI palette in the terminal background.
         /// </summary>
@@ -913,19 +913,6 @@ namespace DragonsCave::TerminalToolkit
         /// </remarks>
         static void SetBackground(ANSIColor color);
         /// <summary>
-        /// Writes the ANSI sequence that sets an RGB color in the terminal background to the most viable stream.
-        /// </summary>
-        /// <param name="color">The color to be set.</param>
-        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
-        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
-        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        /// <remarks>
-        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-        /// </remarks>
-        static void SetBackground(RGBColor color);
-        /// <summary>
         /// Writes the ANSI sequence that sets an RGB color in the terminal background to the most viable output stream.
         /// </summary>
         /// <param name="red">The red component of the color.</param>
@@ -940,8 +927,76 @@ namespace DragonsCave::TerminalToolkit
         ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
         /// </remarks>
         static void SetBackground(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+        /// <summary>
+        /// Writes the ANSI sequence that sets an RGB color in the terminal background to the most viable stream.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        /// </remarks>
+        static void SetBackground(RGBColor color);
+        /// <summary>
+        /// Writes the ANSI sequence that sets a 256-color ANSI palette color in the terminal underline ornament to the most viable output stream.
+        /// </summary>
+        /// <param name="ansiColor">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+        /// </remarks>
         static void SetUnderlineColor(std::uint8_t ansiColor);
+        /// <summary>
+        /// Writes the ANSI sequence that sets one of the first 16 standard colors of the ANSI palette in the terminal ornament to the most viable stream.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+        /// </remarks>
         static void SetUnderlineColor(ANSIColor color);
+        /// <summary>
+        /// Writes the ANSI sequence that sets an RGB color in the terminal ornament to the most viable stream.
+        /// </summary>
+        /// <param name="red">The red component of the color.</param>
+        /// <param name="green">The green component of the color.</param>
+        /// <param name="blue">The blue component of the color.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+        /// </remarks>
+        static void SetUnderlineColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
+        /// <summary>
+        /// Writes the ANSI sequence that sets an RGB color in the terminal ornament to the most viable stream.
+        /// </summary>
+        /// <param name="color">The color to be set.</param>
+        /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+        /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+        /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
+        /// <remarks>
+        ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+        ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+        ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+        ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+        /// </remarks>
         static void SetUnderlineColor(RGBColor color);
         /// <summary>
         /// Writes the ANSI sequences that sets the terminal text styles flagged in a bitmask to the most viable stream.
