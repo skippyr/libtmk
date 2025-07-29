@@ -154,12 +154,12 @@ namespace DragonsCave::TerminalToolkit
         /// <summary>
         /// Makes the text blink in a slow pace.
         /// </summary>
-        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>RapidBlink</c> effect.</remarks>
+        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>RapidBlink</c> style.</remarks>
         SlowBlink = 1 << 7,
         /// <summary>
         /// Makes the text blink in a rapid pace.
         /// </summary>
-        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>SlowBlink</c> effect.</remarks>
+        /// <remarks>Some terminals may intentionally not support this feature due to the possible overhead it causes or make it cause the same behavior as the <c>SlowBlink</c> style.</remarks>
         RapidBlink = 1 << 8,
         /// <summary>
         /// Inverts the colors applied to the foreground and background.
