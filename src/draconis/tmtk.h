@@ -1,5 +1,5 @@
-#ifndef _draconis_tmtk_h
-#define _draconis_tmtk_h
+#ifndef _DRACONIS_TMTK_H
+#define _DRACONIS_TMTK_H
 #include <stdarg.h>
 
 enum Stream {
@@ -27,10 +27,25 @@ enum ANSIColor {
   ANSIColor_LightWhite
 };
 
+enum FontEffect {
+  FontEffect_Bold = 1,
+  FontEffect_Dim = 1 << 1,
+  FontEffect_Italic = 1 << 2,
+  FontEffect_Underline = 1 << 3,
+  FontEffect_DoubleUnderline = 1 << 4,
+  FontEffect_SquigglyLine = 1 << 5,
+  FontEffect_Strikethrough = 1 << 6,
+  FontEffect_SlowBlinking = 1 << 7,
+  FontEffect_RapidBlinking = 1 << 8,
+  FontEffect_SwappedLayers = 1 << 9,
+  FontEffect_Hidden = 1 << 10,
+  FontEffect_Fraktur = 1 << 11
+};
+
 enum Layer {
   Layer_Foreground = 3,
   Layer_Background,
-  Layer_Ornament
+  Layer_Underline
 };
 
 struct RGBColor {
@@ -50,7 +65,9 @@ extern "C" {
   void errorWrite(const char *format, ...);
   void setFontANSIColor(int color, int layer);
   void setFontRGBColor(struct RGBColor, int layer);
+  void setFontEffects(int effects);
   void resetFontColor(int layer);
+  void resetFontEffects(int effects);
 #ifdef __cplusplus
 }
 #endif

@@ -152,6 +152,94 @@ void setFontRGBColor(struct RGBColor color, int layer) {
   ansiWrite("\x1b[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
 }
 
+void setFontEffects(int effects) {
+  for (int offset = 0; offset < 12; ++offset) {
+    if (effects & 1 << offset) {
+      int result;
+      switch (offset) {
+      case 0: /* Bold */
+        result = ansiWrite("\x1b[22;1m");
+        break;
+      case 1: /* Dim */
+        result = ansiWrite("\x1b[22;2m");
+        break;
+      case 2: /* Italic */
+        result = ansiWrite("\x1b[3m");
+        break;
+      case 3: /* Underline */
+        result = ansiWrite("\x1b[4m");
+        break;
+      case 4: /* Double Underline */
+        result = ansiWrite("\x1b[4:2m");
+        break;
+      case 5: /* Squiggly Line */
+        result = ansiWrite("\x1b[4:3");
+        break;
+      case 6: /* Strikethrough */
+        result = ansiWrite("\x1b[9m");
+        break;
+      case 7: /* Slow Blinking */
+        result = ansiWrite("\x1b[5m");
+        break;
+      case 8: /* Rapid Blinking */
+        result = ansiWrite("\x1b[6m");
+        break;
+      case 9: /* Swapped Colors */
+        result = ansiWrite("\x1b[7m");
+        break;
+      case 10: /* Hidden */
+        result = ansiWrite("\x1b[8m");
+        break;
+      case 11: /* Fraktur */
+        result = ansiWrite("\x1b[20m");
+      }
+      if (result) {
+        break;
+      }
+    }
+  }
+}
+
 void resetFontColor(int layer) {
   ansiWrite("\x1b[%d9m", layer);
+}
+
+void resetFontEffects(int effects) {
+  for (int offset = 0; offset < 12; ++offset) {
+    if (effects & 1 << offset) {
+      int result;
+      switch (offset) {
+      case 0: /* Bold */
+      case 1: /* Dim */
+        result = ansiWrite("\x1b[22m");
+        break;
+      case 2: /* Italic */
+        result = ansiWrite("\x1b[23m");
+        break;
+      case 3: /* Underline */
+      case 4: /* Double Underline */
+      case 5: /* Squiggly Line */
+        result = ansiWrite("\x1b[24m");
+        break;
+      case 6: /* Strikethrough */
+        result = ansiWrite("\x1b[29m");
+        break;
+      case 7: /* Slow Blinking */
+      case 8: /* Rapid Blinking */
+        result = ansiWrite("\x1b[25m");
+        break;
+      case 9: /* Swapped Colors */
+        result = ansiWrite("\x1b[27m");
+        break;
+      case 10: /* Hidden */
+        result = ansiWrite("\x1b[28m");
+        break;
+      case 11: /* Fraktur */
+        result = ansiWrite("\x1b[23m");
+      }
+      if (result) {
+        break;
+      }
+    }
+  }
 }
