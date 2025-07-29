@@ -22,7 +22,7 @@ static void enableANSIParse(DWORD handleID);
 static void init(void);
 static void streamWriteArguments(FILE *stream, const char *format, va_list arguments);
 static void streamWrite(FILE *stream, const char *format, ...);
-static void ansiWrite(const char *format, ...);
+static int ansiWrite(const char *format, ...);
 
 static char cache = 0;
 
@@ -82,6 +82,36 @@ static void streamWrite(FILE *stream, const char *format, ...) {
   va_end(arguments);
 }
 
+static int ansiWrite(const char *format, ...) {
+  va_list arguments;
+  if (cache & ANSI_PREFERS_STDOUT_FLAG) {
+    if (!isStreamRedirected(Stream_Output)) {
+      va_start(arguments, format);
+      outputWriteArguments(format, arguments);
+      va_end(arguments);
+    } else if (!isStreamRedirected(Stream_Error)) {
+      va_start(arguments, format);
+      errorWriteArguments(format, arguments);
+      va_end(arguments);
+    } else {
+      return -1;
+    }
+  } else {
+    if (!isStreamRedirected(Stream_Error)) {
+      va_start(arguments, format);
+      errorWriteArguments(format, arguments);
+      va_end(arguments);
+    } else if (!isStreamRedirected(Stream_Output)) {
+      va_start(arguments, format);
+      outputWriteArguments(format, arguments);
+      va_end(arguments);
+    } else {
+      return -1;
+    }
+  }
+  return 0;
+}
+
 int isStreamRedirected(int stream) {
   init();
   return !!(cache & 1 << stream);
@@ -112,4 +142,16 @@ void errorWrite(const char *format, ...) {
   va_start(arguments, format);
   errorWriteArguments(format, arguments);
   va_end(arguments);
+}
+
+void setFontANSIColor(int color, int layer) {
+  ansiWrite("\x1b[%d8;5;%dm", layer, color);
+}
+
+void setFontRGBColor(struct RGBColor color, int layer) {
+  ansiWrite("\x1b[%d8;2;%d;%d;%dm", layer, color.red, color.green, color.blue);
+}
+
+void resetFontColor(int layer) {
+  ansiWrite("\x1b[%d9m", layer);
 }
