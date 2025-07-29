@@ -8,95 +8,104 @@
 #endif
 
 #ifdef _WIN32
-#define TTY_CACHE(fd) (!!_isatty(fd) << fd)
+#define TTYCACHE(fd) (!!_isatty(fd) << fd)
 #else
-#define TTY_CACHE(fd) (isatty(fd) << fd)
+#define TTYCACHE(fd) (isatty(fd) << fd)
 #endif
-#define HAS_INIT (1 << 7)
-#define HAS_ANSI_CACHE (1 << 6)
-#define PREFERS_OUT (1 << 5)
+#define HASINIT (1 << 7)
+#define HASCACHE (1 << 6)
+#define PREFERSOUT (1 << 5)
 #define IN 0
 #define OUT 1
 #define ERR 2
 
 static void init(void);
 #ifdef _WIN32
-static int enable_ansi_parse(DWORD handle_id);
+static int enbansi(DWORD handle_id);
 #endif
-static void f_write_args(FILE *f, const char *fmt, va_list args);
-static int write_ansi(const char *fmt, ...);
+static void vfwrite(FILE *f, const char *fmt, va_list args);
+static int ansi(const char *fmt, ...);
 
 static char cache = 0;
 
 static void init(void) {
-  if (cache & HAS_INIT) {
+  if (cache & HASINIT) {
     return;
   }
 #ifdef _WIN32
   SetConsoleOutputCP(CP_UTF8);
-  !enable_ansi_parse(STD_OUTPUT_HANDLE) && enable_ansi_parse(STD_ERROR_HANDLE);
+  !enbansi(STD_OUTPUT_HANDLE) && enbansi(STD_ERROR_HANDLE);
 #endif
-  cache = HAS_INIT | TTY_CACHE(IN) | TTY_CACHE(OUT) | TTY_CACHE(ERR);
+  cache = HASINIT | TTYCACHE(IN) | TTYCACHE(OUT) | TTYCACHE(ERR);
 }
 
 #ifdef _WIN32
-static int enable_ansi_parse(DWORD handle_id) {
-  HANDLE handle = GetStdHandle(handle_id);
-  DWORD mode;
-  return GetConsoleMode(handle, &mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+static int enbansi(DWORD hid) {
+  HANDLE h = GetStdHandle(hid);
+  DWORD m;
+  return GetConsoleMode(h, &m) && SetConsoleMode(h, m | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 #endif
 
-static void f_write_args(FILE *f, const char *fmt, va_list args) {
-  va_list args_cp;
-  va_copy(args_cp, args);
-  int len = vsnprintf(NULL, 0, fmt, args_cp);
-  va_end(args_cp);
-  char *buf = malloc(len + 1);
-  if (!buf) {
-    return;
+static void vfwrite(FILE *f, const char *fmt, va_list args) {
+  char sbuf[1024];
+  char *buf;
+  va_list argscp;
+  va_copy(argscp, args);
+  int len = vsnprintf(NULL, 0, fmt, argscp);
+  va_end(argscp);
+  if (len < 1024) {
+    buf = sbuf;
+  } else {
+    char *mbuf = malloc(len + 1);
+    if (!mbuf) {
+      return;
+    }
+    buf = mbuf;
   }
   vsnprintf(buf, len + 1, fmt, args);
   if (f == stdout) {
     if (buf[len] == '\n') {
-      cache &= ~HAS_ANSI_CACHE;
+      cache &= ~HASCACHE;
     }
-    cache |= PREFERS_OUT;
+    cache |= PREFERSOUT;
   } else if (f == stderr) {
-    if (cache & HAS_ANSI_CACHE) {
-      flush_out();
+    if (cache & HASCACHE) {
+      fout();
     }
-    cache &= ~PREFERS_OUT;
+    cache &= ~PREFERSOUT;
   }
   fputs(buf, f);
-  free(buf);
+  if (buf != sbuf) {
+    free(buf);
+  }
 }
 
-static int write_ansi(const char *fmt, ...) {
+static int ansi(const char *fmt, ...) {
   va_list args;
-  if (cache & PREFERS_OUT) {
-    if (is_out_tty()) {
+  if (cache & PREFERSOUT) {
+    if (outtty()) {
       va_start(args, fmt);
-      out_write_args(fmt, args);
+      vwrt(fmt, args);
       va_end(args);
-      cache |= HAS_ANSI_CACHE;
-    } else if (is_err_tty()) {
+      cache |= HASCACHE;
+    } else if (errtty()) {
       va_start(args, fmt);
-      err_write_args(fmt, args);
+      vewrt(fmt, args);
       va_end(args);
     } else {
       return -1;
     }
   } else {
-    if (is_err_tty()) {
+    if (errtty()) {
       va_start(args, fmt);
-      err_write_args(fmt, args);
+      vewrt(fmt, args);
       va_end(args);
-    } else if (is_out_tty()) {
+    } else if (outtty()) {
       va_start(args, fmt);
-      out_write_args(fmt, args);
+      vwrt(fmt, args);
       va_end(args);
-      cache |= HAS_ANSI_CACHE;
+      cache |= HASCACHE;
     } else {
       return -1;
     }
@@ -104,44 +113,96 @@ static int write_ansi(const char *fmt, ...) {
   return 0;
 }
 
-int is_in_tty(void) {
+int intty(void) {
   init();
   return cache & IN;
 }
 
-int is_out_tty(void) {
+int outtty(void) {
   init();
   return !!(cache & OUT);
 }
 
-int is_err_tty(void) {
+int errtty(void) {
   init();
   return !!(cache & ERR);
 }
 
-void flush_out(void) {
+void fout(void) {
   fflush(stdout);
-  cache &= ~HAS_ANSI_CACHE;
+  cache &= ~HASCACHE;
 }
 
-void out_write_args(const char *fmt, va_list args) {
-  f_write_args(stdout, fmt, args);
+void vwrt(const char *fmt, va_list args) {
+  vfwrite(stdout, fmt, args);
 }
 
-void out_write(const char *fmt, ...) {
+void wrt(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  f_write_args(stdout, fmt, args);
+  vwrt(fmt, args);
   va_end(args);
 }
 
-void err_write_args(const char *fmt, va_list args) {
-  f_write_args(stderr, fmt, args);
+void vewrt(const char *fmt, va_list args) {
+  vfwrite(stderr, fmt, args);
 }
 
-void err_write(const char *fmt, ...) {
+void ewrt(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  f_write_args(stderr, fmt, args);
+  vewrt(fmt, args);
   va_end(args);
+}
+
+void ansifg(int clr) {
+  ansi("\x1b[38;5;%dm", clr);
+}
+
+void ansibg(int clr) {
+  ansi("\x1b[48;5;%dm", clr);
+}
+
+void rgbfg(struct rgb r) {
+  ansi("\x1b[38;2;%d;%d;%dm", r.r, r.g, r.b);
+}
+
+void rgbbg(struct rgb r) {
+  ansi("\x1b[48;2;%d;%d;%dm", r.r, r.g, r.b);
+}
+
+void eff(int e) {
+  for (int i = 0; i < 8; ++i) {
+    if (e & 1 << i) {
+      switch (i) {
+        case 0:
+          ansi("\x1b[22;1m");
+          break;
+        case 1:
+          ansi("\x1b[22;2m");
+          break;
+        case 2:
+          ansi("\x1b[3m");
+          break;
+        case 3:
+          ansi("\x1b[4m");
+          break;
+        case 4:
+          ansi("\x1b[9m");
+          break;
+        case 5:
+          ansi("\x1b[5m");
+          break;
+        case 6:
+          ansi("\x1b[7m");
+          break;
+        case 7:
+          ansi("\x1b[8m");
+      }
+    }
+  }
+}
+
+void res(void) {
+  ansi("\x1b[0m");
 }
