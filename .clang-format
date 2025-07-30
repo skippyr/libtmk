@@ -1,10 +1,11 @@
+AccessModifierOffset: -4
 BasedOnStyle: Microsoft
 BreakAfterAttributes: Always
+BreakBeforeBraces: WebKit
 BreakStringLiterals: false
 BreakTemplateDeclarations: Yes
 ColumnLimit: 999
 FixNamespaceComments: false
-IndentWidth: 2
 NamespaceIndentation: All
 PointerAlignment: Left
 ReflowComments: false
