@@ -24,8 +24,8 @@ namespace DragonsCave::TerminalToolkit
   /// Contains the first 16 standard colors of the terminal ANSI palette.
   /// </summary>
   /// <remarks>
-  ///     <para>• They always map to the ones in the current color scheme, providing a consistent and widely compatible option.</para>
-  ///     <para>• They may be set using the <c>Terminal::SetForeground</c> and <c>Terminal::SetBackground</c> functions.</para>
+  ///   <para>• They always map to the ones in the current color scheme, providing a consistent and widely compatible option.</para>
+  ///   <para>• They may be set using the <c>Terminal::SetForeground</c> and <c>Terminal::SetBackground</c> functions.</para>
   /// </remarks>
   enum class ANSIColor
   {
@@ -118,32 +118,32 @@ namespace DragonsCave::TerminalToolkit
     /// Makes the text slanted to the right.
     /// </summary>
     /// <remarks>
-    ///     <para>• The terminal font needs to have italic variants for it to be visible unless faux styles are supported.</para>
-    ///     <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
+    ///   <para>• The terminal font needs to have italic variants for it to be visible unless faux styles are supported.</para>
+    ///   <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
     /// </remarks>
     Italic = 1 << 2,
     /// <summary>
     /// Draws a straight horizontal line below the text.
     /// </summary>
     /// <remarks>
-    ///     <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
-    ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+    ///   <para>• Terminals that uses bitmap fonts may use different foreground and background colors instead of applying the expected effect.</para>
+    ///   <para>• It is not possible to set more than one underline style at the same time.</para>
     /// </remarks>
     Underline = 1 << 3,
     /// <summary>
     /// Draws a curly horizontal line below the text.
     /// </summary>
     /// <remarks>
-    ///     <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
-    ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+    ///   <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
+    ///   <para>• It is not possible to set more than one underline style at the same time.</para>
     /// </remarks>
     DoubleUnderline = 1 << 4,
     /// <summary>
     /// Draws a curly horizontal line below the text.
     /// </summary>
     /// <remarks>
-    ///     <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
-    ///     <para>• It is not possible to set more than one underline style at the same time.</para>
+    ///   <para>• It is not well-supported on Windows terminals, causing it to not be applied: avoid it or handle it on each platform for the best results.
+    ///   <para>• It is not possible to set more than one underline style at the same time.</para>
     /// </remarks>
     SquigglyLine = 1 << 5,
     /// <summary>
@@ -861,9 +861,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetForeground(std::uint8_t ansiColor);
     /// <summary>
@@ -874,8 +874,8 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetForeground(ANSIColor color);
     /// <summary>
@@ -888,9 +888,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetForeground(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
     /// <summary>
@@ -901,9 +901,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetForeground(RGBColor color);
     /// <summary>
@@ -914,9 +914,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetBackground(std::uint8_t ansiColor);
     /// <summary>
@@ -927,8 +927,8 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetBackground(ANSIColor color);
     /// <summary>
@@ -941,9 +941,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetBackground(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
     /// <summary>
@@ -954,9 +954,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void SetBackground(RGBColor color);
     /// <summary>
@@ -967,10 +967,10 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-    ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+    ///   <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
     /// </remarks>
     static void SetUnderlineColor(std::uint8_t ansiColor);
     /// <summary>
@@ -981,10 +981,10 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-    ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+    ///   <para>• Though rare, some limited terminals may not support setting colors above value 15, only including the standard support.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
     /// </remarks>
     static void SetUnderlineColor(ANSIColor color);
     /// <summary>
@@ -997,10 +997,10 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-    ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
     /// </remarks>
     static void SetUnderlineColor(std::uint8_t red, std::uint8_t green, std::uint8_t blue);
     /// <summary>
@@ -1011,10 +1011,10 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
-    ///     <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
-    ///     <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
+    ///   <para>• The terminal requires TrueColor support for this type of color to be visible, which most modern terminals provide.</para>
+    ///   <para>• If all output streams are being redirected, the color is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetColors</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• One of the underline styles, <c>TextStyle::Underline</c>, <c>TextStyle::DoubleUnderline</c>, or <c>TextStyle::SquigglyLine</c> style must be set.</para>
     /// </remarks>
     static void SetUnderlineColor(RGBColor color);
     /// <summary>
@@ -1025,9 +1025,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para>
-    ///     <para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset them automatically after the current process execution.</para>
+    ///   <para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para>
+    ///   <para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset them automatically after the current process execution.</para>
     /// </remarks>
     static void SetTextStyles(int styles);
     /// <summary>
@@ -1038,10 +1038,10 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <remarks>
-    ///     <para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para>
-    ///     <para>• If all output streams are being redirected, the style is not applied, not throwing exceptions or errors.</para>
-    ///     <para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para>
-    ///     <para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• Though rare, some terminals may not support all the styles available, causing them to not take effect.</para>
+    ///   <para>• If all output streams are being redirected, the style is not applied, not throwing exceptions or errors.</para>
+    ///   <para>• If all output streams are being redirected, the styles are not applied, not throwing exceptions or errors.</para>
+    ///   <para>• In order to reset it, a call to the <c>ResetTextStyles</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     ///  </remarks>
     static void SetTextStyles(TextStyle style);
     /// <summary>
@@ -1066,9 +1066,9 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     /// <exception cref="StreamRedirectionException">Thrown when all terminal output streams are redirected.</exception>
     /// <remarks>
-    ///     <para>• Opening the alternate screen while it is already opened, resets it in place, allowing you to perform repainting.</para>
-    ///     <para>• Though rare, some terminals may not have support to this feature. In that case, their screens are simply cleared, giving a similar effect.</para>
-    ///     <para>• In order to close it, a call to  the <c>CloseAlternateScreen</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
+    ///   <para>• Opening the alternate screen while it is already opened, resets it in place, allowing you to perform repainting.</para>
+    ///   <para>• Though rare, some terminals may not have support to this feature. In that case, their screens are simply cleared, giving a similar effect.</para>
+    ///   <para>• In order to close it, a call to  the <c>CloseAlternateScreen</c> function must be made as the shell may not reset it automatically after the current process execution.</para>
     /// </remarks>
     static void OpenAlternateScreen();
     /// <summary>
@@ -1096,8 +1096,8 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="StreamRedirectionException">Thrown, on macOS and Linux, when the terminal input stream or the output streams are redirected, not allowing the request and read of the response.</exception>
     /// <exception cref="FormatException">Thrown, on macOS and Linux, when the terminal response is badly formed.</exception>
     /// <remarks>
-    ///     <para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para>
-    ///     <para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para>
+    ///   <para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para>
+    ///   <para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para>
     /// </remarks>
     static Coordinate GetCursorCoordinate();
     /// <summary>
