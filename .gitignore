@@ -6,6 +6,7 @@
 
 # CLion
 /.idea/
+*.proj.DotSettings
 
 # Visual Studio
 /.vs/
@@ -21,4 +22,6 @@
 /Build/
 /cmake-build-*/
 /out/
+/Out/
 /target/
+/Target/
