@@ -623,10 +623,7 @@ namespace DragonsCave::TerminalToolkit
         {
           switch (offset)
           {
-            /*
-                         * NOTE: some terminals may apply both bold and dim effects at the same time, but technically, as they refer to the same property "text brightness", that
-                         * should not be allowed. For consistent behavior, it always gets reset before applied.
-                         */
+            /* NOTE: some terminals may apply both bold and dim effects at the same time, but technically, as they refer to the same property "text brightness", that should not be allowed. For consistent behavior, it always gets reset before applied. */
           case 0: /* Bold */
             WriteANSI("\x1b[22;1m");
             break;

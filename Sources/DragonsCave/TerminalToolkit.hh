@@ -356,6 +356,21 @@ namespace DragonsCave::TerminalToolkit
     explicit OutOfRangeException(const std::string_view& message);
   };
 
+  class URL final
+  {
+    std::string m_address;
+
+  public:
+    URL(const std::string_view& address) : m_address(address)
+    {
+    }
+
+    constexpr const std::string& GetAddress() noexcept
+    {
+      return m_address;
+    }
+  };
+
   /// <summary>
   /// Represents an RGB color.
   /// </summary>
@@ -813,6 +828,7 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated for the arguments.</exception>
     /// <exception cref="IOException">Thrown, on Linux, if the <c>/proc/self/cmdline</c> file cannot be opened for reading.</exception>
+    [[nodiscard]]
     static std::vector<UnicodeString> GetArguments();
     /// <summary>
     /// Checks whether the terminal input stream is being redirected.
@@ -1086,6 +1102,7 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="StreamRedirectionException">Thrown when all streams are being redirected.</exception>
     /// <exception cref="InternalAttributesException">Thrown when the dimensions cannot be obtained due to an operating system error.</exception>
     /// <remarks>The operating system kernel or console submodule can report dimensions that may not match the graphical window or monitor sizes.</remarks>
+    [[nodiscard]]
     static Dimensions GetDimensions();
     /// <summary>
     /// Gets the terminal cursor coordinate either via a low-level call, on Windows, or by requesting and parsing a terminal response, on macOS and Linux, via to write of an ANSI sequence to the most viable stream.
@@ -1099,6 +1116,7 @@ namespace DragonsCave::TerminalToolkit
     ///   <para>• It considers a coordinate system where the origin point is in the top left corner of the terminal screen. From there, the column (in the horizontal axis) and row (in the vertical axis) values increase going right and down respectively.</para>
     ///   <para>• On macOS and Linux, the coordinate is obtained by parsing a response given by the terminal through the terminal input stream, requiring it to be flushed upon execution to ensure correctness.</para>
     /// </remarks>
+    [[nodiscard]]
     static Coordinate GetCursorCoordinate();
     /// <summary>
     /// Writes the ANSI sequence that sets the terminal cursor coordinate to the most viable stream.
@@ -1186,8 +1204,32 @@ namespace DragonsCave::TerminalToolkit
     /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
     /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
     static void ClearHistory();
+    /// <summary>
+    /// Writes the ANSI sequence that sets the terminal title to the most viable stream. It usually appears on the window titlebar or active tab.
+    /// </summary>
+    /// <exception cref="InitException">Thrown when the terminal features cannot be initiated.</exception>
+    /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
+    /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the title.</exception>
+    /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
+    template <typename... Arguments>
+    static void SetTitle(const std::string_view& format, Arguments... arguments)
+    {
+      std::string title;
+      try
+      {
+        title = std::vformat(format, std::make_format_args(arguments...));
+      }
+      catch (std::format_error&)
+      {
+        throw FormatException("the formatting requested for title is badly formed.");
+      }
+      catch (...)
+      {
+        throw NotEnoughMemoryException("cannot allocate enough memory to format the title.");
+      }
+      WriteANSI("\x1b]0;{}\7", title);
+    }
     // static bool HasInput(); // checks whether the input buffer has events.
-    // static void SetTitle(const std::string_view& title);
     // static std::string CreateURL(const std::string_view& format, Arguments... arguments); // <-- possibly better to create a URL class with custom formatting
 
     /// <summary>
