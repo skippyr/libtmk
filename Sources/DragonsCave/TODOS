@@ -1,0 +1,7 @@
+- Add support for TermInfo query on macOS and Linux.
+    - TermInfo class
+    - TermInfoData class
+    - Terminal::GetTermInfoData() function
+- Add function to get the terminal identifier on macOS and Linux.
+    - Terminal::GetPOSIXIdentifier();
+- Add function to check how many colors the terminal supports.

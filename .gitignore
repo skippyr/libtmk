@@ -4,7 +4,8 @@
 # Vim/Neovim
 *.sw?
 
-# CLion
+# Jetbrains IDEs & Code Editors
+/.fleet/
 /.idea/
 *.proj.DotSettings
 
@@ -25,3 +26,5 @@
 /Out/
 /target/
 /Target/
+/bin/
+/Bin/
