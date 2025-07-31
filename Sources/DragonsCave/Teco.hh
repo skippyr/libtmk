@@ -769,13 +769,13 @@ namespace DragonsCave::Teco {
                     Write(format, arguments...);
                     s_hasANSICache = true;
                 } else if (!s_isErrorRedirected) {
-                    WriteError(format, arguments...);
+                    ErrorWrite(format, arguments...);
                 } else {
                     throw StreamRedirectionException(redirectionFailMessage);
                 }
             } else {
                 if (!s_isErrorRedirected) {
-                    WriteError(format, arguments...);
+                    ErrorWrite(format, arguments...);
                 } else if (!s_isOutputRedirected) {
                     Write(format, arguments...);
                     s_hasANSICache = true;
@@ -1298,7 +1298,7 @@ namespace DragonsCave::Teco {
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
-        static void WriteError(const std::string_view& format, Arguments... arguments)
+        static void ErrorWrite(const std::string_view& format, Arguments... arguments)
         {
             Init();
             if (s_hasANSICache) {
@@ -1339,9 +1339,9 @@ namespace DragonsCave::Teco {
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
-        static void WriteError(const T& argument)
+        static void ErrorWrite(const T& argument)
         {
-            WriteError("{}", argument);
+            ErrorWrite("{}", argument);
         }
 
         /// <summary>
@@ -1354,10 +1354,10 @@ namespace DragonsCave::Teco {
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename... Arguments>
-        static void WriteErrorLine(const std::string_view& format, Arguments... arguments)
+        static void ErrorWriteLine(const std::string_view& format, Arguments... arguments)
         {
-            WriteError(format, arguments...);
-            WriteError("\n");
+            ErrorWrite(format, arguments...);
+            ErrorWrite("\n");
         }
 
         /// <summary>
@@ -1368,9 +1368,9 @@ namespace DragonsCave::Teco {
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
         /// <exception cref="FormatException">Thrown when the formatting requested is badly formed.</exception>
         template <typename T>
-        static void WriteErrorLine(const T& argument)
+        static void ErrorWriteLine(const T& argument)
         {
-            WriteErrorLine("{}", argument);
+            ErrorWriteLine("{}", argument);
         }
 
         /// <summary>
@@ -1378,9 +1378,9 @@ namespace DragonsCave::Teco {
         /// </summary>
         /// <exception cref="IOException">Thrown when the stream does not have a buffer to perform caching or when the write operation fails.</exception>
         /// <exception cref="NotEnoughMemoryException">Thrown when not enough memory can be allocated to format the output.</exception>
-        static void WriteErrorLine()
+        static void ErrorWriteLine()
         {
-            WriteError("\n");
+            ErrorWrite("\n");
         }
     };
 
